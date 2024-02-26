@@ -1,2 +1,7 @@
 # the bin file
 goali
+# leave venv out of repo
+*.pyc
+bin/
+lib/
+lib64

@@ -4,6 +4,7 @@
         "bubbletea",
         "charmbracelet",
         "fyne",
-        "goali"
+        "goali",
+        "venv"
     ]
 }
