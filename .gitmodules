@@ -1,0 +1,3 @@
+[submodule "cpy3"]
+	path = cpy3
+	url = git@github.com:jackokring/cpy3.git

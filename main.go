@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	py "github.com/sublime-security/cpy3"
+	py "github.com/jackokring/cpy3"
 
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
