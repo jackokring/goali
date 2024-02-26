@@ -4,10 +4,7 @@ go 1.19
 
 replace github.com/jackokring/goali => ./
 
-require (
-	fyne.io/fyne/v2 v2.4.4
-	github.com/go-python/cpy3 v0.2.0
-)
+require fyne.io/fyne/v2 v2.4.4
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
@@ -21,6 +18,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/sublime-security/cpy3 v0.0.0-20230615001256-d87225aadee1 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
 )

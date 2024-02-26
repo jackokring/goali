@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	python "github.com/go-python/cpy3"
+	py "github.com/sublime-security/cpy3"
 
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -123,9 +123,9 @@ func main() {
 	message := Hello("Gladys")
 	fmt.Println(message)
 
-	defer python.Py_Finalize()
-	python.Py_Initialize()
-	python.PyRun_SimpleString("print('hello world')")
+	defer py.Py_Finalize()
+	py.Py_Initialize()
+	py.PyRun_SimpleString("print('hello world')")
 
 	if _, err := tea.NewProgram(model{}).Run(); err != nil {
 		fmt.Printf("Uh oh, there was an error: %v\n", err)
