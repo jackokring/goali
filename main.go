@@ -16,6 +16,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/alecthomas/kong"
+
+	"log"
+	"log/syslog"
 )
 
 const url = "https://charm.sh/"
@@ -122,6 +125,15 @@ var CLI struct {
 }
 
 func main() {
+	// Configure logger to write to the syslog. You could do this in init(), too.
+	logwriter, e := syslog.New(syslog.LOG_NOTICE, "myprog")
+	if e == nil {
+		log.SetOutput(logwriter)
+	}
+
+	// Now from anywhere else in your program, you can use this:
+	log.Print("Hello Logs!")
+
 	ctx := kong.Parse(&CLI)
 	switch ctx.Command() {
 	case "rm <path>":
