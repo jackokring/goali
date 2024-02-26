@@ -3,5 +3,6 @@ goali
 # leave venv out of repo
 *.pyc
 bin/
+include/
 lib/
 lib64
