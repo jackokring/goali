@@ -18,13 +18,14 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/sublime-security/cpy3 v0.0.0-20230615001256-d87225aadee1 // indirect
+	github.com/sublime-security/cpy3 v0.0.0-20230615001256-d87225aadee1
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
 )
 
 require (
 	fyne.io/systray v1.10.1-0.20231115130155-104f5ef7839e // indirect
+	github.com/alecthomas/kong v0.8.1
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fredbi/uri v1.0.0 // indirect
