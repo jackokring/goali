@@ -124,10 +124,10 @@ func (m model) View() string {
 // default:"X"	Default value.
 // short:"X"	Short name, if flag.
 // negatable:""	If present on a bool field, supports prefixing a flag with --no- to invert the default value.
-// prefix:"X"	Prefix for all sub-flags.
 // envprefix:"X"	Envar prefix for all sub-flags.
 // passthrough:""	If present on a positional argument, it stops flag parsing when encountered, as if -- was processed before. Useful for external command wrappers, like exec. On a command it requires that the command contains only one argument of type []string which is then filled with everything following the command, unparsed.
 
+// TODO
 type profile struct {
 	yaml struct {
 		name string
@@ -138,7 +138,7 @@ type streamFilter struct {
 	// special flags?
 	Force      bool   `help:"Force overwrite of an existing <output-file>" short:"f"`
 	InputFile  string `arg:"" help:"Input file to process (- is STDIN)" type:"existingfile"`
-	OutputFile string `arg:"" help:"Output file of process (- is STDOUT)" type:"path"`
+	OutputFile string `arg:"" help:"Output file of process (- is STDOUT implies -q)" type:"path"`
 }
 
 type unicornCommand streamFilter
@@ -149,6 +149,7 @@ func (c *unicornCommand) Help() string {
 
 func (c *unicornCommand) Run(p *profile) error {
 	// unicorn command hook
+	Notify(AppName + " used")
 	fmt.Println(c.InputFile)
 	fmt.Println(c.OutputFile)
 	return nil
@@ -158,27 +159,25 @@ type detail int
 
 var cli struct {
 	Debug   bool   `help:"Enable debug mode" short:"d"`
-	Quiet   bool   `help:"Enable quiet mode" short:"q"`
-	Verbose detail `help:"Enable verbose mode(s)" short:"v" type:"counter"`
+	Used    bool   `help:"Enable logging when used" short:"u"`
+	Quiet   bool   `help:"Enable quiet mode (overrides -v)" short:"q"`
+	Verbose detail `help:"Enable verbose mode" short:"v" type:"counter"`
 	// a classic start
 	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
 }
 
 // Notify the current logger writer.
 func Notify(s string) {
-	// Now from anywhere else in your program, you can use this:
 	log.Print(s)
 }
 
 // # Main Entry Point
 func main() {
-	// Configure logger to write to the syslog. You could do this in init(), too.
+	// Configure logger to write to the syslog.
 	logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
 	if e == nil {
 		log.SetOutput(logwriter)
 	}
-
-	Notify(AppName + " started")
 
 	if len(os.Args) > 1 { // batch mode
 		globalConfig := "/etc/" + AppName + "/config.yaml"
@@ -191,7 +190,7 @@ func main() {
 				"localConfig":  localConfig,
 			},
 			kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
-			kong.Description("The goali ball saving all in one app."),
+			kong.Description("The"+AppName+"ball saving all in one app."),
 			kong.UsageOnError(),
 			kong.ConfigureHelp(kong.HelpOptions{
 				Compact: true,
