@@ -6,6 +6,7 @@
         "fyne",
         "goali",
         "godoc",
+        "GOPROXY",
         "ldflags",
         "logwriter",
         "venv"

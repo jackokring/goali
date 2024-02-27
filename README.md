@@ -43,6 +43,15 @@ depending on functional use.
 type information **before** an identifier. This slightly increases parse complexity
 and prevents some kind of edit selection of type DropDown inserting an
 identifier TextBox.
+* The weird `import "github.com/jackokring/v2/cpy3"` and making a new `v2` branch
+along with a `module github.com/jackokring/cpy3/v2` just to allow a
+`go get github.com/jackokring/cpy3/v2@v2.0.0` after a following
+`GOPROXY=proxy.golang.org go list -m github.com/jackokring/cpy3/v2@v2.0.0` but
+only after a `git tag v2.0.0` itself after a push followed by a `git push origin v2.0.0`.
+* Of course the above is made more irritating by node.js inside VSCode spamming
+the `-jMAX` option and behaving in its docs like the other processes on the
+system are the problem. Apparently, the terminal failure to initialize on first go
+is a feature, and it can only count to 120. 
 
 ## TODO
 
