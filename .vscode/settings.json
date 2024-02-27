@@ -5,6 +5,7 @@
         "charmbracelet",
         "fyne",
         "goali",
+        "godoc",
         "ldflags",
         "logwriter",
         "venv"

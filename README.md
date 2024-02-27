@@ -28,6 +28,30 @@ A python virtual environment was added to the project. Its major directories
 `lib`, and `bin` were added to `.gitignore`. This may be altered later 
 depending on functional use.
 
+## Go Likes and Dislikes
+
+### Likes
+
+* It's fast enough at compile and doesn't clog my Chromebook.
+* Receivers.
+* No `switch` break madness fall through.
+* Implicit interface implementations.
+
+### Dislikes
+
+* The postfix typing. As from a point of view it has no parse introduction of
+type information **before** an identifier. This slightly increases parse complexity
+and prevents some kind of edit selection of type DropDown inserting an
+identifier TextBox.
+
+## TODO
+
+- [ ] `godoc` (version when # titles introduced is 1.19).
+- [ ] more functionality.
+- [ ] default `.py` file load.
+- [ ] default add `PyObject` to namespace of python.
+- [ ] use `.yaml` for CLI and general config options.
+
 ---
 
 #### Extracted Link Definitions (Invisible)

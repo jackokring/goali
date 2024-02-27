@@ -8,7 +8,7 @@ replace github.com/jackokring/cpy3 => ./cpy3/
 
 require (
 	fyne.io/fyne/v2 v2.4.4
-	github.com/jackokring/cpy3 v0.0.0-00010101000000-000000000000
+	github.com/jackokring/cpy3 v0.0.0-20240226234938-87ed29b7e237
 )
 
 require (
