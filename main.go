@@ -134,50 +134,34 @@ type profile struct {
 	} `type:"yamlfile"`
 }
 
-type counter int
-
-func (f *counter) Help() string {
-	return "🏁 can be used multiple times to increase the flag's effect"
-}
-
-type inputFileWithHelp struct {
-	inputFile string `arg:""`
-}
-
-func (f *inputFileWithHelp) Help() string {
-	return "📣 the file must exist and be accessible to reading (- is STDIN)"
-}
-
-type outputFileWithHelp struct {
-	outputFile string `arg:""`
-}
-
-func (f *outputFileWithHelp) Help() string {
-	return "📣 if the file exists the -f flag must be used to force a write (- is STDOUT)"
-}
-
-type unicornCommand struct {
+type streamFilter struct {
 	// special flags?
-	force      bool               `help:"Force overwriting of an existing file" short:"f"`
-	inputFile  inputFileWithHelp  `arg:"" help:"Input file to process" type:"existingfile"`
-	outputFile outputFileWithHelp `arg:"" help:"Output file of process" type:"path"`
+	Force      bool   `help:"Force overwrite of an existing <output-file>" short:"f"`
+	InputFile  string `arg:"" help:"Input file to process (- is STDIN)" type:"existingfile"`
+	OutputFile string `arg:"" help:"Output file of process (- is STDOUT)" type:"path"`
 }
+
+type unicornCommand streamFilter
 
 func (c *unicornCommand) Help() string {
-	return "🚀 many kinds of unicode mangling, fixing and conversion are possible depending on the flags"
+	return "Unicode mangling depending on the flags. UTF-8 errors are marked to recover data."
 }
 
 func (c *unicornCommand) Run(p *profile) error {
 	// unicorn command hook
+	fmt.Println(c.InputFile)
+	fmt.Println(c.OutputFile)
 	return nil
 }
 
+type detail int
+
 var cli struct {
-	debug   bool    `help:"Enable debug mode" short:"d"`
-	quiet   bool    `help:"Enable quiet mode" short:"q"`
-	verbose counter `help:"Enable verbose mode(s)" short:"v" type:"counter"`
+	Debug   bool   `help:"Enable debug mode" short:"d"`
+	Quiet   bool   `help:"Enable quiet mode" short:"q"`
+	Verbose detail `help:"Enable verbose mode(s)" short:"v" type:"counter"`
 	// a classic start
-	unicorn unicornCommand `cmd:"" help:"Perform unicode mangling"`
+	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
 }
 
 // Notify the current logger writer.
