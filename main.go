@@ -141,7 +141,7 @@ func (f *counter) Help() string {
 }
 
 type inputFileWithHelp struct {
-	file string `arg:""`
+	inputFile string `arg:""`
 }
 
 func (f *inputFileWithHelp) Help() string {
@@ -149,7 +149,7 @@ func (f *inputFileWithHelp) Help() string {
 }
 
 type outputFileWithHelp struct {
-	file string `arg:""`
+	outputFile string `arg:""`
 }
 
 func (f *outputFileWithHelp) Help() string {
@@ -158,7 +158,7 @@ func (f *outputFileWithHelp) Help() string {
 
 type unicornCommand struct {
 	// special flags?
-	force      bool               `help:"Force overwrite of an existing file"`
+	force      bool               `help:"Force overwriting of an existing file" short:"f"`
 	inputFile  inputFileWithHelp  `arg:"" help:"Input file to process" type:"existingfile"`
 	outputFile outputFileWithHelp `arg:"" help:"Output file of process" type:"path"`
 }
