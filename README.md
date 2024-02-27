@@ -74,4 +74,4 @@ is a feature, and it can only count to 120.
 [CPY3]: CPY3.md
 [fyne]: fyne.io/fyne/v2
 [kong]: github.com/alecthomas/kong
-[kon-yaml]: github.com/alecthomas/kong-yaml
+[kong-yaml]: github.com/alecthomas/kong-yaml
