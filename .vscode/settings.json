@@ -3,6 +3,12 @@
         "alecthomas",
         "bubbletea",
         "charmbracelet",
+        "Envar",
+        "envars",
+        "envprefix",
+        "existingdir",
+        "existingfile",
+        "filecontent",
         "fyne",
         "goali",
         "godoc",
@@ -10,6 +16,7 @@
         "kongyaml",
         "ldflags",
         "logwriter",
-        "venv"
+        "venv",
+        "yamlfile"
     ]
 }

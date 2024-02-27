@@ -11,7 +11,6 @@ import (
 
 	"net/http"
 	"os"
-	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -22,8 +21,11 @@ import (
 	"log/syslog"
 )
 
-const url = "https://charm.sh/"
-const appName = "goali"
+const AppName = "goali"
+
+//=====================================
+// TUI structure section
+//=====================================
 
 type model struct {
 	status int
@@ -33,7 +35,7 @@ type model struct {
 func checkServer() tea.Msg {
 
 	// Create an HTTP client and make a GET request.
-	c := &http.Client{Timeout: 10 * time.Second}
+	/* c := &http.Client{Timeout: 10 * time.Second}
 	res, err := c.Get(url)
 
 	if err != nil {
@@ -43,7 +45,8 @@ func checkServer() tea.Msg {
 	}
 	// We received a response from the server. Return the HTTP status code
 	// as a message.
-	return statusMsg(res.StatusCode)
+	return statusMsg(res.StatusCode) */
+	return statusMsg(0)
 }
 
 type statusMsg int
@@ -95,7 +98,7 @@ func (m model) View() string {
 	}
 
 	// Tell the user we're doing something.
-	s := fmt.Sprintf("Checking %s ... ", url)
+	s := fmt.Sprintf("Checking %s ... ", "??") //url)
 
 	// When the server responds with a status, add it to the current line.
 	if m.status > 0 {
@@ -106,61 +109,113 @@ func (m model) View() string {
 	return "\n" + s + "\n\n"
 }
 
-// Hello returns a greeting for the named person.
-func Hello(name string) string {
-	// Return a greeting that embeds the name in a message.
-	message := fmt.Sprintf("Hi, %v. Welcome!", name)
-	return message
+//=====================================
+// CLI structure section
+//=====================================
+
+// optional:""
+// type:"path"	A path. ~ expansion is applied. - is accepted for stdout, and will be passed unaltered.
+// type:"existingfile"	An existing file. ~ expansion is applied. - is accepted for stdin, and will be passed unaltered.
+// type:"existingdir"	An existing directory. ~ expansion is applied.
+// type:"counter"	Increment a numeric field. Useful for -vvv. Can accept -s, --long or --long=N.
+// type:"filecontent"	Read the file at path into the field. ~ expansion is applied. - is accepted for stdin, and will be passed unaltered.
+// env:"X,Y,..."	Specify envars to use for default value. The envs are resolved in the declared order. The first value found is used.
+// default:"X"	Default value.
+// short:"X"	Short name, if flag.
+// negatable:""	If present on a bool field, supports prefixing a flag with --no- to invert the default value.
+// prefix:"X"	Prefix for all sub-flags.
+// envprefix:"X"	Envar prefix for all sub-flags.
+// passthrough:""	If present on a positional argument, it stops flag parsing when encountered, as if -- was processed before. Useful for external command wrappers, like exec. On a command it requires that the command contains only one argument of type []string which is then filled with everything following the command, unparsed.
+
+type profile struct {
+	Yaml struct {
+		Name string
+	} `type:"yamlfile"`
+}
+
+type flagWithHelp bool
+
+func (f *flagWithHelp) Help() string {
+	return "🏁 no additional flag help"
+}
+
+type commandWithHelp struct {
+	Msg argumentWithHelp `arg:"" help:"Regular argument help"`
+}
+
+func (c *commandWithHelp) Help() string {
+	return "🚀 no additional command help"
+}
+
+func (c *commandWithHelp) Run(p *profile) error {
+	fmt.Println(c.Msg.Msg)
+	return nil
+}
+
+type argumentWithHelp struct {
+	Msg string `arg:""`
+}
+
+func (f *argumentWithHelp) Help() string {
+	return "📣 no additional argument help"
 }
 
 var CLI struct {
-	Rm struct {
-		Force     bool `help:"Force removal."`
-		Recursive bool `help:"Recursively remove files."`
+	Debug flagWithHelp `help:"Enable debug mode"`
 
-		Paths []string `arg:"" name:"path" help:"Paths to remove." type:"path"`
-	} `cmd:"" help:"Remove files."`
+	Flag flagWithHelp    `help:"Regular flag help"`
+	Echo commandWithHelp `cmd:"" help:"Regular command help"`
+}
 
-	Ls struct {
-		Paths []string `arg:"" optional:"" name:"path" help:"Paths to list." type:"path"`
-	} `cmd:"" help:"List paths."`
+func notify(s string) {
+	// Now from anywhere else in your program, you can use this:
+	log.Print(s)
 }
 
 func main() {
 	// Configure logger to write to the syslog. You could do this in init(), too.
-	logwriter, e := syslog.New(syslog.LOG_NOTICE, appName)
+	logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
 	if e == nil {
 		log.SetOutput(logwriter)
 	}
 
-	// Now from anywhere else in your program, you can use this:
-	log.Print("Hello Logs!")
+	notify(AppName + " started")
 
-	ctx := kong.Parse(&CLI,
-		kong.Configuration(kongyaml.Loader, "/etc/"+appName+"/config.yaml",
-			"~/."+appName+".yaml"))
-	switch ctx.Command() {
-	case "rm <path>":
-	case "ls":
-	default:
-		//panic(ctx.Command())
+	if len(os.Args) > 1 { // batch mode
+		globalConfig := "/etc/" + AppName + "/config.yaml"
+		localConfig := "~/." + AppName + ".yaml"
+		ctx := kong.Parse(&CLI,
+			kong.Configuration(kongyaml.Loader, globalConfig, localConfig),
+			kong.Vars{
+				// ${<name>} in `tags`
+				"globalConfig": globalConfig,
+				"localConfig":  localConfig,
+			},
+			kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
+			kong.Description("The goali ball saving all in one app."),
+			kong.UsageOnError(),
+			kong.ConfigureHelp(kong.HelpOptions{
+				Compact: true,
+				Summary: false,
+			}))
+		// Call the Run() method of the selected parsed command.
+		// Extra context arg? TODO
+		err := ctx.Run(&profile{Yaml: struct{ Name string }{"running from main"}})
+		ctx.FatalIfErrorf(err)
+	} else { // interactive GUI mode
+		a := app.New()
+		w := a.NewWindow("Hello")
+
+		hello := widget.NewLabel("Hello Fyne!")
+		w.SetContent(container.NewVBox(
+			hello,
+			widget.NewButton("Hi!", func() {
+				hello.SetText("Welcome :)")
+			}),
+		))
+
+		w.ShowAndRun()
 	}
-
-	a := app.New()
-	w := a.NewWindow("Hello")
-
-	hello := widget.NewLabel("Hello Fyne!")
-	w.SetContent(container.NewVBox(
-		hello,
-		widget.NewButton("Hi!", func() {
-			hello.SetText("Welcome :)")
-		}),
-	))
-
-	w.ShowAndRun()
-	// Get a greeting message and print it.
-	message := Hello("Gladys")
-	fmt.Println(message)
 
 	defer py.Py_Finalize()
 	py.Py_Initialize()
