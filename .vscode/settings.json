@@ -7,6 +7,7 @@
         "goali",
         "godoc",
         "GOPROXY",
+        "kongyaml",
         "ldflags",
         "logwriter",
         "venv"

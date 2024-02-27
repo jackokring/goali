@@ -17,6 +17,7 @@ Much faster code compile too.
 * [fyne][fyne] - GUI toolkit
 * [cpy3][cpy3] - Python 3.11 wrapper (submodule [CPY3][CPY3])
 * [bubbletea][bubbletea] - TUI toolkit
+* [kong-yaml][kong-yaml] - config loader
 
 ## Modules to Find
 
@@ -62,7 +63,7 @@ is a feature, and it can only count to 120.
 - [ ] more functionality.
 - [ ] default `.py` file load.
 - [ ] default add `PyObject` to namespace of python.
-- [ ] use `.yaml` for CLI and general config options.
+- [X] use `.goali.yaml` for CLI and general config options.
 
 ---
 
@@ -73,3 +74,4 @@ is a feature, and it can only count to 120.
 [CPY3]: CPY3.md
 [fyne]: fyne.io/fyne/v2
 [kong]: github.com/alecthomas/kong
+[kon-yaml]: github.com/alecthomas/kong-yaml

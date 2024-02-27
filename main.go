@@ -16,12 +16,14 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/alecthomas/kong"
+	kongyaml "github.com/alecthomas/kong-yaml"
 
 	"log"
 	"log/syslog"
 )
 
 const url = "https://charm.sh/"
+const appName = "goali"
 
 type model struct {
 	status int
@@ -126,7 +128,7 @@ var CLI struct {
 
 func main() {
 	// Configure logger to write to the syslog. You could do this in init(), too.
-	logwriter, e := syslog.New(syslog.LOG_NOTICE, "myprog")
+	logwriter, e := syslog.New(syslog.LOG_NOTICE, appName)
 	if e == nil {
 		log.SetOutput(logwriter)
 	}
@@ -134,7 +136,9 @@ func main() {
 	// Now from anywhere else in your program, you can use this:
 	log.Print("Hello Logs!")
 
-	ctx := kong.Parse(&CLI)
+	ctx := kong.Parse(&CLI,
+		kong.Configuration(kongyaml.Loader, "/etc/"+appName+"/config.yaml",
+			"~/."+appName+".yaml"))
 	switch ctx.Command() {
 	case "rm <path>":
 	case "ls":
