@@ -13,10 +13,10 @@ Much faster code compile too.
 
 ## Modules Used (and Indirect)
 
-* `github.com/alecthomas/kong` - CLI parse
-* `fyne.io/fyne/v2` - GUI toolkit
-* `github.com/jackokring/cpy3` - Python 3.11 wrapper (submodule [CPY3][CPY3])
-* `github.com/charmbracelet/bubbletea` - TUI toolkit
+* [kong][kong] - CLI parse
+* [fyne][fyne] - GUI toolkit
+* [cpy3][cpy3] - Python 3.11 wrapper (submodule [CPY3][CPY3])
+* [bubbletea][bubbletea] - TUI toolkit
 
 ## Modules to Find
 
@@ -36,6 +36,9 @@ depending on functional use.
 * Receivers.
 * No `switch` break madness fall through.
 * Implicit interface implementations.
+* Allows submodules and redirection via `replace ... => ...` to local git submodules.
+* Initial capitalization exports.
+* `.(type)` switch variants.
 
 ### Dislikes
 
@@ -64,4 +67,9 @@ is a feature, and it can only count to 120.
 ---
 
 #### Extracted Link Definitions (Invisible)
+
+[bubbletea]: github.com/charmbracelet/bubbletea
+[cpy3]: github.com/jackokring/cpy3
 [CPY3]: CPY3.md
+[fyne]: fyne.io/fyne/v2
+[kong]: github.com/alecthomas/kong
