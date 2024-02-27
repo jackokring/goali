@@ -129,16 +129,14 @@ func (m model) View() string {
 
 // TODO
 type profile struct {
-	yaml struct {
-		name string
-	} `type:"yamlfile"`
+	Name string
 }
 
 type streamFilter struct {
 	// special flags?
 	Force      bool   `help:"Force overwrite of an existing <output-file>" short:"f"`
-	InputFile  string `arg:"" help:"Input file to process (- is STDIN)" type:"existingfile"`
-	OutputFile string `arg:"" help:"Output file of process (- is STDOUT implies -q)" type:"path"`
+	InputFile  string `arg:"" help:"Input file to ${appName} (- is STDIN)" type:"existingfile"`
+	OutputFile string `arg:"" help:"Output file of ${appName} (- is STDOUT implies -q)" type:"path"`
 }
 
 type unicornCommand streamFilter
@@ -147,7 +145,7 @@ func (c *unicornCommand) Help() string {
 	return "Unicode mangling depending on the flags. UTF-8 errors are marked to recover data."
 }
 
-func (c *unicornCommand) Run(p *profile) error {
+func (c *unicornCommand) Run(p *kong.Context) error {
 	// unicorn command hook
 	Notify(AppName + " used")
 	fmt.Println(c.InputFile)
@@ -158,10 +156,11 @@ func (c *unicornCommand) Run(p *profile) error {
 type detail int
 
 var cli struct {
-	Debug   bool   `help:"Enable debug mode" short:"d"`
-	Used    bool   `help:"Enable logging when used" short:"u"`
-	Quiet   bool   `help:"Enable quiet mode (overrides -v)" short:"q"`
-	Verbose detail `help:"Enable verbose mode" short:"v" type:"counter"`
+	Debug   bool    `help:"Enable debug mode" short:"d"`
+	Used    bool    `help:"Enable logging when used" short:"u"`
+	Quiet   bool    `help:"Enable quiet mode (overrides -v)" short:"q"`
+	Verbose detail  `help:"Enable verbose mode" short:"v" type:"counter"`
+	ProFile profile `help:"Configuration PROFILE of ${appName}" type:"yamlfile"`
 	// a classic start
 	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
 }
@@ -180,6 +179,8 @@ func main() {
 	}
 
 	if len(os.Args) > 1 { // batch mode
+		// full config loading
+		// the pro-file sub tree can be supplied from a file on the CLI
 		globalConfig := "/etc/" + AppName + "/config.yaml"
 		localConfig := "~/." + AppName + ".yaml"
 		ctx := kong.Parse(&cli,
@@ -188,7 +189,9 @@ func main() {
 				// ${<name>} in `tags`
 				"globalConfig": globalConfig,
 				"localConfig":  localConfig,
+				"appName":      AppName,
 			},
+			// loading defaults for flags and options
 			kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
 			kong.Description("The"+AppName+"ball saving all in one app."),
 			kong.UsageOnError(),
@@ -197,8 +200,8 @@ func main() {
 				Summary: false,
 			}))
 		// Call the Run() method of the selected parsed command.
-		// Extra context arg? TODO
-		err := ctx.Run(&profile{yaml: struct{ name string }{"running from main"}})
+		// Extra context arg as not cast to command
+		err := ctx.Run(&ctx)
 		ctx.FatalIfErrorf(err)
 	} else { // interactive GUI mode
 		a := app.New()
