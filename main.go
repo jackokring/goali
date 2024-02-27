@@ -21,6 +21,7 @@ import (
 	"log/syslog"
 )
 
+// # Application name
 const AppName = "goali"
 
 //=====================================
@@ -128,50 +129,64 @@ func (m model) View() string {
 // passthrough:""	If present on a positional argument, it stops flag parsing when encountered, as if -- was processed before. Useful for external command wrappers, like exec. On a command it requires that the command contains only one argument of type []string which is then filled with everything following the command, unparsed.
 
 type profile struct {
-	Yaml struct {
-		Name string
+	yaml struct {
+		name string
 	} `type:"yamlfile"`
 }
 
-type flagWithHelp bool
+type counter int
 
-func (f *flagWithHelp) Help() string {
-	return "🏁 no additional flag help"
+func (f *counter) Help() string {
+	return "🏁 can be used multiple times to increase the flag's effect"
 }
 
-type commandWithHelp struct {
-	Msg argumentWithHelp `arg:"" help:"Regular argument help"`
+type inputFileWithHelp struct {
+	file string `arg:""`
 }
 
-func (c *commandWithHelp) Help() string {
-	return "🚀 no additional command help"
+func (f *inputFileWithHelp) Help() string {
+	return "📣 the file must exist and be accessible to reading (- is STDIN)"
 }
 
-func (c *commandWithHelp) Run(p *profile) error {
-	fmt.Println(c.Msg.Msg)
+type outputFileWithHelp struct {
+	file string `arg:""`
+}
+
+func (f *outputFileWithHelp) Help() string {
+	return "📣 if the file exists the -f flag must be used to force a write (- is STDOUT)"
+}
+
+type unicornCommand struct {
+	// special flags?
+	force      bool               `help:"Force overwrite of an existing file"`
+	inputFile  inputFileWithHelp  `arg:"" help:"Input file to process" type:"existingfile"`
+	outputFile outputFileWithHelp `arg:"" help:"Output file of process" type:"path"`
+}
+
+func (c *unicornCommand) Help() string {
+	return "🚀 many kinds of unicode mangling, fixing and conversion are possible depending on the flags"
+}
+
+func (c *unicornCommand) Run(p *profile) error {
+	// unicorn command hook
 	return nil
 }
 
-type argumentWithHelp struct {
-	Msg string `arg:""`
+var cli struct {
+	debug   bool    `help:"Enable debug mode" short:"d"`
+	quiet   bool    `help:"Enable quiet mode" short:"q"`
+	verbose counter `help:"Enable verbose mode(s)" short:"v" type:"counter"`
+	// a classic start
+	unicorn unicornCommand `cmd:"" help:"Perform unicode mangling"`
 }
 
-func (f *argumentWithHelp) Help() string {
-	return "📣 no additional argument help"
-}
-
-var CLI struct {
-	Debug flagWithHelp `help:"Enable debug mode"`
-
-	Flag flagWithHelp    `help:"Regular flag help"`
-	Echo commandWithHelp `cmd:"" help:"Regular command help"`
-}
-
-func notify(s string) {
+// Notify the current logger writer.
+func Notify(s string) {
 	// Now from anywhere else in your program, you can use this:
 	log.Print(s)
 }
 
+// # Main Entry Point
 func main() {
 	// Configure logger to write to the syslog. You could do this in init(), too.
 	logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
@@ -179,12 +194,12 @@ func main() {
 		log.SetOutput(logwriter)
 	}
 
-	notify(AppName + " started")
+	Notify(AppName + " started")
 
 	if len(os.Args) > 1 { // batch mode
 		globalConfig := "/etc/" + AppName + "/config.yaml"
 		localConfig := "~/." + AppName + ".yaml"
-		ctx := kong.Parse(&CLI,
+		ctx := kong.Parse(&cli,
 			kong.Configuration(kongyaml.Loader, globalConfig, localConfig),
 			kong.Vars{
 				// ${<name>} in `tags`
@@ -200,7 +215,7 @@ func main() {
 			}))
 		// Call the Run() method of the selected parsed command.
 		// Extra context arg? TODO
-		err := ctx.Run(&profile{Yaml: struct{ Name string }{"running from main"}})
+		err := ctx.Run(&profile{yaml: struct{ name string }{"running from main"}})
 		ctx.FatalIfErrorf(err)
 	} else { // interactive GUI mode
 		a := app.New()

@@ -40,6 +40,7 @@ depending on functional use.
 * Allows submodules and redirection via `replace ... => ...` to local git submodules.
 * Initial capitalization exports.
 * `.(type)` switch variants.
+* A mindset of default reentrant non-atomicity.
 
 ### Dislikes
 
