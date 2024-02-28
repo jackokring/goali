@@ -204,7 +204,7 @@ func Notify(s string) {
 
 // Fatal error logging.
 func Fatal(e error) {
-	if Er(e) {
+	if Error(e) {
 		log.Fatal("^^^ Error: Fatal stop.")
 	}
 }
@@ -255,9 +255,14 @@ func GetWriter(s string) io.Writer {
 }
 
 // Error not nil checker syntax sugar
-func Er(e error) bool {
+func Error(e error) bool {
+	// better naming but should var args limit a callback?
+	// indicated in a function signature by
+	// func (rx type) name (args) { body } {}
+	// you know, as an empty {} ... filled on use?
+	//
 	if e != nil {
-		log.Print(e.Error())
+		log.Print(e.Error()) // {} here handler
 		return true
 	}
 	return false
@@ -268,11 +273,14 @@ func main() {
 	// full config loading
 	// the pro-file sub tree can be supplied from a file on the CLI
 	//globalConfig := "/etc/" + AppName + "/config.yaml"
-	dir, err := os.UserConfigDir()
-	if Er(err) {
+	dir, err := os.UserConfigDir() // {
+	// should the error handler go here syntax wise??
+	// tuple implicit?
+	// }
+	if Error(err) {
 		dir2, err2 := os.UserHomeDir()
 		dir = dir2
-		if Er(err2) {
+		if Error(err2) {
 			dir = ""
 		}
 	}
