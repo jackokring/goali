@@ -149,7 +149,7 @@ func (c *guiCommand) Help() string {
 
 func (c *guiCommand) Run(p *kong.Context) error {
 	// mickey command hook
-	Notify(AppName + " used")
+	Notify(p.Command())
 	// interactive GUI mode
 	a := app.New()
 	w := a.NewWindow("Hello")
@@ -175,7 +175,7 @@ UTF-8 errors are marked to recover data.`
 
 func (c *unicornCommand) Run(p *kong.Context) error {
 	// unicorn command hook
-	Notify(AppName + " used")
+	Notify(p.Command())
 	fmt.Println(c.InputFile)
 	fmt.Println(c.OutputFile)
 	return nil
@@ -199,14 +199,24 @@ func Notify(s string) {
 	log.Print(s)
 }
 
+// Notify a debug message to the current logger writer.
+func Debug(s string) {
+	if cli.Debug {
+		log.Print(s)
+	}
+}
+
+// Verbosity measure of output status to show
+func Verbosity() int {
+	// TODO other - STDOUT situations?
+	if cli.Quiet || cli.Unicorn.OutputFile == "-" { // quiet or STDOUT priority
+		return 0
+	}
+	return int(cli.Verbose)
+}
+
 // # Main Entry Point
 func main() {
-	// Configure logger to write to the syslog.
-	logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
-	if e == nil {
-		log.SetOutput(logwriter)
-	}
-
 	// full config loading
 	// the pro-file sub tree can be supplied from a file on the CLI
 	globalConfig := "/etc/" + AppName + "/config.yaml"
@@ -226,11 +236,25 @@ func main() {
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
 			Summary: false,
-		}))
+		}),
+	)
+	if cli.Used {
+		// Configure logger to write to the syslog.
+		logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
+		if e == nil {
+			log.SetOutput(logwriter)
+		} else {
+			cli.Used = false
+			log.SetOutput(os.Stderr)
+			Notify("The syslog is not available.")
+		}
+	} else {
+		log.SetOutput(os.Stderr) // also
+	}
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
 	err := ctx.Run(&ctx)
-	ctx.FatalIfErrorf(err)
+	ctx.FatalIfErrorf(err) // not a logable as no progress made
 
 	defer py.Py_Finalize()
 	py.Py_Initialize()

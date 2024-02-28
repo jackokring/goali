@@ -2,6 +2,12 @@
 
 **Under Construction**
 
+## Features
+
+* Global and user configuration `.yaml` files.
+* `--pro-file=PROFILE` process configuration override.
+* Logging and stderr fallback. 
+
 ---
 
 ## Why Go?

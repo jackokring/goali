@@ -15,6 +15,7 @@
         "GOPROXY",
         "kongyaml",
         "ldflags",
+        "logable",
         "logwriter",
         "venv",
         "yamlfile"
