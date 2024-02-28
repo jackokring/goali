@@ -4,10 +4,14 @@
 			"path": "."
 		}
 	],
-	"settings": {
-		"cSpell.words": [
-			"kongyaml",
-			"yamlfile"
+	"extensions": {
+		"recommendations": [
+			"golang.go",
+			"matangover.mypy",
+			"ms-python.debugpy",
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"streetsidesoftware.code-spell-checker"
 		]
 	}
 }

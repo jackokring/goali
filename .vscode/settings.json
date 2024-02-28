@@ -3,6 +3,7 @@
         "alecthomas",
         "bubbletea",
         "charmbracelet",
+        "debugpy",
         "Envar",
         "envars",
         "envprefix",
@@ -17,6 +18,9 @@
         "ldflags",
         "logable",
         "logwriter",
+        "matangover",
+        "mypy",
+        "pylance",
         "venv",
         "yamlfile"
     ]
