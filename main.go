@@ -229,9 +229,8 @@ func Fatal(e error) {
 	if Error(e) {
 		if cli.Debug {
 			log.Panic(e.Error())
-		} else {
-			log.Fatal(">>>> CODE EXIT <<<<")
 		}
+		log.Fatal(">>>> CODE EXIT <<<<")
 	}
 }
 
@@ -257,7 +256,11 @@ func Verbosity() int {
 // Get reader
 func GetReader(s string) io.Reader {
 	if s == "-" {
-		return os.Stdin
+		in := os.Stdin
+		nin, e := os.Open(os.DevNull)
+		Fatal(e)
+		os.Stdin = nin
+		return in
 	}
 	f, err := os.Open(s)
 	Fatal(err)
@@ -267,7 +270,12 @@ func GetReader(s string) io.Reader {
 // Get writer
 func GetWriter(s string) io.Writer {
 	if s == "-" {
-		return os.Stdout
+		out := os.Stdout
+		// Handle TUI expectations
+		os.Stdout = os.Stderr
+		// already -q as command may have Notify()
+		// on logger mixing
+		return out
 	}
 	// TODO other force situations
 	for _, del := range []bool{
