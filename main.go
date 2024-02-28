@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"path/filepath"
 
 	py "github.com/jackokring/cpy3"
 
@@ -203,10 +204,9 @@ func Notify(s string) {
 
 // Fatal error logging.
 func Fatal(e error) {
-	if e == nil {
-		return
+	if Er(e) {
+		log.Fatal("^^^ Error: Fatal stop.")
 	}
-	log.Fatal(e.Error())
 }
 
 // Notify a debug message to the current logger writer.
@@ -254,19 +254,36 @@ func GetWriter(s string) io.Writer {
 	return bufio.NewWriter(f)
 }
 
+// Error not nil checker syntax sugar
+func Er(e error) bool {
+	if e != nil {
+		log.Print(e.Error())
+		return true
+	}
+	return false
+}
+
 // # Main Entry Point
 func main() {
 	// full config loading
 	// the pro-file sub tree can be supplied from a file on the CLI
-	globalConfig := "/etc/" + AppName + "/config.yaml"
-	localConfig := "~/." + AppName + ".yaml"
+	//globalConfig := "/etc/" + AppName + "/config.yaml"
+	dir, err := os.UserConfigDir()
+	if Er(err) {
+		dir2, err2 := os.UserHomeDir()
+		dir = dir2
+		if Er(err2) {
+			dir = ""
+		}
+	}
+	localConfig := filepath.Join(dir, "."+AppName+".yaml")
 	ctx := kong.Parse(&cli,
-		kong.Configuration(kongyaml.Loader, globalConfig, localConfig),
+		kong.Configuration(kongyaml.Loader /* globalConfig, */, localConfig),
 		kong.Vars{
 			// ${<name>} in `tags`
-			"globalConfig": globalConfig,
-			"localConfig":  localConfig,
-			"appName":      AppName,
+			//"globalConfig": globalConfig,
+			"localConfig": localConfig,
+			"appName":     AppName,
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
@@ -301,8 +318,8 @@ func main() {
 	}
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
-	err := ctx.Run(&ctx)
-	ctx.FatalIfErrorf(err) // not a logable as no progress made
+	Fatal(ctx.Run(&ctx))
+	//ctx.FatalIfErrorf(err) // not a logable as no progress made
 
 	defer py.Py_Finalize()
 	py.Py_Initialize()

@@ -4,7 +4,7 @@
 
 ## Features
 
-* Global and user configuration `.yaml` files.
+* User configuration `.yaml` files.
 * `--pro-file=PROFILE` process configuration override.
 * Logging and stderr fallback. 
 
