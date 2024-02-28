@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 
 	py "github.com/jackokring/cpy3"
 
@@ -208,11 +210,44 @@ func Debug(s string) {
 
 // Verbosity measure of output status to show
 func Verbosity() int {
-	// TODO other - STDOUT situations?
-	if cli.Quiet || cli.Unicorn.OutputFile == "-" { // quiet or STDOUT priority
+	if cli.Quiet { // quiet or STDOUT priority
 		return 0
 	}
 	return int(cli.Verbose)
+}
+
+// Get reader
+func GetReader(s string) io.Reader {
+	if s == "-" {
+		return os.Stdin
+	}
+	f, err := os.Open(s)
+	if err != nil {
+		return nil
+	}
+	return bufio.NewReader(f)
+}
+
+// Get writer
+func GetWriter(s string) io.Writer {
+	if s == "-" {
+		return os.Stdout
+	}
+	// TODO other force situations
+	for _, del := range []bool{
+		cli.Unicorn.Force,
+	} {
+		if del {
+			os.Remove(s) // delete to force
+			break
+		}
+	}
+	// create if not exist <- N.B.
+	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
+	if err != nil {
+		return nil
+	}
+	return bufio.NewWriter(f)
 }
 
 // # Main Entry Point
@@ -250,6 +285,15 @@ func main() {
 		}
 	} else {
 		log.SetOutput(os.Stderr) // also
+	}
+	// TODO other - STDOUT situations?
+	for _, q := range []string{
+		cli.Unicorn.OutputFile,
+	} {
+		if q == "-" {
+			cli.Quiet = true
+			break
+		}
 	}
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
