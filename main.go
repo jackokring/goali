@@ -139,6 +139,33 @@ type streamFilter struct {
 	OutputFile string `arg:"" help:"Output file of ${appName} (- is STDOUT implies -q)" type:"path"`
 }
 
+type guiCommand struct {
+	FullScreen bool `help:"Use full screen for GUI window." short:"f"`
+}
+
+func (c *guiCommand) Help() string {
+	return "For a more graphical user experience."
+}
+
+func (c *guiCommand) Run(p *kong.Context) error {
+	// mickey command hook
+	Notify(AppName + " used")
+	// interactive GUI mode
+	a := app.New()
+	w := a.NewWindow("Hello")
+	w.SetFullScreen(c.FullScreen)
+	hello := widget.NewLabel("Hello Fyne!")
+	w.SetContent(container.NewVBox(
+		hello,
+		widget.NewButton("Hi!", func() {
+			hello.SetText("Welcome :)")
+		}),
+	))
+
+	w.ShowAndRun()
+	return nil
+}
+
 type unicornCommand streamFilter
 
 func (c *unicornCommand) Help() string {
@@ -163,6 +190,7 @@ var cli struct {
 	ProFile profile `help:"Configuration PROFILE of ${appName}" type:"yamlfile"`
 	// a classic start
 	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
+	Mickey  guiCommand     `cmd:"" help:"GUI launcher"`
 }
 
 // Notify the current logger writer.
@@ -178,45 +206,30 @@ func main() {
 		log.SetOutput(logwriter)
 	}
 
-	if len(os.Args) > 1 { // batch mode
-		// full config loading
-		// the pro-file sub tree can be supplied from a file on the CLI
-		globalConfig := "/etc/" + AppName + "/config.yaml"
-		localConfig := "~/." + AppName + ".yaml"
-		ctx := kong.Parse(&cli,
-			kong.Configuration(kongyaml.Loader, globalConfig, localConfig),
-			kong.Vars{
-				// ${<name>} in `tags`
-				"globalConfig": globalConfig,
-				"localConfig":  localConfig,
-				"appName":      AppName,
-			},
-			// loading defaults for flags and options
-			kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
-			kong.Description("The"+AppName+"ball saving all in one app."),
-			kong.UsageOnError(),
-			kong.ConfigureHelp(kong.HelpOptions{
-				Compact: true,
-				Summary: false,
-			}))
-		// Call the Run() method of the selected parsed command.
-		// Extra context arg as not cast to command
-		err := ctx.Run(&ctx)
-		ctx.FatalIfErrorf(err)
-	} else { // interactive GUI mode
-		a := app.New()
-		w := a.NewWindow("Hello")
-
-		hello := widget.NewLabel("Hello Fyne!")
-		w.SetContent(container.NewVBox(
-			hello,
-			widget.NewButton("Hi!", func() {
-				hello.SetText("Welcome :)")
-			}),
-		))
-
-		w.ShowAndRun()
-	}
+	// full config loading
+	// the pro-file sub tree can be supplied from a file on the CLI
+	globalConfig := "/etc/" + AppName + "/config.yaml"
+	localConfig := "~/." + AppName + ".yaml"
+	ctx := kong.Parse(&cli,
+		kong.Configuration(kongyaml.Loader, globalConfig, localConfig),
+		kong.Vars{
+			// ${<name>} in `tags`
+			"globalConfig": globalConfig,
+			"localConfig":  localConfig,
+			"appName":      AppName,
+		},
+		// loading defaults for flags and options
+		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
+		kong.Description("The"+AppName+"ball saving all in one app."),
+		kong.UsageOnError(),
+		kong.ConfigureHelp(kong.HelpOptions{
+			Compact: true,
+			Summary: false,
+		}))
+	// Call the Run() method of the selected parsed command.
+	// Extra context arg as not cast to command
+	err := ctx.Run(&ctx)
+	ctx.FatalIfErrorf(err)
 
 	defer py.Py_Finalize()
 	py.Py_Initialize()
