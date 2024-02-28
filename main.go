@@ -144,7 +144,7 @@ type guiCommand struct {
 }
 
 func (c *guiCommand) Help() string {
-	return "For a more graphical user experience."
+	return `For a more graphical user experience.`
 }
 
 func (c *guiCommand) Run(p *kong.Context) error {
@@ -169,7 +169,8 @@ func (c *guiCommand) Run(p *kong.Context) error {
 type unicornCommand streamFilter
 
 func (c *unicornCommand) Help() string {
-	return "Unicode mangling depending on the flags. UTF-8 errors are marked to recover data."
+	return `Unicode mangling depending on the flags.
+UTF-8 errors are marked to recover data.`
 }
 
 func (c *unicornCommand) Run(p *kong.Context) error {
@@ -220,7 +221,7 @@ func main() {
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
-		kong.Description("The"+AppName+"ball saving all in one app."),
+		kong.Description("The "+AppName+" ball saving all in one app."),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
