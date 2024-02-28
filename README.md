@@ -6,7 +6,8 @@
 
 * User configuration `.yaml` files.
 * `--pro-file=PROFILE` process configuration override.
-* Logging and stderr fallback. 
+* Logging and `os.Stderr` fallback.
+* Debug 'n panic `Fatal(err) void`/`Error(err) bool` framework. 
 
 ---
 

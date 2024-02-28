@@ -1,3 +1,7 @@
+//=====================================
+//******* Packaging Section ***********
+//=====================================
+
 package main
 
 import (
@@ -28,7 +32,7 @@ import (
 const AppName = "goali"
 
 //=====================================
-// TUI structure section
+//****** TUI structure section ********
 //=====================================
 
 type model struct {
@@ -114,7 +118,7 @@ func (m model) View() string {
 }
 
 //=====================================
-// CLI structure section
+//****** CLI Structure Section ********
 //=====================================
 
 // optional:""
@@ -197,15 +201,37 @@ var cli struct {
 	Mickey  guiCommand     `cmd:"" help:"GUI launcher"`
 }
 
+//=====================================
+//****** Error Handler Section ********
+//=====================================
+
 // Notify the current logger writer.
 func Notify(s string) {
 	log.Print(s)
 }
 
+// Error not nil checker syntax sugar
+func Error(e error) bool {
+	// better naming but should var args limit a callback?
+	// indicated in a function signature by
+	// func (rx type) name (args) { body } {}
+	// you know, as an empty {} ... filled on use?
+	//
+	if e != nil {
+		log.Print(e.Error()) // {} here handler
+		return true
+	}
+	return false
+}
+
 // Fatal error logging.
 func Fatal(e error) {
 	if Error(e) {
-		log.Fatal("^^^ Error: Fatal stop.")
+		if cli.Debug {
+			log.Panic(e.Error())
+		} else {
+			log.Fatal(">>>> CODE EXIT <<<<")
+		}
 	}
 }
 
@@ -223,6 +249,10 @@ func Verbosity() int {
 	}
 	return int(cli.Verbose)
 }
+
+//=====================================
+//**** File Abstraction Section *******
+//=====================================
 
 // Get reader
 func GetReader(s string) io.Reader {
@@ -254,19 +284,9 @@ func GetWriter(s string) io.Writer {
 	return bufio.NewWriter(f)
 }
 
-// Error not nil checker syntax sugar
-func Error(e error) bool {
-	// better naming but should var args limit a callback?
-	// indicated in a function signature by
-	// func (rx type) name (args) { body } {}
-	// you know, as an empty {} ... filled on use?
-	//
-	if e != nil {
-		log.Print(e.Error()) // {} here handler
-		return true
-	}
-	return false
-}
+//=====================================
+//********** Main Section *************
+//=====================================
 
 // # Main Entry Point
 func main() {
@@ -302,18 +322,21 @@ func main() {
 			Summary: false,
 		}),
 	)
+	log.SetOutput(os.Stderr)
+	debug := 0
+	if cli.Debug {
+		debug += log.Lshortfile | log.Lmicroseconds
+	}
+	log.SetFlags(log.LstdFlags | log.LUTC | debug)
+	//Error(errors.New("Error test"))
 	if cli.Used {
 		// Configure logger to write to the syslog.
 		logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
-		if e == nil {
-			log.SetOutput(logwriter)
-		} else {
+		if Error(e) {
 			cli.Used = false
-			log.SetOutput(os.Stderr)
-			Notify("The syslog is not available.")
+		} else {
+			log.SetOutput(logwriter)
 		}
-	} else {
-		log.SetOutput(os.Stderr) // also
 	}
 	// TODO other - STDOUT situations?
 	for _, q := range []string{
