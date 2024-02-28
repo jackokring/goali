@@ -201,6 +201,14 @@ func Notify(s string) {
 	log.Print(s)
 }
 
+// Fatal error logging.
+func Fatal(e error) {
+	if e == nil {
+		return
+	}
+	log.Fatal(e.Error())
+}
+
 // Notify a debug message to the current logger writer.
 func Debug(s string) {
 	if cli.Debug {
@@ -222,9 +230,7 @@ func GetReader(s string) io.Reader {
 		return os.Stdin
 	}
 	f, err := os.Open(s)
-	if err != nil {
-		return nil
-	}
+	Fatal(err)
 	return bufio.NewReader(f)
 }
 
@@ -244,9 +250,7 @@ func GetWriter(s string) io.Writer {
 	}
 	// create if not exist <- N.B.
 	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
-	if err != nil {
-		return nil
-	}
+	Fatal(err)
 	return bufio.NewWriter(f)
 }
 
