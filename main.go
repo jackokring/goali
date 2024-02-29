@@ -6,6 +6,7 @@ package main
 
 import (
 	"bufio"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"io/fs"
@@ -33,6 +34,7 @@ import (
 
 // # Application name
 const AppName = "goali"
+const AppDescription = "The " + AppName + " ball saving all in one app."
 const maxVerbose = 3
 
 //=====================================
@@ -138,6 +140,35 @@ func (m model) View() string {
 // envprefix:"X"	Envar prefix for all sub-flags.
 // passthrough:""	If present on a positional argument, it stops flag parsing when encountered, as if -- was processed before. Useful for external command wrappers, like exec. On a command it requires that the command contains only one argument of type []string which is then filled with everything following the command, unparsed.
 
+// Flag allocation matrix fio and goa add to any tool with file IO and global options
+//flg  goa fio uni mic
+// a
+// b
+// c		x	x
+// d	x		x	x
+// e		x	x
+// f		x	x	x
+// g		x	x
+// h	x 		x	x
+// i
+// j
+// k
+// l
+// m
+// n
+// o
+// p	x		x	x
+// q	x		x	x
+// r
+// s	x		x	x
+// t
+// u
+// v	x		x	x
+// w		x	x
+// x
+// y
+// z
+
 // TODO
 type profile struct {
 	Name string
@@ -145,10 +176,13 @@ type profile struct {
 
 type streamFilter struct {
 	// special flags?
-	Force      bool   `help:"Force overwrite of an existing <output-file>" short:"f"`
-	Group      bool   `help:"Output file has user group modify write access" short:"g"`
-	InputFile  string `arg:"" help:"Input file to ${appName} (- is STDIN)" type:"existingfile"`
-	OutputFile string `arg:"" help:"Output file of ${appName} (- is STDOUT implies -q)" type:"path"`
+	Compress   bool   `help:"Compress with gzip the <output-file>" short:"c"`
+	Expand     bool   `help:"Expand with gzip the <input-file>" short:"e"`
+	Force      bool   `help:"Force overwriting of an existing <output-file>" short:"f"`
+	Group      bool   `help:"The <output-file> is restricted to user and group access permissions" short:"g"`
+	InputFile  string `arg:"" help:"The <input-file> to ${appName} (- is STDIN)" type:"existingfile"`
+	OutputFile string `arg:"" help:"The <output-file> from ${appName} (- is STDOUT maybe -q)" type:"path"`
+	Write      bool   `help:"The <output-file> gains group write access permission" short:"w"`
 }
 
 type guiCommand struct {
@@ -201,7 +235,7 @@ type detail int
 var cli struct {
 	Debug   bool    `help:"Enable debug mode (includes panic tracing)" short:"d"`
 	ProFile profile `help:"Configuration PROFILE of ${appName}" type:"yamlfile" short:"p"`
-	Quiet   bool    `help:"Enable quiet mode (overrides -v)" short:"q"`
+	Quiet   bool    `help:"Enable quiet mode errors (overrides -v)" short:"q"`
 	SysLog  bool    `help:"Enable syslog output" short:"s"`
 	Verbose detail  `help:"Enable verbose mode detail (1 to ${maxVerbose})" short:"v" type:"counter"`
 	// a classic start
@@ -283,7 +317,7 @@ func Verbose() int {
 //=====================================
 
 // Get reader
-func GetReader(s string) io.Reader {
+func GetReader(s string, expand bool) io.Reader {
 	if s == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
@@ -293,11 +327,16 @@ func GetReader(s string) io.Reader {
 	}
 	f, err := os.Open(s)
 	Fatal(err)
+	if expand {
+		f2, err2 := gzip.NewReader(f)
+		Fatal(err2)
+		return f2
+	}
 	return bufio.NewReader(f)
 }
 
 // Get writer
-func GetWriter(s string, force bool, group bool) io.Writer {
+func GetWriter(s string, compress bool, force bool, group bool, write bool) io.Writer {
 	if s == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
@@ -311,11 +350,22 @@ func GetWriter(s string, force bool, group bool) io.Writer {
 	}
 	// create if not exist <- N.B.
 	var perms fs.FileMode = 0644
-	if group {
+	if write && !group {
 		perms = 0664 // give group permissive permissions
+	}
+	if group && !write {
+		perms = 0640 // remove everybody permissions
+	}
+	if group && write {
+		perms = 0660
 	}
 	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, perms)
 	Fatal(err)
+	if compress {
+		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
+		Fatal(err2)
+		return f2
+	}
 	return bufio.NewWriter(f)
 }
 
@@ -372,7 +422,7 @@ func main() {
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
-		kong.Description("The "+AppName+" ball saving all in one app."),
+		kong.Description(AppDescription),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
@@ -389,11 +439,8 @@ func main() {
 	if cli.SysLog {
 		// Configure logger to write to the syslog.
 		logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
-		if Error(e) {
-			cli.SysLog = false
-		} else {
-			log.SetOutput(logwriter)
-		}
+		Fatal(e)
+		log.SetOutput(logwriter)
 	}
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
