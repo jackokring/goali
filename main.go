@@ -210,10 +210,17 @@ var cli struct {
 
 // Notify the current logger writer.
 func Notify(s any) {
-	// if quiet no progress notification is required
-	// if the system logger has not been used
-	if !cli.Quiet && !cli.Used {
+	if cli.Quiet {
+		return
+	}
+	if cli.Used { // external used so OK as no collide TUI
 		log.Print(s)
+	} else { // external not used
+		// - STDOUT target situation barrier
+		// auto quiet
+		if os.Stderr != os.Stdout {
+			log.Print(s)
+		}
 	}
 }
 
@@ -251,8 +258,8 @@ func Debug(s any) {
 	}
 }
 
-// Verbosity measure of output status to show
-func Verbosity() int {
+// Verbose measure of output status to show
+func Verbose() int {
 	if cli.Quiet { // quiet or STDOUT priority?
 		return 0
 	}
@@ -361,18 +368,6 @@ func main() {
 			Summary: false,
 		}),
 	)
-	// find out if we should be quiet first!
-	// but apparently we have to parse the knowledge
-	// so last error is always shown
-	// TODO other - STDOUT situations?
-	for _, q := range []string{
-		cli.Unicorn.OutputFile,
-	} {
-		if q == "-" {
-			cli.Quiet = true
-			break
-		}
-	}
 	log.SetOutput(os.Stderr)
 	debug := 0
 	if cli.Debug {
