@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"strings"
 
 	py "github.com/jackokring/cpy3"
 
@@ -206,8 +207,12 @@ var cli struct {
 //=====================================
 
 // Notify the current logger writer.
-func Notify(s string) {
-	log.Print(s)
+func Notify(s any) {
+	// if quiet no progress notification is required
+	// if the system logger has not been used
+	if !cli.Quiet && !cli.Used {
+		log.Print(s)
+	}
 }
 
 // Error not nil checker syntax sugar
@@ -218,7 +223,7 @@ func Error(e error) bool {
 	// you know, as an empty {} ... filled on use?
 	//
 	if e != nil {
-		log.Print(e.Error()) // {} here handler
+		Notify(e) // {} here handler
 		return true
 	}
 	return false
@@ -228,22 +233,25 @@ func Error(e error) bool {
 func Fatal(e error) {
 	if Error(e) {
 		if cli.Debug {
-			log.Panic(e.Error())
+			// this should always drop somewhere
+			log.Panic(e)
 		}
-		log.Fatal(">>>> CODE EXIT <<<<")
+		//
+		// No Notify() proxy as serious terminal error
+		log.Fatal("FATAL: ", e)
 	}
 }
 
 // Notify a debug message to the current logger writer.
-func Debug(s string) {
+func Debug(s any) {
 	if cli.Debug {
-		log.Print(s)
+		Notify(s)
 	}
 }
 
 // Verbosity measure of output status to show
 func Verbosity() int {
-	if cli.Quiet { // quiet or STDOUT priority
+	if cli.Quiet { // quiet or STDOUT priority?
 		return 0
 	}
 	return int(cli.Verbose)
@@ -296,6 +304,22 @@ func GetWriter(s string) io.Writer {
 //********** Main Section *************
 //=====================================
 
+// Find the system configuration directory
+func SystemConfigDir() string { // Linux
+	// yes you're crazy configuration sets are a NO!
+	// i guess the first is the best as per $PATH
+	// and it's not an over merge apply of last to first
+	systemConfig := strings.Split(os.Getenv("XDG_CONFIG_DIRS"), ":")
+	if len(systemConfig) == 0 { // Windows
+		systemConfig = []string{os.Getenv("PROGRAMDATA")}
+		if len(systemConfig[0]) == 0 { // MacOS
+			systemConfig[0] = "/Library/Application Support"
+		}
+	}
+	// should be fine on a well configured system
+	return systemConfig[0]
+}
+
 // # Main Entry Point
 func main() {
 	// full config loading
@@ -305,14 +329,19 @@ func main() {
 	// should the error handler go here syntax wise??
 	// tuple implicit?
 	// }
-	if Error(err) {
+	if err != nil { // Error(err) not used as not critical
 		dir2, err2 := os.UserHomeDir()
+		// pretty critical to have a home directory?
+		// maybe some sort of demon process?
+		// Fatal(err2)
 		dir = dir2
-		if Error(err2) {
-			dir = ""
+		if err2 != nil {
+			// pretends to be Darwin on failing
+			dir = SystemConfigDir()
 		}
 	}
 	localConfig := filepath.Join(dir, "."+AppName+".yaml")
+	// Now we can parse
 	ctx := kong.Parse(&cli,
 		kong.Configuration(kongyaml.Loader /* globalConfig, */, localConfig),
 		kong.Vars{
@@ -330,6 +359,18 @@ func main() {
 			Summary: false,
 		}),
 	)
+	// find out if we should be quiet first!
+	// but apparently we have to parse the knowledge
+	// so last error is always shown
+	// TODO other - STDOUT situations?
+	for _, q := range []string{
+		cli.Unicorn.OutputFile,
+	} {
+		if q == "-" {
+			cli.Quiet = true
+			break
+		}
+	}
 	log.SetOutput(os.Stderr)
 	debug := 0
 	if cli.Debug {
@@ -344,15 +385,6 @@ func main() {
 			cli.Used = false
 		} else {
 			log.SetOutput(logwriter)
-		}
-	}
-	// TODO other - STDOUT situations?
-	for _, q := range []string{
-		cli.Unicorn.OutputFile,
-	} {
-		if q == "-" {
-			cli.Quiet = true
-			break
 		}
 	}
 	// Call the Run() method of the selected parsed command.
