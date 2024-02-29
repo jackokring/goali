@@ -22,6 +22,7 @@
         "mypy",
         "PROGRAMDATA",
         "pylance",
+        "struct",
         "venv",
         "yamlfile"
     ]

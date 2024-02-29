@@ -49,6 +49,7 @@ depending on functional use.
 * Initial capitalization exports.
 * `.(type)` switch variants.
 * A mindset of default reentrant non-atomicity.
+* Embedded `struct` types.
 
 ### Dislikes
 
@@ -65,6 +66,7 @@ only after a `git tag v2.0.0` itself after a push followed by a `git push origin
 the `-jMAX` option and behaving in its docs like the other processes on the
 system are the problem. Apparently, the terminal failure to initialize on first go
 is a feature, and it can only count to 120. 
+* The segmentation fault on `errors.New()`. But, it was new.
 
 ## TODO
 

@@ -8,7 +8,9 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/fs"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	py "github.com/jackokring/cpy3"
@@ -31,6 +33,7 @@ import (
 
 // # Application name
 const AppName = "goali"
+const maxVerbose = 3
 
 //=====================================
 //****** TUI structure section ********
@@ -143,6 +146,7 @@ type profile struct {
 type streamFilter struct {
 	// special flags?
 	Force      bool   `help:"Force overwrite of an existing <output-file>" short:"f"`
+	Group      bool   `help:"Output file has user group modify write access" short:"g"`
 	InputFile  string `arg:"" help:"Input file to ${appName} (- is STDIN)" type:"existingfile"`
 	OutputFile string `arg:"" help:"Output file of ${appName} (- is STDOUT implies -q)" type:"path"`
 }
@@ -193,15 +197,16 @@ func (c *unicornCommand) Run(p *kong.Context) error {
 
 type detail int
 
+// Alphabetic sorting
 var cli struct {
-	Debug   bool    `help:"Enable debug mode" short:"d"`
-	Used    bool    `help:"Enable logging when used" short:"u"`
+	Debug   bool    `help:"Enable debug mode (includes panic tracing)" short:"d"`
+	ProFile profile `help:"Configuration PROFILE of ${appName}" type:"yamlfile" short:"p"`
 	Quiet   bool    `help:"Enable quiet mode (overrides -v)" short:"q"`
-	Verbose detail  `help:"Enable verbose mode" short:"v" type:"counter"`
-	ProFile profile `help:"Configuration PROFILE of ${appName}" type:"yamlfile"`
+	SysLog  bool    `help:"Enable syslog output" short:"s"`
+	Verbose detail  `help:"Enable verbose mode detail (1 to ${maxVerbose})" short:"v" type:"counter"`
 	// a classic start
-	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
 	Mickey  guiCommand     `cmd:"" help:"GUI launcher"`
+	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
 }
 
 //=====================================
@@ -213,7 +218,7 @@ func Notify(s any) {
 	if cli.Quiet {
 		return
 	}
-	if cli.Used { // external used so OK as no collide TUI
+	if cli.SysLog { // external so OK as no collide TUI
 		log.Print(s)
 	} else { // external not used
 		// - STDOUT target situation barrier
@@ -263,7 +268,14 @@ func Verbose() int {
 	if cli.Quiet { // quiet or STDOUT priority?
 		return 0
 	}
-	return int(cli.Verbose)
+	v := int(cli.Verbose)
+	if v < 0 {
+		v = 0
+	}
+	if v > maxVerbose {
+		v = maxVerbose
+	}
+	return v
 }
 
 //=====================================
@@ -285,7 +297,7 @@ func GetReader(s string) io.Reader {
 }
 
 // Get writer
-func GetWriter(s string) io.Writer {
+func GetWriter(s string, force bool, group bool) io.Writer {
 	if s == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
@@ -294,17 +306,15 @@ func GetWriter(s string) io.Writer {
 		// on logger mixing
 		return out
 	}
-	// TODO other force situations
-	for _, del := range []bool{
-		cli.Unicorn.Force,
-	} {
-		if del {
-			os.Remove(s) // delete to force
-			break
-		}
+	if force {
+		os.Remove(s) // delete to force
 	}
 	// create if not exist <- N.B.
-	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
+	var perms fs.FileMode = 0644
+	if group {
+		perms = 0664 // give group permissive permissions
+	}
+	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, perms)
 	Fatal(err)
 	return bufio.NewWriter(f)
 }
@@ -358,6 +368,7 @@ func main() {
 			//"globalConfig": globalConfig,
 			"localConfig": localConfig,
 			"appName":     AppName,
+			"maxVerbose":  strconv.Itoa(maxVerbose),
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
@@ -375,11 +386,11 @@ func main() {
 	}
 	log.SetFlags(log.LstdFlags | log.LUTC | debug)
 	//Error(errors.New("Error test"))
-	if cli.Used {
+	if cli.SysLog {
 		// Configure logger to write to the syslog.
 		logwriter, e := syslog.New(syslog.LOG_NOTICE, AppName)
 		if Error(e) {
-			cli.Used = false
+			cli.SysLog = false
 		} else {
 			log.SetOutput(logwriter)
 		}
@@ -387,7 +398,17 @@ func main() {
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
 	Fatal(ctx.Run(&ctx))
-	//ctx.FatalIfErrorf(err) // not a logable as no progress made
+	// So you've found an Error?
+	// Have you considered using the functions:
+	//
+	// 		func Error(err) bool // in an if test handler
+	//		func Fatal(err) // anywhere
+	//
+	// As these will provide panic info with the -d option.
+	//
+	//		func (*command)Run(*kong.Context) error
+	//
+	// Yes, returning a nil is an option. Source code error?
 
 	defer py.Py_Finalize()
 	py.Py_Initialize()
