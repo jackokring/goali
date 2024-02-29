@@ -174,7 +174,9 @@ func (c *guiCommand) Run(p *kong.Context) error {
 	return nil
 }
 
-type unicornCommand streamFilter
+type unicornCommand struct {
+	streamFilter // embedded type .. => .
+}
 
 func (c *unicornCommand) Help() string {
 	return `Unicode mangling depending on the flags.
