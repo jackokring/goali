@@ -8,7 +8,8 @@
 * `--pro-file=PROFILE` process configuration override.
 * Logging and `os.Stderr` fallback.
 * Debug 'n panic `Fatal(err) void`/`Error(err) bool` framework.
-* `os.Stdin`/`os.Stdout` use by `-` filename. 
+* `os.Stdin`/`os.Stdout` use by `-` filename.
+* GZip IO wrapping CLI options.
 
 ---
 
@@ -65,8 +66,9 @@ only after a `git tag v2.0.0` itself after a push followed by a `git push origin
 * Of course the above is made more irritating by node.js inside VSCode spamming
 the `-jMAX` option and behaving in its docs like the other processes on the
 system are the problem. Apparently, the terminal failure to initialize on first go
-is a feature, and it can only count to 120. 
-* The segmentation fault on `errors.New()`. But, it was new.
+is a feature, and it can only count to 120. It doesn't understand `tmux`? 
+* The segmentation fault on `errors.New()`. But, it was new. Likely a pointer
+to local returned from function and dereferenced.
 
 ## TODO
 
@@ -74,7 +76,7 @@ is a feature, and it can only count to 120.
 - [ ] more functionality.
 - [ ] default `.py` file load.
 - [ ] default add `PyObject` to namespace of python.
-- [X] use `.goali.yaml` for CLI and general config options.
+- [ ] sort out a good maths for verbose calculation (scaling?).
 
 ---
 

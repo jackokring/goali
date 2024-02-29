@@ -316,6 +316,15 @@ func Verbose() int {
 //**** File Abstraction Section *******
 //=====================================
 
+// GetIO
+//
+// Open reader before writer for error
+// interaction effect with STDOUT by "-".
+func GetIO(i string, expand bool,
+	o string, compress bool, force bool, group bool, write bool) (io.Reader, io.Writer) {
+	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
+}
+
 // Get reader
 func GetReader(s string, expand bool) io.Reader {
 	if s == "-" {
