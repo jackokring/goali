@@ -165,7 +165,7 @@ func (m model) View() string {
 // u
 // v	x		x	x
 // w		x	x
-// x
+// x	x		x	x
 // y
 // z
 
@@ -174,15 +174,23 @@ type profile struct {
 	Name string
 }
 
-type streamFilter struct {
-	// special flags?
+type inputFile struct {
+	Expand    bool   `help:"Expand with gzip the <input-file>" short:"e"`
+	InputFile string `arg:"" help:"The <input-file> to ${appName} (- is STDIN)" type:"existingfile"`
+}
+
+type outputFile struct {
 	Compress   bool   `help:"Compress with gzip the <output-file>" short:"c"`
-	Expand     bool   `help:"Expand with gzip the <input-file>" short:"e"`
 	Force      bool   `help:"Force overwriting of an existing <output-file>" short:"f"`
 	Group      bool   `help:"The <output-file> is restricted to user and group access permissions" short:"g"`
-	InputFile  string `arg:"" help:"The <input-file> to ${appName} (- is STDIN)" type:"existingfile"`
 	OutputFile string `arg:"" help:"The <output-file> from ${appName} (- is STDOUT maybe -q)" type:"path"`
 	Write      bool   `help:"The <output-file> gains group write access permission" short:"w"`
+}
+
+type streamFilter struct {
+	// special flags?
+	inputFile
+	outputFile
 }
 
 type guiCommand struct {
@@ -238,6 +246,7 @@ var cli struct {
 	Quiet   bool    `help:"Enable quiet mode errors (overrides -v)" short:"q"`
 	SysLog  bool    `help:"Enable syslog output" short:"s"`
 	Verbose detail  `help:"Enable verbose mode detail (1 to ${maxVerbose})" short:"v" type:"counter"`
+	Wrong   bool    `help:"Enable fail on first error wrong mode" short:"x"`
 	// a classic start
 	Mickey  guiCommand     `cmd:"" help:"GUI launcher"`
 	Unicorn unicornCommand `cmd:"" help:"Unicode mangler"`
@@ -277,7 +286,7 @@ func Error(e error) bool {
 	return false
 }
 
-// Fatal error logging.
+// Fatal error logging
 func Fatal(e error) {
 	if Error(e) {
 		if cli.Debug {
@@ -288,6 +297,17 @@ func Fatal(e error) {
 		// No Notify() proxy as serious terminal error
 		log.Fatal("FATAL: ", e)
 	}
+}
+
+// Hard error check logging
+//
+// Check to see if the hard error flag is set
+func Hard(e error) bool {
+	if cli.Wrong {
+		Fatal(e)
+		return false
+	}
+	return Error(e)
 }
 
 // Notify a debug message to the current logger writer.
@@ -321,38 +341,96 @@ func Verbose() int {
 // Open reader before writer for error
 // interaction effect with STDOUT by "-".
 func GetIO(i string, expand bool,
-	o string, compress bool, force bool, group bool, write bool) (io.Reader, io.Writer) {
+	o string, compress bool, force bool, group bool, write bool) (GReader, GWriter) {
 	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
 }
 
+type GReader struct {
+	this  io.ReadCloser
+	funny io.Reader
+	wrap  io.ReadCloser
+}
+
+func (r *GReader) Close(closeBoth bool) {
+	situation := closeBoth && r.wrap != nil
+	if r.this != nil {
+		// if there is an error is it required to close wrapped?
+		if situation {
+			Error(r.this.Close())
+		} else {
+			Fatal(r.this.Close())
+		}
+	}
+	// does a wrapped need closing?
+	if situation {
+		Fatal(r.wrap.Close())
+	}
+}
+
+func (r *GReader) Read(b []byte) (n int, err error) {
+	if r.this == nil {
+		return r.funny.Read(b)
+	}
+	return r.this.Read(b)
+}
+
+type GWriter struct {
+	this  io.WriteCloser
+	funny io.Writer
+	wrap  io.WriteCloser
+}
+
+func (r *GWriter) Close(closeBoth bool) {
+	situation := closeBoth && r.wrap != nil
+	if r.this != nil {
+		// if there is an error is it required to close wrapped?
+		if situation {
+			Error(r.this.Close())
+		} else {
+			Fatal(r.this.Close())
+		}
+	}
+	// does a wrapped need closing?
+	if situation {
+		Fatal(r.wrap.Close())
+	}
+}
+
+func (r *GWriter) Write(b []byte) (n int, err error) {
+	if r.this == nil {
+		return r.funny.Write(b)
+	}
+	return r.this.Write(b)
+}
+
 // Get reader
-func GetReader(s string, expand bool) io.Reader {
+func GetReader(s string, expand bool) GReader {
 	if s == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
 		Fatal(e)
 		os.Stdin = nin
-		return in
+		return GReader{in, nil, nil}
 	}
 	f, err := os.Open(s)
 	Fatal(err)
 	if expand {
 		f2, err2 := gzip.NewReader(f)
 		Fatal(err2)
-		return f2
+		return GReader{f2, nil, f}
 	}
-	return bufio.NewReader(f)
+	return GReader{nil, bufio.NewReader(f), nil}
 }
 
 // Get writer
-func GetWriter(s string, compress bool, force bool, group bool, write bool) io.Writer {
+func GetWriter(s string, compress bool, force bool, group bool, write bool) GWriter {
 	if s == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
 		os.Stdout = os.Stderr
 		// already -q as command may have Notify()
 		// on logger mixing
-		return out
+		return GWriter{out, nil, nil}
 	}
 	if force {
 		os.Remove(s) // delete to force
@@ -373,9 +451,9 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) io.W
 	if compress {
 		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
 		Fatal(err2)
-		return f2
+		return GWriter{f2, nil, f}
 	}
-	return bufio.NewWriter(f)
+	return GWriter{nil, bufio.NewWriter(f), nil}
 }
 
 //=====================================
@@ -459,6 +537,7 @@ func main() {
 	//
 	// 		func Error(err) bool // in an if test handler
 	//		func Fatal(err) // anywhere
+	//		func Hard(err)	bool // anywhere
 	//
 	// As these will provide panic info with the -d option.
 	//
