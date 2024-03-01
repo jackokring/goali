@@ -152,9 +152,9 @@ func (m model) View() string {
 // h	x 		x	x
 // i
 // j
-// k
+// k			x
 // l
-// m
+// m			x
 // n
 // o
 // p	x		x	x
@@ -162,7 +162,7 @@ func (m model) View() string {
 // r
 // s	x		x	x
 // t
-// u
+// u			x
 // v	x		x	x
 // w		x	x
 // x	x		x	x
@@ -221,7 +221,13 @@ func (c *guiCommand) Run(p *kong.Context) error {
 }
 
 type unicornCommand struct {
-	streamFilter // embedded type .. => .
+	// Might as well have some code mangling
+	// UTF-8 => pre -m flag malformed UTF-8
+	Kode bool `help:"Enable kode demangle map mode output (not strict UTF-8)" short:"k"`
+	// malformed UTF-8 => formed but mangled instead of strict error marked UTF-8
+	Mangle       bool `help:"Enable mangle map mode input (not strict UTF-8)" short:"m"`
+	UnAscii      bool `help:"Enable ASCII input mapping (to assist upgrading data)" short:"u"`
+	streamFilter      // embedded type .. => .
 }
 
 func (c *unicornCommand) Help() string {

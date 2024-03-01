@@ -77,6 +77,7 @@ to local returned from function and dereferenced.
 - [ ] default `.py` file load.
 - [ ] default add `PyObject` to namespace of python.
 - [ ] sort out a good maths for verbose calculation (scaling?).
+- [ ] UTF-8 processing decisions.
 
 ---
 
