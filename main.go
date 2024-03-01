@@ -341,18 +341,35 @@ func Verbose() int {
 // Open reader before writer for error
 // interaction effect with STDOUT by "-".
 func GetIO(i string, expand bool,
-	o string, compress bool, force bool, group bool, write bool) (GReader, GWriter) {
+	o string, compress bool, force bool, group bool, write bool) (FilterReadCloser, FilterWriteCloser) {
 	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
 }
 
+// FilterReadCloser is an abstraction to allow the wrapped
+// unfiltered streams to be closed possibly by cascade calling.
+type FilterReadCloser interface {
+	// io.EOF
+	Read(b []byte) (n int)
+	CloseWrapped(closeWrapped bool)
+	EOF() bool
+}
+
+// A concrete GZip FilterReadCloser
 type GReader struct {
-	this  io.ReadCloser
+	this io.ReadCloser
+	// is it a Closer => this == nil
+	// and some funny business
 	funny io.Reader
-	wrap  io.ReadCloser
+	// the wrapped or inner Closer
+	wrap io.ReadCloser
+	// requires pointer receiver
+	// so all instances must be
+	// by address &.
+	eof bool
 }
 
-func (r *GReader) Close(closeBoth bool) {
-	situation := closeBoth && r.wrap != nil
+func (r GReader) CloseWrapped(closeWrapped bool) {
+	situation := closeWrapped && r.wrap != nil
 	if r.this != nil {
 		// if there is an error is it required to close wrapped?
 		if situation {
@@ -367,21 +384,52 @@ func (r *GReader) Close(closeBoth bool) {
 	}
 }
 
-func (r *GReader) Read(b []byte) (n int, err error) {
+// N.B. Due to needing to alter the EOF state
+// the *GReader becomes required. This causes
+// a cascade to need all interface instances
+// to need pointer to value by &. Otherwise
+// how would the pointer refer to that
+// which is to be modified?
+func (r *GReader) Read(b []byte) (n int) {
 	if r.this == nil {
-		return r.funny.Read(b)
+		// EOF suitable for while not EOF ...
+		n, e := r.funny.Read(b)
+		if e == io.EOF {
+			r.eof = true
+		}
+		return n
 	}
-	return r.this.Read(b)
+	n2, e2 := r.this.Read(b)
+	if e2 == io.EOF {
+		r.eof = true
+	}
+	return n2
 }
 
+func (r GReader) EOF() bool {
+	return r.eof
+}
+
+// FilterWriteCloser is an abstraction to allow the wrapped
+// unfiltered streams to be closed possibly by cascade calling.
+type FilterWriteCloser interface {
+	// io.EOF? on writing?
+	Write(b []byte)
+	CloseWrapped(closeWrapped bool)
+}
+
+// A concrete GZip FilterWriteCloser
 type GWriter struct {
-	this  io.WriteCloser
+	this io.WriteCloser
+	// is it a Closer => this == nil
+	// and some funny business
 	funny io.Writer
-	wrap  io.WriteCloser
+	// the wrapped or inner Closer
+	wrap io.WriteCloser
 }
 
-func (r *GWriter) Close(closeBoth bool) {
-	situation := closeBoth && r.wrap != nil
+func (r GWriter) CloseWrapped(closeWrapped bool) {
+	situation := closeWrapped && r.wrap != nil
 	if r.this != nil {
 		// if there is an error is it required to close wrapped?
 		if situation {
@@ -396,34 +444,37 @@ func (r *GWriter) Close(closeBoth bool) {
 	}
 }
 
-func (r *GWriter) Write(b []byte) (n int, err error) {
+func (r GWriter) Write(b []byte) {
 	if r.this == nil {
-		return r.funny.Write(b)
+		_, e := r.funny.Write(b)
+		Fatal(e)
+		return
 	}
-	return r.this.Write(b)
+	_, e := r.this.Write(b)
+	Fatal(e)
 }
 
 // Get reader
-func GetReader(s string, expand bool) GReader {
+func GetReader(s string, expand bool) FilterReadCloser {
 	if s == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
 		Fatal(e)
 		os.Stdin = nin
-		return GReader{in, nil, nil}
+		return &GReader{in, nil, nil, false}
 	}
 	f, err := os.Open(s)
 	Fatal(err)
 	if expand {
 		f2, err2 := gzip.NewReader(f)
 		Fatal(err2)
-		return GReader{f2, nil, f}
+		return &GReader{f2, nil, f, false}
 	}
-	return GReader{nil, bufio.NewReader(f), nil}
+	return &GReader{nil, bufio.NewReader(f), nil, false}
 }
 
 // Get writer
-func GetWriter(s string, compress bool, force bool, group bool, write bool) GWriter {
+func GetWriter(s string, compress bool, force bool, group bool, write bool) FilterWriteCloser {
 	if s == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
