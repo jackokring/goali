@@ -152,6 +152,7 @@ func (m model) View() string {
 // i
 // j
 // k			x
+// >> L was almost going to be monotone ^G jingle bells.
 // l
 // m			x
 // n
