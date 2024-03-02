@@ -3,6 +3,7 @@
         "alecthomas",
         "bubbletea",
         "charmbracelet",
+        "compand",
         "debugpy",
         "Envar",
         "envars",
@@ -14,6 +15,7 @@
         "goali",
         "godoc",
         "GOPROXY",
+        "IORW",
         "Kode",
         "kongyaml",
         "ldflags",
@@ -25,6 +27,7 @@
         "pylance",
         "struct",
         "venv",
-        "yamlfile"
+        "yamlfile",
+        "zony"
     ]
 }
