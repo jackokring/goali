@@ -493,6 +493,10 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 		return GWriter{out, nil}
 	}
 	if force {
+		// of course the "future" compiler would
+		// have to insist on supplying a force
+		// "open" token here, for a possible
+		// commit vs. rollback.
 		os.Remove(s) // delete to force
 	}
 	// create if not exist <- N.B.
