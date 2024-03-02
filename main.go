@@ -378,6 +378,9 @@ func GetIO(i string, expand bool,
 	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
 }
 
+// Sure I need an GetIORW(io string, compand bool, force bool, group bool, write bool) (FilterReader, FilterWriter)
+// with SeekR and SeekW ... and some of those file slicing zony things for a MarkedZoneSet.
+
 // FilterReadCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
 type FilterReader interface {
