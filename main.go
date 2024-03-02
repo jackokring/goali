@@ -366,13 +366,13 @@ func Verbose() int {
 // Open reader before writer for error
 // interaction effect with STDOUT by "-".
 func GetIO(i string, expand bool,
-	o string, compress bool, force bool, group bool, write bool) (FilterReadCloser, FilterWriteCloser) {
+	o string, compress bool, force bool, group bool, write bool) (FilterReader, FilterWriter) {
 	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
 }
 
 // FilterReadCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
-type FilterReadCloser interface {
+type FilterReader interface {
 	Close() (e error)
 	// io.EOF
 	Read(b []byte) (n int)
@@ -409,6 +409,7 @@ func (r GReader) Close() error {
 func (r *GReader) Read(b []byte) (n int) {
 	n, e := r.this.Read(b)
 	if e == io.EOF {
+		// delay spec for while style test of EOF
 		r.thisEof = true
 	} else {
 		Fatal(e)
@@ -422,7 +423,7 @@ func (r GReader) EOF() bool {
 
 // FilterWriteCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
-type FilterWriteCloser interface {
+type FilterWriter interface {
 	Close() (e error)
 	// io.EOF? on writing?
 	Write(b []byte)
@@ -451,7 +452,7 @@ func (r GWriter) Write(b []byte) {
 }
 
 // Get reader
-func GetReader(s string, expand bool) FilterReadCloser {
+func GetReader(s string, expand bool) FilterReader {
 	if s == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
@@ -473,7 +474,7 @@ func GetReader(s string, expand bool) FilterReadCloser {
 }
 
 // Get writer
-func GetWriter(s string, compress bool, force bool, group bool, write bool) FilterWriteCloser {
+func GetWriter(s string, compress bool, force bool, group bool, write bool) FilterWriter {
 	if s == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
