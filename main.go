@@ -5,7 +5,6 @@
 package main
 
 import (
-	"bufio"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -292,6 +291,25 @@ func Error(e error) bool {
 	return false
 }
 
+// The array of things to close
+var closers []io.Closer = []io.Closer{}
+
+// CloseAll open things
+func CloseAll() {
+	// apparently logical for closing the outer streams first
+	for i, j := 0, len(closers)-1; i < j; i, j = i+1, j-1 {
+		closers[i], closers[j] = closers[j], closers[i]
+	}
+	for _, c := range closers {
+		Error(c.Close())
+	}
+}
+
+// DeferClose of an open thing
+func DeferClose(c io.Closer) {
+	closers = append(closers, c)
+}
+
 // Fatal error logging
 func Fatal(e error) {
 	if Error(e) {
@@ -301,6 +319,7 @@ func Fatal(e error) {
 		}
 		//
 		// No Notify() proxy as serious terminal error
+		CloseAll()
 		log.Fatal("FATAL: ", e)
 	}
 }
@@ -354,9 +373,9 @@ func GetIO(i string, expand bool,
 // FilterReadCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
 type FilterReadCloser interface {
+	Close() (e error)
 	// io.EOF
 	Read(b []byte) (n int)
-	CloseWrapped(closeWrapped bool)
 	EOF() bool
 }
 
@@ -364,30 +383,21 @@ type FilterReadCloser interface {
 type GReader struct {
 	this io.ReadCloser
 	// is it a Closer => this == nil
-	// and some funny business
-	funny io.Reader
 	// the wrapped or inner Closer
 	wrap io.ReadCloser
 	// requires pointer receiver
 	// so all instances must be
 	// by address &.
-	eof bool
+	thisEof bool
 }
 
-func (r GReader) CloseWrapped(closeWrapped bool) {
-	situation := closeWrapped && r.wrap != nil
-	if r.this != nil {
-		// if there is an error is it required to close wrapped?
-		if situation {
-			Error(r.this.Close())
-		} else {
-			Fatal(r.this.Close())
-		}
+func (r GReader) Close() error {
+	Error(r.this.Close())
+	if r.wrap != nil {
+		Error(r.wrap.Close())
 	}
-	// does a wrapped need closing?
-	if situation {
-		Fatal(r.wrap.Close())
-	}
+	// already handled display of errors
+	return nil
 }
 
 // N.B. Due to needing to alter the EOF state
@@ -397,65 +407,45 @@ func (r GReader) CloseWrapped(closeWrapped bool) {
 // how would the pointer refer to that
 // which is to be modified?
 func (r *GReader) Read(b []byte) (n int) {
-	if r.this == nil {
-		// EOF suitable for while not EOF ...
-		n, e := r.funny.Read(b)
-		if e == io.EOF {
-			r.eof = true
-		}
-		return n
+	n, e := r.this.Read(b)
+	if e == io.EOF {
+		r.thisEof = true
+	} else {
+		Fatal(e)
 	}
-	n2, e2 := r.this.Read(b)
-	if e2 == io.EOF {
-		r.eof = true
-	}
-	return n2
+	return n
 }
 
 func (r GReader) EOF() bool {
-	return r.eof
+	return r.thisEof
 }
 
 // FilterWriteCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
 type FilterWriteCloser interface {
+	Close() (e error)
 	// io.EOF? on writing?
 	Write(b []byte)
-	CloseWrapped(closeWrapped bool)
 }
 
 // A concrete GZip FilterWriteCloser
 type GWriter struct {
 	this io.WriteCloser
 	// is it a Closer => this == nil
-	// and some funny business
-	funny io.Writer
 	// the wrapped or inner Closer
 	wrap io.WriteCloser
 }
 
-func (r GWriter) CloseWrapped(closeWrapped bool) {
-	situation := closeWrapped && r.wrap != nil
-	if r.this != nil {
-		// if there is an error is it required to close wrapped?
-		if situation {
-			Error(r.this.Close())
-		} else {
-			Fatal(r.this.Close())
-		}
+func (r GWriter) Close() error {
+	Error(r.this.Close())
+	if r.wrap != nil {
+		Error(r.wrap.Close())
 	}
-	// does a wrapped need closing?
-	if situation {
-		Fatal(r.wrap.Close())
-	}
+	// already handled display of errors
+	return nil
 }
 
 func (r GWriter) Write(b []byte) {
-	if r.this == nil {
-		_, e := r.funny.Write(b)
-		Fatal(e)
-		return
-	}
 	_, e := r.this.Write(b)
 	Fatal(e)
 }
@@ -467,16 +457,19 @@ func GetReader(s string, expand bool) FilterReadCloser {
 		nin, e := os.Open(os.DevNull)
 		Fatal(e)
 		os.Stdin = nin
-		return &GReader{in, nil, nil, false}
+		DeferClose(in)
+		return &GReader{in, nil, false}
 	}
 	f, err := os.Open(s)
 	Fatal(err)
+	DeferClose(f)
 	if expand {
 		f2, err2 := gzip.NewReader(f)
 		Fatal(err2)
-		return &GReader{f2, nil, f, false}
+		DeferClose(f2)
+		return &GReader{f2, f, false}
 	}
-	return &GReader{nil, bufio.NewReader(f), nil, false}
+	return &GReader{f, nil, false}
 }
 
 // Get writer
@@ -487,7 +480,8 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 		os.Stdout = os.Stderr
 		// already -q as command may have Notify()
 		// on logger mixing
-		return GWriter{out, nil, nil}
+		DeferClose(out) // just in case pipe
+		return GWriter{out, nil}
 	}
 	if force {
 		os.Remove(s) // delete to force
@@ -505,12 +499,14 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 	}
 	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, perms)
 	Fatal(err)
+	DeferClose(f)
 	if compress {
 		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
 		Fatal(err2)
-		return GWriter{f2, nil, f}
+		DeferClose(f2)
+		return GWriter{f2, f}
 	}
-	return GWriter{nil, bufio.NewWriter(f), nil}
+	return GWriter{f, nil}
 }
 
 //=====================================
@@ -608,6 +604,7 @@ func main() {
 
 	if _, err := tea.NewProgram(model{}).Run(); err != nil {
 		fmt.Printf("Uh oh, there was an error: %v\n", err)
-		os.Exit(1)
 	}
+
+	CloseAll()
 }
