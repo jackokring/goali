@@ -366,6 +366,13 @@ func Verbose() int {
 //
 // Open reader before writer for error
 // interaction effect with STDOUT by "-".
+// This order make sense in the context
+// of a "future" optimizing compiler
+// where the read file is reusable immediately
+// and the write needs to be closed to commit
+// as maybe it would support "rollback"
+// on CloseNot() with the replacement
+// happening atomically on the Close().
 func GetIO(i string, expand bool,
 	o string, compress bool, force bool, group bool, write bool) (FilterReader, FilterWriter) {
 	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
