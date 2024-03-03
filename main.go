@@ -382,11 +382,15 @@ func GetIO(i string, expand bool,
 // with SeekR and SeekW ... and some of those file slicing zony things for a MarkedZoneSet.
 
 func GetRW(io string, compand bool, group bool, write bool) (FilterReader, FilterWriter) {
-	_, s := os.Stat(io)
-	Fatal(s)
 	w := GetWriter(io, compand, true, group, write)
 	// use backup as input file
-	r := GetReader(w.(GWriter).rollback, compand) // freed first
+	n := w.(GWriter).rollback
+	if n == "" {
+		Error(w.Close())
+		Error(os.Remove(io))
+	}
+	// see Rollback(closeBefore FilterReader)
+	r := GetReader(n, compand) // closed first
 	return r, w
 }
 
@@ -448,7 +452,7 @@ type FilterWriter interface {
 	// io.EOF? on writing?
 	Write(b []byte)
 	// rollback future
-	Rollback() (e error)
+	Rollback(closeBefore FilterReader) (e error)
 }
 
 // A concrete GZip FilterWriteCloser
@@ -463,35 +467,38 @@ type GWriter struct {
 	out      string
 }
 
-func (r GWriter) Close() error {
-	Error(r.this.Close())
-	if r.wrap != nil {
-		Error(r.wrap.Close())
+func (w GWriter) Close() error {
+	Error(w.this.Close())
+	if w.wrap != nil {
+		Error(w.wrap.Close())
 	}
-	if r.rollback != "" {
+	if w.rollback != "" {
 		// remove roll back up
-		Error(os.Remove(r.rollback))
+		Error(os.Remove(w.rollback))
 	}
 	// already handled display of errors
 	return nil
 }
 
-func (r GWriter) Write(b []byte) {
-	_, e := r.this.Write(b)
+func (w GWriter) Write(b []byte) {
+	_, e := w.this.Write(b)
 	Fatal(e)
 }
 
-func (r GWriter) Rollback() (e error) {
-	Error(r.this.Close())
-	if r.wrap != nil {
-		Error(r.wrap.Close())
+func (w GWriter) Rollback(closeBefore FilterReader) (e error) {
+	if closeBefore != nil {
+		Error(closeBefore.Close())
 	}
-	if r.rollback != "" {
+	Error(w.this.Close())
+	if w.wrap != nil {
+		Error(w.wrap.Close())
+	}
+	if w.rollback != "" {
 		flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
-		Fatal(os.Remove(r.out))
-		in, e := os.Open(r.rollback)
+		Fatal(os.Remove(w.out))
+		in, e := os.Open(w.rollback)
 		Fatal(e)
-		out, e2 := os.OpenFile(r.out, flags, r.mode)
+		out, e2 := os.OpenFile(w.out, flags, w.mode)
 		if e2 != nil {
 			Error(in.Close())
 			Fatal(e2)
@@ -502,7 +509,7 @@ func (r GWriter) Rollback() (e error) {
 			Error(out.Close())
 			Fatal(e3)
 		}
-		Fatal(os.Remove(r.rollback))
+		Fatal(os.Remove(w.rollback))
 	}
 	// already handled display of errors
 	return nil
