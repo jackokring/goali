@@ -371,15 +371,24 @@ func Verbose() int {
 // where the read file is reusable immediately
 // and the write needs to be closed to commit
 // as maybe it would support "rollback"
-// on CloseNot() with the replacement
+// on Rollback() with the replacement
 // happening atomically on the Close().
 func GetIO(i string, expand bool,
 	o string, compress bool, force bool, group bool, write bool) (FilterReader, FilterWriter) {
 	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
 }
 
-// Sure I need an GetIORW(io string, compand bool, force bool, group bool, write bool) (FilterReader, FilterWriter)
+// Sure I need an GetIORW(io string, compand bool, group bool, write bool) (FilterReader, FilterWriter)
 // with SeekR and SeekW ... and some of those file slicing zony things for a MarkedZoneSet.
+
+func GetRW(io string, compand bool, group bool, write bool) (FilterReader, FilterWriter) {
+	_, s := os.Stat(io)
+	Fatal(s)
+	w := GetWriter(io, compand, true, group, write)
+	// use backup as input file
+	r := GetReader(w.(GWriter).rollback, compand) // freed first
+	return r, w
+}
 
 // FilterReadCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
