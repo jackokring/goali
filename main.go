@@ -384,7 +384,7 @@ func GetIO(i string, expand bool,
 func GetRW(io string, compand bool, group bool, write bool) (FilterReader, FilterWriter) {
 	w := GetWriter(io, compand, true, group, write)
 	// use backup as input file
-	n := w.(GWriter).rollback
+	n := w.GetRollback()
 	if n == "" {
 		Error(w.Close())
 		Error(os.Remove(io))
@@ -397,10 +397,11 @@ func GetRW(io string, compand bool, group bool, write bool) (FilterReader, Filte
 // FilterReadCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
 type FilterReader interface {
-	Close() (e error)
+	io.Closer
 	// io.EOF
 	Read(b []byte) (n int)
 	EOF() bool
+	io.Seeker
 }
 
 // A concrete GZip FilterReadCloser
@@ -445,14 +446,26 @@ func (r GReader) EOF() bool {
 	return r.thisEof
 }
 
+func (r GReader) Seek(offset int64, whence int) (int64, error) {
+	s, ok := r.this.(io.Seeker)
+	if ok {
+		n, e := s.Seek(offset, whence)
+		return n, e
+	}
+	return 0, fmt.Errorf("reader seek not allowed")
+}
+
 // FilterWriteCloser is an abstraction to allow the wrapped
 // unfiltered streams to be closed possibly by cascade calling.
 type FilterWriter interface {
-	Close() (e error)
+	io.Closer
 	// io.EOF? on writing?
 	Write(b []byte)
+	// useful for RW paradigm
+	GetRollback() string
 	// rollback future
 	Rollback(closeBefore FilterReader) (e error)
+	io.Seeker
 }
 
 // A concrete GZip FilterWriteCloser
@@ -486,6 +499,7 @@ func (w GWriter) Write(b []byte) {
 }
 
 func (w GWriter) Rollback(closeBefore FilterReader) (e error) {
+	// as interface (nil, nil)
 	if closeBefore != nil {
 		Error(closeBefore.Close())
 	}
@@ -513,6 +527,20 @@ func (w GWriter) Rollback(closeBefore FilterReader) (e error) {
 	}
 	// already handled display of errors
 	return nil
+}
+
+func (w GWriter) GetRollback() string {
+	// remove cast exception
+	return w.rollback
+}
+
+func (w GWriter) Seek(offset int64, whence int) (int64, error) {
+	s, ok := w.this.(io.Seeker)
+	if ok {
+		n, e := s.Seek(offset, whence)
+		return n, e
+	}
+	return 0, fmt.Errorf("writer seek not allowed")
 }
 
 // Get reader
