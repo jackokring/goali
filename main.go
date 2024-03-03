@@ -438,6 +438,8 @@ type FilterWriter interface {
 	Close() (e error)
 	// io.EOF? on writing?
 	Write(b []byte)
+	// commit future
+	Commit() (e error)
 }
 
 // A concrete GZip FilterWriteCloser
@@ -460,6 +462,10 @@ func (r GWriter) Close() error {
 func (r GWriter) Write(b []byte) {
 	_, e := r.this.Write(b)
 	Fatal(e)
+}
+
+func (r GWriter) Commit() (e error) {
+	return fmt.Errorf("file write on commit (implicit close) replacement not implemented")
 }
 
 // Get reader
@@ -500,7 +506,13 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 		// have to insist on supplying a force
 		// "open" token here, for a possible
 		// commit vs. rollback.
-		os.Remove(s) // delete to force
+		if Error(os.Remove(s)) { // delete to force
+			// 'tis cool too
+			Error(fmt.Errorf("file there (maybe commit future): %s", s))
+		} else {
+			// 'tis cool
+			Error(fmt.Errorf("file not there: %s", s))
+		}
 	}
 	// create if not exist <- N.B.
 	var perms fs.FileMode = 0644
