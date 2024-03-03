@@ -2,6 +2,12 @@
 
 **Under Construction**
 
+- [ ] Unicode format checking and conversion.
+- [ ] GUI interface.
+- [ ] Python embedded, default extra available functions.
+- [ ] TUI for all but GUI.
+- [ ] ...
+
 ## Features
 
 * User configuration `.yaml` files.
@@ -10,6 +16,7 @@
 * Debug 'n panic `Fatal(err) void`/`Error(err) bool` framework.
 * `os.Stdin`/`os.Stdout` use by `-` filename.
 * GZip IO wrapping CLI options.
+* `FilterWriter.Rollback()` for a non-commit `Close()`.
 
 ---
 
