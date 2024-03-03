@@ -545,8 +545,9 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 	}
 	flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
 	var rollback string
-	var mode fs.FileMode = 0600 // default user private
-	if force {
+	m, ex := os.Stat(s)
+	mode := m.Mode()
+	if force && ex == nil { // and exists, else no backup
 		// of course the "future" compiler would
 		// have to insist on supplying a force
 		// "open" token here, for a possible
@@ -569,10 +570,6 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 		Error(w.Close())
 		Fatal(os.Remove(s))
 		rollback = w.Name()
-		st, e4 := r.Stat()
-		if !Error(e4) {
-			mode = st.Mode()
-		}
 		// Backed up!
 	}
 	f, err := os.OpenFile(s, flags, perms)
