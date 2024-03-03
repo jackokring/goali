@@ -438,8 +438,8 @@ type FilterWriter interface {
 	Close() (e error)
 	// io.EOF? on writing?
 	Write(b []byte)
-	// commit future
-	Commit() (e error)
+	// rollback future
+	Rollback() (e error)
 }
 
 // A concrete GZip FilterWriteCloser
@@ -448,12 +448,20 @@ type GWriter struct {
 	// is it a Closer => this == nil
 	// the wrapped or inner Closer
 	wrap io.WriteCloser
+	// rollback temp filename
+	rollback string
+	mode     fs.FileMode
+	out      string
 }
 
 func (r GWriter) Close() error {
 	Error(r.this.Close())
 	if r.wrap != nil {
 		Error(r.wrap.Close())
+	}
+	if r.rollback != "" {
+		// remove roll back up
+		Error(os.Remove(r.rollback))
 	}
 	// already handled display of errors
 	return nil
@@ -464,8 +472,31 @@ func (r GWriter) Write(b []byte) {
 	Fatal(e)
 }
 
-func (r GWriter) Commit() (e error) {
-	return fmt.Errorf("file write on commit (implicit close) replacement not implemented")
+func (r GWriter) Rollback() (e error) {
+	Error(r.this.Close())
+	if r.wrap != nil {
+		Error(r.wrap.Close())
+	}
+	if r.rollback != "" {
+		flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
+		Fatal(os.Remove(r.out))
+		in, e := os.Open(r.rollback)
+		Fatal(e)
+		out, e2 := os.OpenFile(r.out, flags, r.mode)
+		if e2 != nil {
+			Error(in.Close())
+			Fatal(e2)
+		}
+		_, e3 := io.Copy(out, in)
+		if e3 != nil {
+			Error(in.Close())
+			Error(out.Close())
+			Fatal(e3)
+		}
+		Fatal(os.Remove(r.rollback))
+	}
+	// already handled display of errors
+	return nil
 }
 
 // Get reader
@@ -499,20 +530,7 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 		// already -q as command may have Notify()
 		// on logger mixing
 		DeferClose(out) // just in case pipe
-		return GWriter{out, nil}
-	}
-	if force {
-		// of course the "future" compiler would
-		// have to insist on supplying a force
-		// "open" token here, for a possible
-		// commit vs. rollback.
-		if Error(os.Remove(s)) { // delete to force
-			// 'tis cool too
-			Error(fmt.Errorf("file there (maybe commit future): %s", s))
-		} else {
-			// 'tis cool
-			Error(fmt.Errorf("file not there: %s", s))
-		}
+		return GWriter{out, nil, "", 0, ""}
 	}
 	// create if not exist <- N.B.
 	var perms fs.FileMode = 0644
@@ -525,16 +543,48 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 	if group && write {
 		perms = 0660
 	}
-	f, err := os.OpenFile(s, os.O_WRONLY|os.O_CREATE|os.O_EXCL, perms)
+	flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
+	var rollback string
+	var mode fs.FileMode = 0600 // default user private
+	if force {
+		// of course the "future" compiler would
+		// have to insist on supplying a force
+		// "open" token here, for a possible
+		// commit vs. rollback.
+		// make backup?
+		r, e := os.Open(s)
+		Fatal(e)
+		w, e2 := os.CreateTemp("", AppName+"-*.bak")
+		if e2 != nil {
+			Error(r.Close())
+			Fatal(e2)
+		}
+		_, e3 := io.Copy(w, r)
+		if e3 != nil {
+			Error(r.Close())
+			Error(w.Close())
+			Fatal(e3)
+		}
+		Error(r.Close())
+		Error(w.Close())
+		Fatal(os.Remove(s))
+		rollback = w.Name()
+		st, e4 := r.Stat()
+		if !Error(e4) {
+			mode = st.Mode()
+		}
+		// Backed up!
+	}
+	f, err := os.OpenFile(s, flags, perms)
 	Fatal(err)
 	DeferClose(f)
 	if compress {
 		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
 		Fatal(err2)
 		DeferClose(f2)
-		return GWriter{f2, f}
+		return GWriter{f2, f, rollback, mode, f.Name()}
 	}
-	return GWriter{f, nil}
+	return GWriter{f, nil, rollback, mode, f.Name()}
 }
 
 //=====================================
