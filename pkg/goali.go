@@ -6,9 +6,11 @@ package goali
 
 // PACKAGE DEPENDENCIES
 // main	-> goali	-> cli		-> clitype
-//					|			-> unicorn	-> filerr
+//					|			-> unicorn	-> filerr	-> clitype
+//					|			|			|			-> consts
 //					|			|			-> clitype
-//					|			-> mickey	-> filerr
+//					|			-> mickey	-> filerr	-> clitype
+//					|						|			-> consts
 //					|						-> clitype
 //					-> filerr	-> clitype
 //					|			-> consts
