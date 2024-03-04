@@ -4,6 +4,16 @@
 
 package goali
 
+// PACKAGE DEPENDENCIES
+// main	-> goali	-> cli		-> clitype
+//					|			-> unicorn	-> filerr
+//					|			|			-> clitype
+//					|			-> mickey	-> filerr
+//					|						-> clitype
+//					-> filerr	-> clitype
+//					|			-> consts
+//					-> consts
+
 import (
 	"fmt"
 	"path/filepath"
