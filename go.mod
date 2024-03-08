@@ -13,7 +13,7 @@ require (
 
 require github.com/charmbracelet/lipgloss v0.10.0
 
-require github.com/charmbracelet/bubbles v0.18.0 // indirect
+require github.com/charmbracelet/bubbles v0.18.0
 
 require (
 	github.com/alecthomas/kong-yaml v0.2.0
