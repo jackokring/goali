@@ -11,6 +11,10 @@ require (
 	github.com/jackokring/cpy3 v0.0.0-20240226234938-87ed29b7e237
 )
 
+require github.com/charmbracelet/lipgloss v0.10.0
+
+require github.com/charmbracelet/bubbles v0.18.0 // indirect
+
 require (
 	github.com/alecthomas/kong-yaml v0.2.0
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect

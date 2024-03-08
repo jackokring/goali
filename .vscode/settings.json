@@ -23,6 +23,7 @@
         "Kode",
         "kongyaml",
         "ldflags",
+        "lipgloss",
         "logable",
         "logwriter",
         "matangover",
