@@ -157,7 +157,7 @@ func GetRW(io clit.OutputFile) (FilterReader, FilterWriter) {
 		Error(os.Remove(io.OutputFile))
 	}
 	// see Rollback(closeBefore FilterReader)
-	r := GetReader(clit.InputFile{InputFile: io.OutputFile, Expand: io.Compress}) // closed first
+	r := GetReader(clit.InputFile{InputFile: n, Expand: io.Compress}) // closed first
 	return r, w
 }
 
