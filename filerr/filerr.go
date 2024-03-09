@@ -138,9 +138,8 @@ func Verbose() int {
 // as maybe it would support "rollback"
 // on Rollback() with the replacement
 // happening atomically on the Close().
-func GetIO(i string, expand bool,
-	o string, compress bool, force bool, group bool, write bool) (FilterReader, FilterWriter) {
-	return GetReader(i, expand), GetWriter(o, compress, force, group, write)
+func GetIO(i clit.InputFile, o clit.OutputFile) (FilterReader, FilterWriter) {
+	return GetReader(i), GetWriter(o)
 }
 
 // Sure I need an GetIORW(io string, compand bool, group bool, write bool) (FilterReader, FilterWriter).
@@ -148,16 +147,17 @@ func GetIO(i string, expand bool,
 // It might just come in useful. Be aware that the output is a zero length file to which
 // you can io.Copy to if you do need an exact clone to start. This may cause problems
 // as not all file kinds can then Seek back to the beginning.
-func GetRW(io string, compand bool, group bool, write bool) (FilterReader, FilterWriter) {
-	w := GetWriter(io, compand, true, group, write)
+func GetRW(io clit.OutputFile) (FilterReader, FilterWriter) {
+	io.Force = true
+	w := GetWriter(io)
 	// use backup as input file
 	n := w.getRollback()
 	if n == "" {
 		Error(w.Close())
-		Error(os.Remove(io))
+		Error(os.Remove(io.OutputFile))
 	}
 	// see Rollback(closeBefore FilterReader)
-	r := GetReader(n, compand) // closed first
+	r := GetReader(clit.InputFile{InputFile: io.OutputFile, Expand: io.Compress}) // closed first
 	return r, w
 }
 
@@ -312,8 +312,8 @@ func (w GWriter) Seek(offset int64, whence int) (int64, error) {
 }
 
 // Get reader
-func GetReader(s string, expand bool) FilterReader {
-	if s == "-" {
+func GetReader(i clit.InputFile) FilterReader {
+	if i.InputFile == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
 		Fatal(e)
@@ -321,10 +321,10 @@ func GetReader(s string, expand bool) FilterReader {
 		DeferClose(in)
 		return &GReader{in, nil, false}
 	}
-	f, err := os.Open(s)
+	f, err := os.Open(i.InputFile)
 	Fatal(err)
 	DeferClose(f)
-	if expand {
+	if i.Expand {
 		f2, err2 := gzip.NewReader(f)
 		Fatal(err2)
 		DeferClose(f2)
@@ -334,8 +334,8 @@ func GetReader(s string, expand bool) FilterReader {
 }
 
 // Get writer
-func GetWriter(s string, compress bool, force bool, group bool, write bool) FilterWriter {
-	if s == "-" {
+func GetWriter(o clit.OutputFile) FilterWriter {
+	if o.OutputFile == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
 		os.Stdout = os.Stderr
@@ -346,26 +346,26 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 	}
 	// create if not exist <- N.B.
 	var perms fs.FileMode = 0644
-	if write && !group {
+	if o.Write && !o.Group {
 		perms = 0664 // give group permissive permissions
 	}
-	if group && !write {
+	if o.Group && !o.Write {
 		perms = 0640 // remove everybody permissions
 	}
-	if group && write {
+	if o.Group && o.Write {
 		perms = 0660
 	}
 	flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
 	var rollback string
-	m, ex := os.Stat(s)
+	m, ex := os.Stat(o.OutputFile)
 	mode := m.Mode()
-	if force && ex == nil { // and exists, else no backup
+	if o.Force && ex == nil { // and exists, else no backup
 		// of course the "future" compiler would
 		// have to insist on supplying a force
 		// "open" token here, for a possible
 		// commit vs. rollback.
 		// make backup?
-		r, e := os.Open(s)
+		r, e := os.Open(o.OutputFile)
 		Fatal(e)
 		w, e2 := os.CreateTemp("", con.AppName+"-*.bak")
 		if e2 != nil {
@@ -380,14 +380,14 @@ func GetWriter(s string, compress bool, force bool, group bool, write bool) Filt
 		}
 		Error(r.Close())
 		Error(w.Close())
-		Fatal(os.Remove(s))
+		Fatal(os.Remove(o.OutputFile))
 		rollback = w.Name()
 		// Backed up!
 	}
-	f, err := os.OpenFile(s, flags, perms)
+	f, err := os.OpenFile(o.OutputFile, flags, perms)
 	Fatal(err)
 	DeferClose(f)
-	if compress {
+	if o.Compress {
 		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
 		Fatal(err2)
 		DeferClose(f2)

@@ -6,7 +6,10 @@ package gin
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/jackokring/goali/consts"
@@ -16,6 +19,8 @@ import (
 // A default tea Model
 type Model struct {
 	spinner spinner.Model
+	keys    keyMap
+	help    help.Model
 }
 
 //TODO: Sizing/rate limiting
@@ -26,11 +31,46 @@ var userChan = make(chan Model)
 // System state reporting channel
 var systemChan = make(chan Model)
 
+type keyMap struct {
+	Help key.Binding
+	Quit key.Binding
+}
+
+// ShortHelp returns keybindings to be shown in the mini help view. It's part
+// of the key.Map interface.
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Help, k.Quit}
+}
+
+// FullHelp returns keybindings for the expanded help view. It's part of the
+// key.Map interface.
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		//{k.Up, k.Down, k.Left, k.Right}, // first column
+		{k.Help, k.Quit}, // default
+	}
+}
+
+var keys = keyMap{
+	Help: key.NewBinding(
+		key.WithKeys("?"),
+		key.WithHelp("?", "toggle help"),
+	),
+	Quit: key.NewBinding(
+		key.WithKeys("q", "esc", "ctrl+c"),
+		key.WithHelp("q", "quit"),
+	),
+}
+
 func initialModel() Model {
 	s := spinner.New()
 	s.Spinner = spinner.Dot
 	s.Style = consts.Gloss
-	return Model{spinner: s}
+	return Model{
+		spinner: s,
+		keys:    keys,
+		help:    help.New(),
+	}
 }
 
 // Model initialization function
@@ -38,19 +78,21 @@ func (m Model) Init() tea.Cmd {
 	return m.spinner.Tick
 }
 
+// Default view height
+const viewHeight = 8
+
 // Model view function
 func (m Model) View() string {
-	str := fmt.Sprintf("\n\n   %s Loading forever...press q to quit\n\n", m.spinner.View())
-	//if m.quitting { // basically indicates a new line should follow the ending of the TUI
-	//	return str + "\n"
-	//}
-	return str
+	str := fmt.Sprintf("\n\n   %s Loading forever...\n\n", m.spinner.View())
+	helpView := m.help.View(m.keys)
+	height := viewHeight - strings.Count(str, "\n") - strings.Count(helpView, "\n")
+	return "\n" + str + strings.Repeat("\n", height) + helpView
 }
 
 // Model update function (uses select/case on systemChan as not mutable)
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	mu := m
-	var ok bool
+	var ok bool = true // default ok with no channel read
 	func() {
 		for {
 			select {
@@ -58,8 +100,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// new model in keeps UI parts of model
 				if ok {
 					mu.spinner = m.spinner
+					mu.keys = m.keys
+					mu.help = m.help
 				}
 			default:
+				// no message on channel
 				return
 			}
 		}
@@ -69,24 +114,29 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return mu, tea.Quit
 	}
 	switch msg := msg.(type) {
-	case tea.KeyMsg: //TODO
-		switch msg.String() {
-		case "q", "esc", "ctrl+c":
-			//m.quitting = true
+	case tea.WindowSizeMsg:
+		// If we set a width on the help menu it can gracefully truncate
+		// its view as needed.
+		mu.help.Width = msg.Width
+	case tea.KeyMsg:
+		switch {
+		case key.Matches(msg, mu.keys.Help):
+			mu.help.ShowAll = !mu.help.ShowAll
+		case key.Matches(msg, mu.keys.Quit):
 			return mu, tea.Quit
-		default:
-			return mu, nil
 		}
 	default:
 		var cmd tea.Cmd
 		mu.spinner, cmd = mu.spinner.Update(msg)
 		return mu, cmd
 	}
+	return mu, nil // default return values unless specified earlier
 }
 
 // The TUI goroutine to thread the TUI
 func Tui() {
 	p := tea.NewProgram(initialModel())
+	// p.send(msgType)
 	// functional closure on p
 	go func() {
 		m, err := p.Run()
