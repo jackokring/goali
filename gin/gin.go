@@ -21,15 +21,21 @@ type Model struct {
 	spinner spinner.Model
 	keys    keyMap
 	help    help.Model
+	text    string
 }
 
-//TODO: Sizing/rate limiting
+// Quit the TUI
+type QuitMsg tea.Msg
 
-// User interaction channel
+// Action message (extend for more specifics)
+type ActionMsg struct {
+	tea.Msg
+	// expanded data
+	text string // string to set on action
+}
+
+// User channel to return model on TUI quit
 var userChan = make(chan Model)
-
-// System state reporting channel
-var systemChan = make(chan Model)
 
 type keyMap struct {
 	Help key.Binding
@@ -83,7 +89,7 @@ const viewHeight = 8
 
 // Model view function
 func (m Model) View() string {
-	str := fmt.Sprintf("\n\n   %s Loading forever...\n\n", m.spinner.View())
+	str := fmt.Sprintf("\n\n\t%s %s ...\n\n", m.spinner.View(), m.text)
 	helpView := m.help.View(m.keys)
 	height := viewHeight - strings.Count(str, "\n") - strings.Count(helpView, "\n")
 	return "\n" + str + strings.Repeat("\n", height) + helpView
@@ -91,50 +97,34 @@ func (m Model) View() string {
 
 // Model update function (uses select/case on systemChan as not mutable)
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	mu := m
-	var ok bool = true // default ok with no channel read
-	func() {
-		for {
-			select {
-			case mu, ok = <-systemChan:
-				// new model in keeps UI parts of model
-				if ok {
-					mu.spinner = m.spinner
-					mu.keys = m.keys
-					mu.help = m.help
-				}
-			default:
-				// no message on channel
-				return
-			}
-		}
-	}()
-	if !ok {
-		// exit UI
-		return mu, tea.Quit
-	}
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		// If we set a width on the help menu it can gracefully truncate
 		// its view as needed.
-		mu.help.Width = msg.Width
+		m.help.Width = msg.Width
 	case tea.KeyMsg:
 		switch {
-		case key.Matches(msg, mu.keys.Help):
-			mu.help.ShowAll = !mu.help.ShowAll
-		case key.Matches(msg, mu.keys.Quit):
-			return mu, tea.Quit
+		case key.Matches(msg, m.keys.Help):
+			m.help.ShowAll = !m.help.ShowAll
+		case key.Matches(msg, m.keys.Quit):
+			return m, tea.Quit
 		}
+	case ActionMsg:
+		// decode action messages
+		m.text = msg.text
+	case QuitMsg:
+		// exit request
+		return m, tea.Quit
 	default:
 		var cmd tea.Cmd
-		mu.spinner, cmd = mu.spinner.Update(msg)
-		return mu, cmd
+		m.spinner, cmd = m.spinner.Update(msg)
+		return m, cmd
 	}
-	return mu, nil // default return values unless specified earlier
+	return m, nil // default return values unless specified earlier
 }
 
-// The TUI goroutine to thread the TUI
-func Tui() {
+// The TUI goroutine to thread the TUI (returns message send function pointer)
+func Tui() func(msg tea.Msg) {
 	p := tea.NewProgram(initialModel())
 	// p.send(msgType)
 	// functional closure on p
@@ -145,9 +135,10 @@ func Tui() {
 		}
 		userChan <- m.(Model) // return of Model implies correct termination of user channel
 	}()
+	return p.Send
 }
 
-// Get TUI model on completion of UI interaction if ok is true
+// Get TUI model of TUI interaction if ok is true
 func TuiGetModel() (m Model, ok bool) {
 	select {
 	case u, ok := <-userChan:
@@ -160,14 +151,4 @@ func TuiGetModel() (m Model, ok bool) {
 		// defaults to blank
 		return Model{}, false
 	}
-}
-
-// Set TUI model (not rate limited in updates)
-func TuiSetModel(m Model) {
-	systemChan <- m
-}
-
-// Close TUI
-func TuiClose() {
-	close(systemChan)
 }
