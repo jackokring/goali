@@ -12,6 +12,7 @@
         "envprefix",
         "existingdir",
         "existingfile",
+        "fdopen",
         "fe",
         "filecontent",
         "filerr",
