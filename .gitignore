@@ -5,4 +5,5 @@ goali
 bin/
 include/
 lib/
+share/
 lib64
