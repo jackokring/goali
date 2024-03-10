@@ -2,7 +2,7 @@
 from array import ArrayType as array
 import sys
 from io import StringIO, BytesIO
-from typing import Union, Any
+from typing import Union, Any, Optional
 from ctypes import _CData
 from pickle import PickleBuffer
 from mmap import mmap
@@ -31,6 +31,17 @@ class StdErr(StringIO):
     buffer = ByteErr()
 
 sys.stderr = StdErr()
+
+class ByteIn(BytesIO):
+    def read(self, size: Optional[int] = -1) -> bytes:
+        return b""
+
+class StdIn(StringIO):
+    def read(self, size: Optional[int] = -1) -> str:
+        return ""
+    buffer = ByteIn()
+
+sys.stdin = StdIn()
 
 # stubs replaced by goali but present for mypy syntax and type checks
 
