@@ -142,21 +142,26 @@ func GetIO(io clit.StreamFilter) (FilterReader, FilterWriter) {
 	return GetReader(io.InputFile), GetWriter(io.OutputFile)
 }
 
-// Sure I need an GetIORW(io OutputFile) (FilterReader, FilterWriter).
+// Sure I need an GetIORW(io IoFile) (FilterReader, FilterWriter).
 //
 // It might just come in useful. Be aware that the output is a zero length file to which
 // you can io.Copy to if you do need an exact clone to start. This may cause problems
 // as not all file kinds can then Seek back to the beginning.
-func GetRW(io clit.OutputFile) (FilterReader, FilterWriter) {
-	io.Force = true // it does not make sense to have no input file to not be overwritten
-	w := GetWriter(io)
+func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
+	w := GetWriter(clit.OutputFile{
+		Compress:   io.Compand,
+		Force:      true,
+		Group:      io.Group,
+		OutputFile: io.IoFile,
+		Write:      io.Write,
+	})
 	// use backup as input file
 	n := w.getRollback()
 	if n == "" { // there is no rollback file
 		Fatal(fmt.Errorf("can't construct input file from old output file content"))
 	}
 	// see Rollback(closeBefore FilterReader)
-	r := GetReader(clit.InputFile{InputFile: n, Expand: io.Compress}) // closed first
+	r := GetReader(clit.InputFile{InputFile: n, Expand: io.Compand}) // closed first
 	return r, w
 }
 

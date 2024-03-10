@@ -30,6 +30,14 @@ type InputFile struct {
 	InputFile string `arg:"" help:"The <input-file> to ${appName} (- is STDIN)" type:"existingfile"`
 }
 
+// An io file type.
+type IoFile struct {
+	Compand bool   `help:"Compress and expand with gzip the <io-file>" short:"c"`
+	Group   bool   `help:"The <io-file> is restricted to user and group access permissions" short:"g"`
+	IoFile  string `arg:"" help:"The <io-file> to ${appName} (implies -f)" type:"existingfile"`
+	Write   bool   `help:"The <io-file> gains group write access permission" short:"w"`
+}
+
 // An output file type.
 type OutputFile struct {
 	Compress   bool   `help:"Compress with gzip the <output-file>" short:"c"`
