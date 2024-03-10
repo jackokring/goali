@@ -9,13 +9,17 @@ import (
 	"strconv"
 
 	py "github.com/jackokring/cpy3"
+	"github.com/jackokring/goali/filerr"
 )
 
 func Run(s string) int {
 	return py.PyRun_SimpleString(s)
 }
 
-func SetIO() {
+// ummm, needs r/w and map to under-laying files .
+//
+// ..
+func SetIO(r filerr.FilterReader, w filerr.FilterWriter) {
 	// assume consistency of process file descriptors
 	Run("import sys")
 	Run("sys.stdin = os.fdopen(" + strconv.Itoa(int(os.Stdin.Fd())) + ")")
