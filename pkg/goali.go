@@ -22,8 +22,6 @@ import (
 	"strconv"
 	"strings"
 
-	py "github.com/jackokring/cpy3"
-
 	"net/http"
 	"os"
 
@@ -214,10 +212,6 @@ func Goali() {
 	//		func (*command)Run(*clitype.Globals) error
 	//
 	// Yes, returning a nil is an option. Source code error?
-
-	defer py.Py_Finalize()
-	py.Py_Initialize()
-	py.PyRun_SimpleString("print('hello world')")
 
 	if _, err := tea.NewProgram(model{}).Run(); err != nil {
 		fmt.Printf("Uh oh, there was an error: %v\n", err)

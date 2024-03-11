@@ -1,6 +1,5 @@
 """The imported snake python template with mypy stub definitions and any needed wrappers."""
 from array import ArrayType as array
-import sys
 from io import StringIO, BytesIO
 from typing import Union, Any, Optional
 from ctypes import _CData
@@ -19,8 +18,6 @@ class StdOut(StringIO):
         return 0
     buffer = ByteOut()
 
-sys.stdout = StdOut()
-
 class ByteErr(BytesIO):
     def write(self, bytes: ByteAlias) -> int:
         return 0
@@ -30,8 +27,6 @@ class StdErr(StringIO):
         return 0
     buffer = ByteErr()
 
-sys.stderr = StdErr()
-
 class ByteIn(BytesIO):
     def read(self, size: Optional[int] = -1) -> bytes:
         return b""
@@ -40,8 +35,6 @@ class StdIn(StringIO):
     def read(self, size: Optional[int] = -1) -> str:
         return ""
     buffer = ByteIn()
-
-sys.stdin = StdIn()
 
 # stubs replaced by goali but present for mypy syntax and type checks
 

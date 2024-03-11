@@ -5,24 +5,24 @@ package snake
 //=====================================
 
 import (
-	"os"
-	"strconv"
+	"fmt"
 
 	py "github.com/jackokring/cpy3"
-	"github.com/jackokring/goali/filerr"
+	fe "github.com/jackokring/goali/filerr"
 )
 
-func Run(s string) int {
-	return py.PyRun_SimpleString(s)
+func Run(s string) {
+	if py.PyRun_SimpleString(s) != 0 {
+		Exit()
+		fe.Fatal(fmt.Errorf("python exception: %s", s))
+	}
 }
 
-// ummm, needs r/w and map to under-laying files .
-//
-// ..
-func SetIO(r filerr.FilterReader, w filerr.FilterWriter) {
-	// assume consistency of process file descriptors
-	Run("import sys")
-	Run("sys.stdin = os.fdopen(" + strconv.Itoa(int(os.Stdin.Fd())) + ")")
-	Run("sys.stout = os.fdopen(" + strconv.Itoa(int(os.Stdout.Fd())) + ")")
-	Run("sys.stderr = os.fdopen(" + strconv.Itoa(int(os.Stderr.Fd())) + ")")
+func Init() {
+	py.Py_Initialize()
+	Run("import snake")
+}
+
+func Exit() {
+	py.Py_Finalize()
 }
