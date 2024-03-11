@@ -26,7 +26,7 @@ type Globals struct {
 
 // An input file type.
 type InputFile struct {
-	Expand    bool   `help:"Expand with gzip the <input-file>" short:"e"`
+	Expand    bool   `help:"Expand with gzip the <input-file> (does not apply to .py source files)" short:"e"`
 	InputFile string `arg:"" help:"The <input-file> to ${appName} (- is STDIN)" type:"existingfile"`
 }
 

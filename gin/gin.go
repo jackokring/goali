@@ -13,7 +13,7 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/jackokring/goali/consts"
-	"github.com/jackokring/goali/filerr"
+	fe "github.com/jackokring/goali/filerr"
 )
 
 // A default tea Model
@@ -143,7 +143,7 @@ func TuiGetModel() (m Model, ok bool) {
 	select {
 	case u, ok := <-userChan:
 		if !ok {
-			filerr.Fatal(fmt.Errorf("internal gin channel closed unexpectedly"))
+			fe.Fatal(fmt.Errorf("internal gin channel closed unexpectedly"))
 		}
 		// completed
 		return u, true
