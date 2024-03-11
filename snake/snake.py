@@ -15,7 +15,8 @@ class ByteOut(BytesIO):
     
 class StdOut(StringIO):
     def write(self, string: str) -> int:
-        return 0
+        self.buffer.write(string.encode())
+        return len(string)
     buffer = ByteOut()
 
 class ByteErr(BytesIO):
@@ -24,7 +25,8 @@ class ByteErr(BytesIO):
 
 class StdErr(StringIO):
     def write(self, string: str) -> int:
-        return 0
+        self.buffer.write(string.encode())
+        return len(string)
     buffer = ByteErr()
 
 class ByteIn(BytesIO):
@@ -33,7 +35,7 @@ class ByteIn(BytesIO):
 
 class StdIn(StringIO):
     def read(self, size: Optional[int] = -1) -> str:
-        return ""
+        return self.buffer.read(size).decode()
     buffer = ByteIn()
 
 # stubs replaced by goali but present for mypy syntax and type checks
