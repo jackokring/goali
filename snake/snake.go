@@ -20,6 +20,8 @@ func Run(s string) {
 
 func Init() {
 	py.Py_Initialize()
+	// To be usable as a part of snake
+	// Must have objects to modify with extras
 	Run("import snake")
 }
 
