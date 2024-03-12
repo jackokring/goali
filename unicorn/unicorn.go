@@ -29,3 +29,27 @@ func (c *Command) Run(p *clit.Globals) error {
 	fmt.Println(c.OutputFile)
 	return nil
 }
+
+// Patterns of unused code points in UTF-8
+//
+// 0 from 1 byte (7 bit) codes
+// ==== ASCII Section Duplicate ====
+// 128 from 2 byte (11 bit) codes
+// ==== Compact Block ====
+// 2048 from 3 byte (16 bit) codes
+// ==== Free Plane ====
+// 65536 from 4 byte (21 bit) codes
+// ==== Free Codes ====
+// 15*65536 from 4 byte (21 bit) codes
+// ==== High Codes ====
+// 32*65536 from 4 byte (21 bit with $F8) codes
+//
+// ==== PEP 383 ====
+// U+DC80...U+DCFF map error conditions
+// U+D800...U+DC7F
+// (1024-128) low only no high prefix
+// => as 3 byte
+// Given that CESU-8 exists but is discouraged
+// and 4 byte encoding of surrogates is
+// covered by the "Free Plane", this represents
+// maximum code point density.

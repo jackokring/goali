@@ -20,9 +20,10 @@ func Run(s string) {
 }
 
 func RunFile(f clit.InputFile) {
-	if f.Expand {
-		fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
-	}
+	//if f.Expand {
+	//fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
+	// ignore flag as may be present for data files
+	//}
 	code, err := py.PyRun_AnyFile(f.InputFile)
 	fe.Fatal(err)
 	if code != 0 {
