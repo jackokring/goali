@@ -24,9 +24,14 @@ type Globals struct {
 	Wrong   bool    `help:"Enable fail on first error wrong mode" short:"x"`
 }
 
+// A python code file type.
+type PyFile struct {
+	PyFile string `arg:"" help:"The <py-file> to execute (- is STDIN)" type:"existingfile"`
+}
+
 // An input file type.
 type InputFile struct {
-	Expand    bool   `help:"Expand with gzip the <input-file> (does not apply to .py source files)" short:"e"`
+	Expand    bool   `help:"Expand with gzip the <input-file>" short:"e"`
 	InputFile string `arg:"" help:"The <input-file> to ${appName} (- is STDIN)" type:"existingfile"`
 }
 

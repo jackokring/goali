@@ -12,6 +12,23 @@ import (
 	fe "github.com/jackokring/goali/filerr"
 )
 
+type Command struct {
+	clit.PyFile
+	clit.StreamFilter // embedded type .. => .
+}
+
+func (c *Command) Help() string {
+	return `An embedded python script interpreter.`
+}
+
+func (c *Command) Run(p *clit.Globals) error {
+	// unicorn command hook
+	fe.SetGlobals(p)
+	fmt.Println(c.InputFile)
+	fmt.Println(c.OutputFile)
+	return nil
+}
+
 func Run(s string) {
 	if py.PyRun_SimpleString(s) != 0 {
 		Exit()

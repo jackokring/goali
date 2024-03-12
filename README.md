@@ -17,6 +17,7 @@
 * `os.Stdin`/`os.Stdout` use by `-` filename.
 * GZip IO wrapping CLI options.
 * `FilterWriter.Rollback()` for a non-commit `Close()`.
+* `snake.py` python module for interfacing and `mypy` type checking.
 
 ---
 
@@ -31,8 +32,10 @@ Much faster code compile too.
 
 * [kong][kong] - CLI parse
 * [fyne][fyne] - GUI toolkit
-* [cpy3][cpy3] - Python 3.11 wrapper (submodule [CPY3][CPY3])
+* [cpy3][cpy3] - Python 3.11 wrapper (`git submodule` [CPY3][CPY3])
 * [bubbletea][bubbletea] - TUI toolkit
+* [lipgloss][lipgloss] - ANSI sequences
+* [bubbles][bubbles] - TUI extended controls
 * [kong-yaml][kong-yaml] - config loader
 
 ## Modules to Find
@@ -43,7 +46,7 @@ This place is kind of a brain storming section, stuff in the decision matrix.
 
 A python virtual environment was added to the project. Its major directories
 `lib`, and `bin` were added to `.gitignore`. This may be altered later 
-depending on functional use.
+depending on functional use. A `snake_test.ipynb` test Jupyter notebook is included.
 
 ## Go Likes and Dislikes
 
@@ -90,9 +93,11 @@ to local returned from function and dereferenced.
 
 #### Extracted Link Definitions (Invisible)
 
+[bubbles]: github.com/charmbracelet/bubbles
 [bubbletea]: github.com/charmbracelet/bubbletea
 [cpy3]: github.com/jackokring/cpy3
 [CPY3]: CPY3.md
 [fyne]: fyne.io/fyne/v2
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml
+[lipgloss]: github.com/charmbracelet/lipgloss

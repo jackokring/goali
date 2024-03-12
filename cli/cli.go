@@ -3,6 +3,7 @@ package cli
 import (
 	clit "github.com/jackokring/goali/clitype"
 	"github.com/jackokring/goali/mickey"
+	"github.com/jackokring/goali/snake"
 	"github.com/jackokring/goali/unicorn"
 )
 
@@ -59,4 +60,5 @@ var Cli struct {
 	// see individual named Command packages
 	Mickey  mickey.Command  `cmd:"" help:"GUI launcher"`
 	Unicorn unicorn.Command `cmd:"" help:"Unicode mangler"`
+	Snake   snake.Command   `cmd:"" help:"Python interpreter"`
 }
