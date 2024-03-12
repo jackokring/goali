@@ -46,10 +46,17 @@ func (c *Command) Run(p *clit.Globals) error {
 //
 // ==== PEP 383 ====
 // U+DC80...U+DCFF map error conditions
-// U+D800...U+DC7F
-// (1024-128) low only no high prefix
+// (U+D800...U+DBFF)...(U+DC00...U+DC7F and U+DD00...U+DFFF)
+// (1024-256+128) low only no high prefix
 // => as 3 byte
 // Given that CESU-8 exists but is discouraged
-// and 4 byte encoding of surrogates is
+// and 4 byte encoding of surrogates is "denied" so
 // covered by the "Free Plane", this represents
 // maximum code point density.
+// "Valid" surrogate sequences should be left embedded sometimes?
+//
+// ==== Control Sequence Introducer ====
+// C1 control codes have a duplication via convention of ESC [
+// so frees another 32 code points as they were only 3 code points left
+// in the Unicode BMP. I think quite a lot of the C0 control codes
+// are no longer in common use, as CTRL+C would suggest.
