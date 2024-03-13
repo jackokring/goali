@@ -60,3 +60,5 @@ func (c *Command) Run(p *clit.Globals) error {
 // so frees another 32 code points as they were only 3 code points left
 // in the Unicode BMP. I think quite a lot of the C0 control codes
 // are no longer in common use, as CTRL+C would suggest.
+// So that would be an extra 32 in the C1 space
+// plus about another 24 in the C0 space.

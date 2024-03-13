@@ -55,19 +55,25 @@ depending on functional use. A `snake_test.ipynb` test Jupyter notebook is inclu
 * It's fast enough at compile and doesn't clog my Chromebook.
 * Receivers.
 * No `switch` break madness fall through.
-* Implicit interface implementations.
-* Allows submodules and redirection via `replace ... => ...` to local git submodules.
+* Implicit interface implementations, without declaration and locking out
+inbuilt type extension.
+* Allows submodules and redirection via `replace ... => ...` to local a `git submodule`.
 * Initial capitalization exports.
-* `.(type)` switch variants.
+* `.(type)` switch variants. I like the two assignment tuple form.
 * A mindset of default reentrant non-atomicity.
 * Embedded `struct` types.
+* Ah, `chan` of Occam. Or should that've been Ockham or Oakham? Nice `select` for
+`ALT` too.
+* The `error` strategy. Sure I've hacked it (see `filerr/filerr.go`).
+* Although the idea of tacit tuple receivers excites me, they're not needed. 
 
 ### Dislikes
 
 * The postfix typing. As from a point of view it has no parse introduction of
 type information **before** an identifier. This slightly increases parse complexity
 and prevents some kind of edit selection of type DropDown inserting an
-identifier TextBox.
+identifier TextBox. It's not a deal breaker, as I've seen / used Pascal and
+Modula-2 / Oberon before.
 * The weird `import "github.com/jackokring/v2/cpy3"` and making a new `v2` branch
 along with a `module github.com/jackokring/cpy3/v2` just to allow a
 `go get github.com/jackokring/cpy3/v2@v2.0.0` after a following
@@ -76,9 +82,34 @@ only after a `git tag v2.0.0` itself after a push followed by a `git push origin
 * Of course the above is made more irritating by node.js inside VSCode spamming
 the `-jMAX` option and behaving in its docs like the other processes on the
 system are the problem. Apparently, the terminal failure to initialize on first go
-is a feature, and it can only count to 120. It doesn't understand `tmux`? 
+is a feature, and it can only count to 120. It doesn't understand `tmux`?
+This is kind of "fixed" using VSCode as the terminal (apart from SIGHUP on close).
+At least it has split views.
 * The segmentation fault on `errors.New()`. But, it was new. Likely a pointer
 to local returned from function and dereferenced.
+* A mild `.cache` directory half a GB of "junk" from the language server. Perhaps
+a `go tidy` for a chop down project global.
+* The `import` deletion from a `^S` when there is an intent from `go get` and
+no `go build` has been issued. I mean yes it does suggest and add, but does
+it get the preferred named as data back (project or directory wide)?
+* Mild annoyance with anonymous function closure syntax for `return` to achieve a
+multi `break` and not even an ORIC-1 BASIC `POP:RETURN`. I'm not a fan of the
+named labels and `goto` approach. Perhaps a `func {}` short form without `()`.
+I mean I can't suggest a `return[level]` syntax as `[]int{x, y, z ...}` might
+mix bad with the parser, being a prefixed typing.
+
+### Wonderings
+
+* Is `const` (as a type read only intent) inferred for auto `VAR` arguments (Pascal)?
+
+### Things which are Really VSCode Things
+
+* Eager launching of resource using tools. I'd like an awareness of `-j` which
+does not use all my cores, as you know it's just a Debian container
+also running a browser, with the music, and the reference internet. It
+should hold off when close to memory 70% or core usage above 50% like
+give the syntax check a stop for a minute or two. I only deleted a `}`. I'm sure
+I'll manage without the extra or fewer items in the "intelli-drop-list".
 
 ## TODO
 
