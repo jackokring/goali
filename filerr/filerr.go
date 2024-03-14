@@ -317,6 +317,14 @@ func (w GWriter) Seek(offset int64, whence int) (int64, error) {
 
 // Get reader
 func GetReader(i clit.InputFile) FilterReader {
+	r := getReaderBase(i)
+	r.Read(make([]byte, 0)) // sure needs a zero length EOF set
+	// I prefer a `for !EOF {}` kind of thing
+	// ... do {} while(); ... C-Form???????
+	return r
+}
+
+func getReaderBase(i clit.InputFile) FilterReader {
 	if i.InputFile == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
