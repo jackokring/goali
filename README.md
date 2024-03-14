@@ -32,6 +32,7 @@ Much faster code compile too.
 
 * [kong][kong] - CLI parse
 * [fyne][fyne] - GUI toolkit
+* [chi][chi] - A kind of node.js express router in go
 * [cpy3][cpy3] - Python 3.11 wrapper (`git submodule` [CPY3][CPY3])
 * [bubbletea][bubbletea] - TUI toolkit
 * [lipgloss][lipgloss] - ANSI sequences
@@ -126,6 +127,7 @@ I'll manage without the extra or fewer items in the "intelli-drop-list".
 
 [bubbles]: github.com/charmbracelet/bubbles
 [bubbletea]: github.com/charmbracelet/bubbletea
+[chi]: github.com/go-chi/chi/v5
 [cpy3]: github.com/jackokring/cpy3
 [CPY3]: CPY3.md
 [fyne]: fyne.io/fyne/v2
