@@ -1,5 +1,12 @@
 # Goali
 
+## Decided Features
+
+* `unicorn` Unicode mangler. Also [The Word][the_word]
+* `snake` Embedded and expanded python
+* `mickey` A nice GUI for something
+* `knap` A web servia thing
+
 **Under Construction**
 
 - [ ] Unicode format checking and conversion.
@@ -8,7 +15,7 @@
 - [ ] TUI for all but GUI.
 - [ ] ...
 
-## Features
+## Features Maybe? Likely Deleted this later
 
 * User configuration `.yaml` files.
 * `--pro-file=PROFILE` process configuration override.
@@ -114,12 +121,7 @@ I'll manage without the extra or fewer items in the "intelli-drop-list".
 
 ## TODO
 
-- [ ] `godoc` (version when # titles introduced is 1.19).
-- [ ] more functionality.
-- [ ] default `.py` file load.
-- [ ] default add `PyObject` to namespace of python.
-- [ ] sort out a good maths for verbose calculation (scaling?).
-- [ ] UTF-8 processing decisions.
+Wrong place to organize this. Sneaker text, old skool penning?
 
 ---
 
@@ -134,3 +136,5 @@ I'll manage without the extra or fewer items in the "intelli-drop-list".
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml
 [lipgloss]: github.com/charmbracelet/lipgloss
+
+[the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
