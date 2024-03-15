@@ -132,6 +132,8 @@ func Exit() {
 //	return self
 //}
 //
+// N.B. Only the *self (internal?), *args (tuple), *kwargs (dictionary) API
+//
 // 1. So link py_api functions to names
 // 2. Wrap go_api of go function
 // 3. Add py_api to go_api link in cwrap.go
@@ -142,8 +144,12 @@ func AddFunc(name string, function unsafe.Pointer) {
 	// remove old before new?
 	// not sure if it's needed but ...
 	// allows snake.py to have dummy mypy functions
-	snake.DelAttrString(name)
-	snake.AddModuleCFunction(name, function)
+	if snake.DelAttrString(name) == -1 {
+		fe.Fatal(fmt.Errorf("%s has no template in the snake module", name))
+	}
+	if snake.AddModuleCFunction(name, function) == -1 {
+		fe.Fatal(fmt.Errorf("%s failed to be added to the snake module", name))
+	}
 }
 
 func AddAll() {
