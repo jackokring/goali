@@ -94,9 +94,7 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 	if args == nil {
 		args = py.PyTuple_New(0)
 	}
-	if kwargs == nil {
-		kwargs = py.PyDict_New()
-	}
+	// kwargs already optimized for a nil -> NULL
 	var g py.PyGILState
 	if gil {
 		// this prevents a deadlock style panic sometimes
