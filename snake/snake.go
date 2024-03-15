@@ -6,6 +6,7 @@ package snake
 
 import (
 	"fmt"
+	"runtime"
 
 	py "github.com/jackokring/cpy3"
 	clit "github.com/jackokring/goali/clitype"
@@ -49,13 +50,58 @@ func RunFile(f clit.InputFile) {
 	}
 }
 
+// The master imported object
+var snake *py.PyObject
+
+// The thread state
+var state *py.PyThreadState
+
 func Init() {
 	py.Py_Initialize()
 	// To be usable as a part of snake
 	// Must have objects to modify with extras
-	Run("import snake")
+	//Run("import snake")
+	snake = py.PyImport_ImportModule("snake")
+	if snake == nil {
+		fe.Fatal(fmt.Errorf("snake module not available to import"))
+	}
+	state = py.PyEval_SaveThread()
+}
+
+// Call a python function.
+//
+// Supply gil as true for multithreading call.
+// Supply gil as false to use the global initial thread.
+func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
+	f := snake.GetAttrString(name)
+	if f == nil {
+		fe.Fatal(fmt.Errorf("snake does not contain %s", name))
+	}
+	if args == nil {
+		args = py.PyTuple_New(0)
+	}
+	if kwargs == nil {
+		kwargs = py.PyDict_New()
+	}
+	var g py.PyGILState
+	if gil {
+		// this prevents a deadlock style panic sometimes
+		// in scheduling interaction
+		runtime.LockOSThread()
+		g = py.PyGILState_Ensure()
+	} else {
+		py.PyEval_RestoreThread(state)
+	}
+	r := f.Call(args, kwargs)
+	if gil {
+		py.PyGILState_Release(g)
+	} else {
+		state = py.PyEval_SaveThread()
+	}
+	return r
 }
 
 func Exit() {
+	py.PyEval_RestoreThread(state)
 	py.Py_Finalize()
 }

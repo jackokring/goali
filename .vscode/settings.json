@@ -26,6 +26,7 @@
         "ipynb",
         "Kode",
         "kongyaml",
+        "kwargs",
         "ldflags",
         "lipgloss",
         "logable",
