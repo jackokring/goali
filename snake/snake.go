@@ -105,3 +105,10 @@ func Exit() {
 	py.PyEval_RestoreThread(state)
 	py.Py_Finalize()
 }
+
+// call this from python ?????? TODO, needs cpy3 extending
+//
+// https://docs.python.org/3/extending/embedding.html#extending-embedded-python
+func snake1(self *py.PyObject, args *py.PyObject, kwargs *py.PyObject) *py.PyObject {
+	return self
+}
