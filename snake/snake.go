@@ -26,6 +26,10 @@ import "C"
 
 type Command struct {
 	clit.PyFile
+	// umm, target execute function?
+	// How many trailing files does you have?
+	// I mean I thought of a ADT to rebuild "words"
+	// but the time cost per letter was abysmal.
 	clit.StreamFilter // embedded type .. => .
 }
 
