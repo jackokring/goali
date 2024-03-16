@@ -47,5 +47,6 @@
         "Wonderings",
         "yamlfile",
         "zony"
-    ]
+    ],
+    "editor.links": false
 }

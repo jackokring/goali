@@ -90,15 +90,16 @@ func Init() {
 func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
 	f := snake.GetAttrString(name)
 	if f == nil {
-		fe.Fatal(fmt.Errorf("snake does not contain %s", name))
+		fe.Fatal(fmt.Errorf("snake does not contain a global %s", name))
 	}
 	if !py.PyCallable_Check(f) {
-		fe.Fatal(fmt.Errorf("%s is not a callable", name))
+		fe.Fatal(fmt.Errorf("%s is not a global callable", name))
 	}
 	if args == nil {
 		args = py.PyTuple_New(0)
 	}
 	// kwargs already optimized for a nil -> NULL
+	// It's a PyDict_New()
 	var g py.PyGILState
 	if gil {
 		// this prevents a deadlock style panic sometimes
@@ -145,12 +146,12 @@ func Exit() {
 func AddFunc(name string, function unsafe.Pointer) {
 	// remove old before new?
 	// not sure if it's needed but ...
-	// allows snake.py to have dummy mypy functions
-	if snake.DelAttrString(name) == -1 {
-		fe.Fatal(fmt.Errorf("%s has no template in the snake module", name))
+	// allows "snake.py" to have dummy mypy functions
+	if snake.DelAttrString(name) != 0 {
+		fe.Fatal(fmt.Errorf("%s has no global template in the snake module", name))
 	}
-	if snake.AddModuleCFunction(name, function) == -1 {
-		fe.Fatal(fmt.Errorf("%s failed to be added to the snake module", name))
+	if snake.AddModuleCFunction(name, function) != 0 {
+		fe.Fatal(fmt.Errorf("%s couldn't be added to the snake module", name))
 	}
 }
 
