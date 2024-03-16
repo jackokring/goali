@@ -5,13 +5,14 @@ from typing import Union, Any, Optional
 from ctypes import _CData
 from pickle import PickleBuffer
 from mmap import mmap
+import snake
 
 ByteAlias = Union[bytes, Union[bytearray, memoryview, array[Any], mmap, _CData, PickleBuffer]]
 
 # stdio redirect logic to goali streams
 class ByteOut(BytesIO):
-    def write(self, bytes: ByteAlias) -> int:
-        return 0
+    def write(self, outBytes: ByteAlias) -> int:
+        return snake.Out(bytes(outBytes))
     
 class StdOut(StringIO):
     def write(self, string: str) -> int:
@@ -20,8 +21,8 @@ class StdOut(StringIO):
     buffer = ByteOut()
 
 class ByteErr(BytesIO):
-    def write(self, bytes: ByteAlias) -> int:
-        return 0
+    def write(self, errBytes: ByteAlias) -> int:
+        return snake.Err(bytes(errBytes))
 
 class StdErr(StringIO):
     def write(self, string: str) -> int:
@@ -31,7 +32,7 @@ class StdErr(StringIO):
 
 class ByteIn(BytesIO):
     def read(self, size: Optional[int] = -1) -> bytes:
-        return b""
+        return snake.In(size)
 
 class StdIn(StringIO):
     def read(self, size: Optional[int] = -1) -> str:
