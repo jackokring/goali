@@ -22,7 +22,7 @@ def BigSurrogate(char: str) -> bool:
     return val >= 0xD800 and val <= 0xDBFF
 
 def WriteProxy(buffer: BytesIO, string: str) -> int:
-    outBytes = string.encode()
+    outBytes = string.encode("utf-8", "surrogateescape")    # PEP 383
     length = buffer.write(outBytes)
     if length != len(outBytes):
         # return actual number written (plus maybe bad terminal chars)
