@@ -22,6 +22,7 @@ def BigSurrogate(char: str) -> bool:
     return val >= 0xD800 and val <= 0xDBFF
 
 def WriteProxy(buffer: BytesIO, string: str) -> int:
+    # surrogateescape chosen to restore file
     outBytes = string.encode("utf-8", "surrogateescape")    # PEP 383
     length = buffer.write(outBytes)
     if length != len(outBytes):
@@ -58,6 +59,11 @@ class ByteIn(BytesIO):
 class StdIn(StringIO):
     def read(self, size: Optional[int] = -1) -> str:
         inBytes = self.buffer.read(size)
+        # surrogateescape chosen to mark all errors yet load
+        # CESU-8 is treated as an error to escape
+        # as it would not restore given hard line on surrogate writing
+        # so technically 6 errors at 3 bytes each
+        # or of length 18.
         string = inBytes.decode("utf-8", "surrogateescape")
         if size != -1:
             inBytes = b"" # something extra
@@ -75,9 +81,30 @@ class StdIn(StringIO):
         return string
     buffer = ByteIn()
 
-# stubs replaced by goali but present for mypy syntax and type checks
-
 # things to migrate into goali from python
 
 # extra utility things
 
+def LittleSurrogate(char: str) -> bool:
+    if len(char) < 1:
+        return False
+    val = ord(char[-1])
+    return val >= 0xDC00 and val <= 0xDFFF
+
+def RestoreSurrogatePairs(string: str) -> str:
+    i = 0
+    while len(string) - 12 > i:
+        text = string[i:i + 12].encode("utf-8", "surrogateescape")
+        try:
+            pair = text.decode("utf-8", "surrogatepass")
+        except:
+            i += 1
+            continue
+        if BigSurrogate(pair[0:2]) and LittleSurrogate(pair[0:2]):
+            # cool got a surrogate pair
+            # being like python, flip this straight to a single
+            # would be most useful
+            c = chr(((ord(pair[0]) << 10) + (ord(pair[1]) & 1023) + 65536) & 0x1FFFFF)
+            string = string[0:i] + c + string[i + 12:]
+            i += 1
+    return string

@@ -13,6 +13,7 @@ type Command struct {
 	Kode bool `help:"Enable kode demangle map mode output (not strict UTF-8)" short:"k"`
 	// malformed UTF-8 => formed but mangled instead of strict error marked UTF-8
 	Mangle            bool `help:"Enable mangle map mode input (not strict UTF-8)" short:"m"`
+	Normal            bool `help:"Enable normalizations (CESU-8 removal, C1 control codes to ^[)" short:"n"`
 	UnAscii           bool `help:"Enable ASCII input mapping (to assist upgrading data)" short:"u"`
 	clit.StreamFilter      // embedded type .. => .
 }

@@ -6,6 +6,11 @@ from typing import Optional
 # from module user code
 import snake.snake as snake
 
+# selective imports
+# Useful for upgrading CESU-8
+# Takes the marked errors and makes singular codepoints
+from snake.snake import RestoreSurrogatePairs
+
 # Initialize the stdio once on module loading
 sys.stdout = snake.StdOut()
 

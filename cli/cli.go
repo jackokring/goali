@@ -40,7 +40,7 @@ import (
 // >> L was almost going to be monotone ^G jingle bells.
 // l
 // m			x
-// n
+// n			x
 // o
 // p	x		x	x
 // q	x		x	x
