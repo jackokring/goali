@@ -64,7 +64,7 @@ class StdIn(StringIO):
             assert size is not None     # apparently calms mypy
             while len(string) < size:
                 while SurrogateEscaped(string) and not BigSurrogate(string):
-                    inBytes += (ord(string[-1]) & 0xFF).to_bytes()  # mask error char
+                    inBytes += (ord(string[-1]) & 0xFF).to_bytes(1, "little")  # mask error char
                     chop = len(string) - 1
                     string = string[0:chop]
                 inBytes += self.buffer.read(1)
