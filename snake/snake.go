@@ -40,15 +40,22 @@ func (c *Command) Help() string {
 func (c *Command) Run(p *clit.Globals) error {
 	// unicorn command hook
 	fe.SetGlobals(p)
-	fmt.Println(c.InputFile)
-	fmt.Println(c.OutputFile)
+	Init()
+
+	Exit()
 	return nil
+}
+
+func Fatal(e error) {
+	if e != nil {
+		Exit()
+	}
+	fe.Fatal(e)
 }
 
 func Run(s string) {
 	if py.PyRun_SimpleString(s) != 0 {
-		Exit()
-		fe.Fatal(fmt.Errorf("python exception: %s", s))
+		Fatal(fmt.Errorf("python exception: %s", s))
 	}
 }
 
@@ -58,10 +65,9 @@ func RunFile(f clit.InputFile) {
 	// ignore flag as may be present for data files
 	//}
 	code, err := py.PyRun_AnyFile(f.InputFile)
-	fe.Fatal(err)
+	Fatal(err)
 	if code != 0 {
-		Exit()
-		fe.Fatal(fmt.Errorf("python exception in file: %s", f.InputFile))
+		Fatal(fmt.Errorf("python exception in file: %s", f.InputFile))
 	}
 }
 
@@ -78,7 +84,7 @@ func Init() {
 	//Run("import snake")
 	snake = py.PyImport_ImportModule("snake")
 	if snake == nil {
-		fe.Fatal(fmt.Errorf("snake module not available to import"))
+		Fatal(fmt.Errorf("snake module not available to import"))
 	}
 	state = py.PyEval_SaveThread()
 }
@@ -90,10 +96,10 @@ func Init() {
 func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
 	f := snake.GetAttrString(name)
 	if f == nil {
-		fe.Fatal(fmt.Errorf("snake does not contain a global %s", name))
+		Fatal(fmt.Errorf("snake does not contain a global %s", name))
 	}
 	if !py.PyCallable_Check(f) {
-		fe.Fatal(fmt.Errorf("%s is not a global callable", name))
+		Fatal(fmt.Errorf("%s is not a global callable", name))
 	}
 	if args == nil {
 		args = py.PyTuple_New(0)
@@ -148,16 +154,20 @@ func AddFunc(name string, function unsafe.Pointer) {
 	// not sure if it's needed but ...
 	// allows "snake.py" to have dummy mypy functions
 	if snake.DelAttrString(name) != 0 {
-		fe.Fatal(fmt.Errorf("%s has no global template in the snake module", name))
+		Fatal(fmt.Errorf("%s has no global template in the snake module", name))
 	}
 	if snake.AddModuleCFunction(name, function) != 0 {
-		fe.Fatal(fmt.Errorf("%s couldn't be added to the snake module", name))
+		Fatal(fmt.Errorf("%s couldn't be added to the snake module", name))
 	}
 }
 
 func AddAll() {
 	AddFunc("snake1", C.py_api_snake1)
 }
+
+//=====================================
+//****** Extensions For Python ********
+//=====================================
 
 func snake1(a string, b string) string {
 	return a + b
