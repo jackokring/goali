@@ -7,6 +7,7 @@ package snake
 import (
 	"fmt"
 	"runtime"
+	"sync"
 	"unsafe"
 
 	py "github.com/jackokring/cpy3"
@@ -18,6 +19,10 @@ import (
 //#cgo pkg-config: python3-embed
 //#include "snake.h"
 import "C"
+
+// In general some functions accept a "gil" bool.
+// Supply "gil" as true for multithreading call.
+// Supply "gil" as false to use the global initial thread.
 
 type Command struct {
 	clit.PyFile
@@ -46,20 +51,25 @@ func Fatal(e error) {
 	fe.Fatal(e)
 }
 
-func Run(s string) {
+func Run(s string, gil bool) {
 	Init()
-	if py.PyRun_SimpleString(s) != 0 {
+	g := gilStateOn(gil)
+	rtn := py.PyRun_SimpleString(s)
+	gilStateOff(g)
+	if rtn != 0 {
 		Fatal(fmt.Errorf("python exception: %s", s))
 	}
 }
 
-func RunFile(f clit.InputFile) {
+func RunFile(f clit.InputFile, gil bool) {
 	Init()
 	//if f.Expand {
 	//fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
 	// ignore flag as may be present for data files
 	//}
+	g := gilStateOn(gil)
 	code, err := py.PyRun_AnyFile(f.InputFile)
+	gilStateOff(g)
 	Fatal(err)
 	if code != 0 {
 		Fatal(fmt.Errorf("python exception in file: %s", f.InputFile))
@@ -75,8 +85,13 @@ var state *py.PyThreadState
 // Python is initialized
 var initialized bool
 
+// Python may be a singleton, but a Mutex might be nice
+var lock sync.Mutex
+
 func Init() {
+	lock.Lock()
 	if initialized {
+		lock.Unlock()
 		return
 	}
 	initialized = true
@@ -86,15 +101,32 @@ func Init() {
 	//Run("import snake")
 	snake = py.PyImport_ImportModule("snake")
 	if snake == nil {
+		lock.Unlock()
 		Fatal(fmt.Errorf("snake module not available to import"))
 	}
 	state = py.PyEval_SaveThread()
+	lock.Unlock()
+}
+
+func gilStateOn(gil bool) py.PyGILState {
+	if gil {
+		// this prevents a deadlock style panic sometimes
+		// in scheduling interaction
+		runtime.LockOSThread()
+	} else {
+		py.PyEval_RestoreThread(state)
+	}
+	return py.PyGILState_Ensure()
+}
+
+func gilStateOff(gil bool, on py.PyGILState) {
+	if !gil {
+		state = py.PyEval_SaveThread()
+	}
+	py.PyGILState_Release(on)
 }
 
 // Call a python function.
-//
-// Supply gil as true for multithreading call.
-// Supply gil as false to use the global initial thread.
 func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
 	Init()
 	f := snake.GetAttrString(name)
@@ -109,30 +141,21 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 	}
 	// kwargs already optimized for a nil -> NULL
 	// It's a PyDict_New()
-	var g py.PyGILState
-	if gil {
-		// this prevents a deadlock style panic sometimes
-		// in scheduling interaction
-		runtime.LockOSThread()
-		g = py.PyGILState_Ensure()
-	} else {
-		py.PyEval_RestoreThread(state)
-	}
+	g := gilStateOn(gil)
 	r := f.Call(args, kwargs)
-	if gil {
-		py.PyGILState_Release(g)
-	} else {
-		state = py.PyEval_SaveThread()
-	}
+	gilStateOff(gil, g)
 	return r
 }
 
 func Exit() {
+	lock.Lock()
 	if !initialized {
+		lock.Unlock()
 		return
 	}
 	py.PyEval_RestoreThread(state)
 	py.Py_Finalize()
+	lock.Unlock()
 }
 
 //=====================================
