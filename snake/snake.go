@@ -40,7 +40,9 @@ func (c *Command) Help() string {
 func (c *Command) Run(p *clit.Globals) error {
 	// unicorn command hook
 	fe.SetGlobals(p)
-
+	r, w := fe.GetIO(c.StreamFilter)
+	addAll(r, w)
+	RunFile(c.PyFile, false) // run global (not threaded)
 	return nil
 }
 
@@ -72,7 +74,7 @@ func Run(s string, gil bool) {
 	}
 }
 
-func RunFile(f clit.InputFile, gil bool) {
+func RunFile(f clit.PyFile, gil bool) {
 	Init()
 	//if f.Expand {
 	//fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
@@ -80,10 +82,10 @@ func RunFile(f clit.InputFile, gil bool) {
 	//}
 	g := gilStateDefer(gil)
 	defer g()
-	code, err := py.PyRun_AnyFile(f.InputFile)
+	code, err := py.PyRun_AnyFile(f.PyFile)
 	Fatal(err)
 	if code != 0 {
-		Fatal(fmt.Errorf("python exception in file: %s", f.InputFile))
+		Fatal(fmt.Errorf("python exception in file: %s", f.PyFile))
 	}
 }
 
@@ -221,12 +223,18 @@ func AddFunc(name string, function unsafe.Pointer) {
 	}
 }
 
-var files struct {
+type io struct {
 	fe.FilterReader
 	fe.FilterWriter
 }
 
-func AddAll(r fe.FilterReader, w fe.FilterWriter) {
+var files io
+
+func addAll(r fe.FilterReader, w fe.FilterWriter) {
+	files = io{
+		FilterReader: r,
+		FilterWriter: w,
+	}
 	AddFunc("Out", C.py_api_stdout)
 	AddFunc("Err", C.py_api_stderr)
 	AddFunc("In", C.py_api_stdin)
