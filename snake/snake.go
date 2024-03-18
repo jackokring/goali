@@ -20,7 +20,9 @@ import (
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-PyObject *py_api_snake1(PyObject *self, PyObject *args, PyObject *kwargs);
+PyObject *py_api_stdout(PyObject *self, PyObject *args, PyObject *kwargs);
+PyObject *py_api_stderr(PyObject *self, PyObject *args, PyObject *kwargs);
+PyObject *py_api_stdin(PyObject *self, PyObject *args, PyObject *kwargs);
 */
 import "C"
 
@@ -179,26 +181,29 @@ var files struct {
 }
 
 func AddAll(r fe.FilterReader, w fe.FilterWriter) {
-	AddFunc("snake1", C.py_api_snake1)
+	AddFunc("Out", C.py_api_stdout)
+	AddFunc("Err", C.py_api_stderr)
+	AddFunc("In", C.py_api_stdin)
 }
 
 //=====================================
 //****** Extensions For Python ********
 //=====================================
 
-func snake1(a string, b string) string {
-	return a + b
-}
-
-//export go_api_snake1
-func go_api_snake1(a *C.char, b *C.char) *C.char {
-	return C.CString(snake1(C.GoString(a), C.GoString(b)))
-}
+// e.g.	//return C.CString(snake1(C.GoString(a), C.GoString(b)))
 
 // IO use the reader and writer ...
 
+func go_api_stdout(s unsafe.Pointer, n C.int) C.int {
+	return C.int(stdout(C.GoBytes(s, n)))
+}
+
 func stdout(s []byte) int {
 	return files.FilterWriter.Write(s)
+}
+
+func go_api_stderr(s unsafe.Pointer, n C.int) C.int {
+	return C.int(stderr(C.GoBytes(s, n)))
 }
 
 func stderr(s []byte) int {
@@ -206,6 +211,20 @@ func stderr(s []byte) int {
 	// fail or true fact
 	return len(s)
 }
+
+func go_api_stdinBuffer(s C.int) unsafe.Pointer {
+	return C.CBytes(stdin(int(s))) // malloc a buffer
+}
+
+func go_api_stdinLen() C.int {
+	return C.int(stdinLen)
+}
+
+func go_api_free(s unsafe.Pointer) {
+	C.free(s)
+}
+
+var stdinLen int
 
 func stdin(size int) []byte {
 	if size == -1 {
@@ -215,10 +234,12 @@ func stdin(size int) []byte {
 			i := stdin(1024)
 			r = append(r, i...) // automatic varadic expansion
 		}
+		stdinLen = len(r)
 		return r
 	} else {
 		r := make([]byte, size)
 		i := files.FilterReader.Read(r)
+		stdinLen = i
 		return r[:i] // python EOF style
 	}
 }
