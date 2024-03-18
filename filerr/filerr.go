@@ -170,7 +170,7 @@ func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
 type FilterReader interface {
 	io.Closer
 	// io.EOF
-	Read(b []byte) (n int)
+	Read(b []byte) int
 	EOF() bool
 	io.Seeker
 }
@@ -202,7 +202,7 @@ func (r GReader) Close() error {
 // to need pointer to value by &. Otherwise
 // how would the pointer refer to that
 // which is to be modified?
-func (r *GReader) Read(b []byte) (n int) {
+func (r *GReader) Read(b []byte) int {
 	n, e := r.this.Read(b)
 	if e == io.EOF {
 		// delay spec for while style test of EOF
@@ -231,7 +231,7 @@ func (r GReader) Seek(offset int64, whence int) (int64, error) {
 type FilterWriter interface {
 	io.Closer
 	// io.EOF? on writing?
-	Write(b []byte)
+	Write(b []byte) int
 	// useful for RW paradigm
 	getRollback() string
 	// rollback future
@@ -264,9 +264,10 @@ func (w GWriter) Close() error {
 	return nil
 }
 
-func (w GWriter) Write(b []byte) {
-	_, e := w.this.Write(b)
+func (w GWriter) Write(b []byte) int {
+	i, e := w.this.Write(b)
 	Fatal(e)
+	return i
 }
 
 // Rollback the writer and allow closing an associated reader (this can be null).

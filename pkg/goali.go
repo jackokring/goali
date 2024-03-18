@@ -36,6 +36,7 @@ import (
 	"github.com/jackokring/goali/cli"
 	con "github.com/jackokring/goali/consts"
 	fe "github.com/jackokring/goali/filerr"
+	"github.com/jackokring/goali/snake"
 )
 
 //=====================================
@@ -217,5 +218,6 @@ func Goali() {
 		fmt.Printf("Uh oh, there was an error: %v\n", err)
 	}
 
+	snake.Exit() // close processing
 	fe.CloseAll()
 }

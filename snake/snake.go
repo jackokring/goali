@@ -40,9 +40,7 @@ func (c *Command) Help() string {
 func (c *Command) Run(p *clit.Globals) error {
 	// unicorn command hook
 	fe.SetGlobals(p)
-	Init()
 
-	Exit()
 	return nil
 }
 
@@ -54,12 +52,14 @@ func Fatal(e error) {
 }
 
 func Run(s string) {
+	Init()
 	if py.PyRun_SimpleString(s) != 0 {
 		Fatal(fmt.Errorf("python exception: %s", s))
 	}
 }
 
 func RunFile(f clit.InputFile) {
+	Init()
 	//if f.Expand {
 	//fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
 	// ignore flag as may be present for data files
@@ -77,7 +77,14 @@ var snake *py.PyObject
 // The thread state
 var state *py.PyThreadState
 
+// Python is initialized
+var initialized bool
+
 func Init() {
+	if initialized {
+		return
+	}
+	initialized = true
 	py.Py_Initialize()
 	// To be usable as a part of snake
 	// Must have objects to modify with extras
@@ -94,6 +101,7 @@ func Init() {
 // Supply gil as true for multithreading call.
 // Supply gil as false to use the global initial thread.
 func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
+	Init()
 	f := snake.GetAttrString(name)
 	if f == nil {
 		Fatal(fmt.Errorf("snake does not contain a global %s", name))
@@ -125,6 +133,9 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 }
 
 func Exit() {
+	if !initialized {
+		return
+	}
 	py.PyEval_RestoreThread(state)
 	py.Py_Finalize()
 }
@@ -153,6 +164,7 @@ func AddFunc(name string, function unsafe.Pointer) {
 	// remove old before new?
 	// not sure if it's needed but ...
 	// allows "snake.py" to have dummy mypy functions
+	Init()
 	if snake.DelAttrString(name) != 0 {
 		Fatal(fmt.Errorf("%s has no global template in the snake module", name))
 	}
@@ -161,7 +173,12 @@ func AddFunc(name string, function unsafe.Pointer) {
 	}
 }
 
-func AddAll() {
+var files struct {
+	fe.FilterReader
+	fe.FilterWriter
+}
+
+func AddAll(r fe.FilterReader, w fe.FilterWriter) {
 	AddFunc("snake1", C.py_api_snake1)
 }
 
@@ -176,4 +193,32 @@ func snake1(a string, b string) string {
 //export go_api_snake1
 func go_api_snake1(a *C.char, b *C.char) *C.char {
 	return C.CString(snake1(C.GoString(a), C.GoString(b)))
+}
+
+// IO use the reader and writer ...
+
+func stdout(s []byte) int {
+	return files.FilterWriter.Write(s)
+}
+
+func stderr(s []byte) int {
+	fe.Notify(s)
+	// fail or true fact
+	return len(s)
+}
+
+func stdin(size int) []byte {
+	if size == -1 {
+		r := make([]byte, 0)
+		// all the file as one buffer
+		for !files.FilterReader.EOF() {
+			i := stdin(1024)
+			r = append(r, i...) // automatic varadic expansion
+		}
+		return r
+	} else {
+		r := make([]byte, size)
+		i := files.FilterReader.Read(r)
+		return r[:i] // python EOF style
+	}
 }
