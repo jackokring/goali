@@ -55,7 +55,7 @@ func Run(s string, gil bool) {
 	Init()
 	g := gilStateOn(gil)
 	rtn := py.PyRun_SimpleString(s)
-	gilStateOff(g)
+	gilStateOff(gil, g)
 	if rtn != 0 {
 		Fatal(fmt.Errorf("python exception: %s", s))
 	}
@@ -69,7 +69,7 @@ func RunFile(f clit.InputFile, gil bool) {
 	//}
 	g := gilStateOn(gil)
 	code, err := py.PyRun_AnyFile(f.InputFile)
-	gilStateOff(g)
+	gilStateOff(gil, g)
 	Fatal(err)
 	if code != 0 {
 		Fatal(fmt.Errorf("python exception in file: %s", f.InputFile))
@@ -112,18 +112,24 @@ func gilStateOn(gil bool) py.PyGILState {
 	if gil {
 		// this prevents a deadlock style panic sometimes
 		// in scheduling interaction
+		// something to do with go routine preemption and thread reuse
 		runtime.LockOSThread()
 	} else {
+		// main thread
 		py.PyEval_RestoreThread(state)
 	}
 	return py.PyGILState_Ensure()
 }
 
 func gilStateOff(gil bool, on py.PyGILState) {
-	if !gil {
+	py.PyGILState_Release(on)
+	if gil {
+		// matched pair
+		runtime.UnlockOSThread()
+	} else {
+		// main thread
 		state = py.PyEval_SaveThread()
 	}
-	py.PyGILState_Release(on)
 }
 
 // Call a python function.
