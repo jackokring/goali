@@ -20,9 +20,39 @@ import (
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-PyObject *py_api_stdout(PyObject *self, PyObject *args, PyObject *kwargs);
-PyObject *py_api_stderr(PyObject *self, PyObject *args, PyObject *kwargs);
-PyObject *py_api_stdin(PyObject *self, PyObject *args, PyObject *kwargs);
+int go_api_stdout(const char*, int);
+int go_api_stderr(const char*, int);
+char *go_api_stdinBuffer(int);
+int go_api_stdinLen();
+void go_api_free(const char*);
+
+// PyCFunction signature (both the tuple and the dictionary)
+
+PyObject *py_api_stdout(PyObject *self, PyObject *args, PyObject *kwargs) {
+	const char *arg = NULL;
+	Py_ssize_t len = 0;
+	PyArg_ParseTuple(args, "y#", &arg, &len);
+	int i = go_api_stdout(arg, (int)len);
+	return Py_BuildValue("i", i);
+}
+
+PyObject *py_api_stderr(PyObject *self, PyObject *args, PyObject *kwargs) {
+	const char *arg = NULL;
+	Py_ssize_t len = 0;
+	PyArg_ParseTuple(args, "y#", &arg, &len);
+	int i = go_api_stderr(arg, (int)len);
+	return Py_BuildValue("i", i);
+}
+
+PyObject *py_api_stdin(PyObject *self, PyObject *args, PyObject *kwargs) {
+	Py_ssize_t len = -1;
+	PyArg_ParseTuple(args, "|i", &len);
+	char *r = go_api_stdinBuffer((int)len);
+	int ok = go_api_stdinLen();
+	PyObject *ret = Py_BuildValue("y#", r, ok);
+	go_api_free(r);
+	return ret;
+}
 */
 import "C"
 
@@ -156,10 +186,10 @@ func Exit() {
 //
 // N.B. Only the *self (internal?), *args (tuple), *kwargs (dictionary) API
 //
-// 1. So link py_api functions to names
-// 2. Wrap go_api of go function
-// 3. Add py_api to go_api link in cwrap.go
-// 4. Add prototype of py_api to top of this file
+// 1. Decide on function names and make a go function below here
+// 2. Wrap go_api of go function (for py_api to call) below here
+// 3. Add go_api forward prototype at top of this file (in C)
+// 4. Add py_api to top of this file (in C)
 // 5. Wonder at the C ... rap jokes ...
 
 func AddFunc(name string, function unsafe.Pointer) {
