@@ -44,18 +44,29 @@ func (c *Command) Run(p *clit.Globals) error {
 	return nil
 }
 
+//var raceLock sync.Mutex
+
 func Fatal(e error) {
+	//raceLock.Lock()
+	// at this point a likely lock on the GIL
 	if e != nil {
 		Exit()
+		// at this point a lock on errorLock
+		// preventing Init() via second Fatal
+		// errorLock.Lock() set already (Fatal un-function on Init())
+		// lock.Lock() set already (can't Init() or Exit())
 	}
 	fe.Fatal(e)
+	// just in case it's not an error
+	// Fatal(err) action if error style
+	//raceLock.Unlock()
 }
 
 func Run(s string, gil bool) {
 	Init()
-	g := gilStateOn(gil)
+	g := gilStateDefer(gil)
+	defer g()
 	rtn := py.PyRun_SimpleString(s)
-	gilStateOff(gil, g)
 	if rtn != 0 {
 		Fatal(fmt.Errorf("python exception: %s", s))
 	}
@@ -67,9 +78,9 @@ func RunFile(f clit.InputFile, gil bool) {
 	//fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
 	// ignore flag as may be present for data files
 	//}
-	g := gilStateOn(gil)
+	g := gilStateDefer(gil)
+	defer g()
 	code, err := py.PyRun_AnyFile(f.InputFile)
-	gilStateOff(gil, g)
 	Fatal(err)
 	if code != 0 {
 		Fatal(fmt.Errorf("python exception in file: %s", f.InputFile))
@@ -89,9 +100,14 @@ var initialized bool
 var lock sync.Mutex
 
 func Init() {
+	if !errorLock.TryLock() {
+		// of course the implicit assumption is grant if available
+		// and not don't grant to throttle processing
+		Fatal(fmt.Errorf("there can be only one, low lander! reevaluate initial assumptions"))
+	}
 	lock.Lock()
+	defer lock.Unlock()
 	if initialized {
-		lock.Unlock()
 		return
 	}
 	initialized = true
@@ -101,14 +117,18 @@ func Init() {
 	//Run("import snake")
 	snake = py.PyImport_ImportModule("snake")
 	if snake == nil {
-		lock.Unlock()
 		Fatal(fmt.Errorf("snake module not available to import"))
 	}
 	state = py.PyEval_SaveThread()
-	lock.Unlock()
 }
 
-func gilStateOn(gil bool) py.PyGILState {
+func gilStateDefer(gil bool) func() {
+	// remove the GIL?
+	// Just Make a New Process(TM) ...
+	// Sure a mini OS in python would be funny
+	// but productive on execution context local storage base offset
+	// added in to the addressing modes?
+	// Sure software TLB is funny, for some ...
 	if gil {
 		// this prevents a deadlock style panic sometimes
 		// in scheduling interaction
@@ -118,31 +138,29 @@ func gilStateOn(gil bool) py.PyGILState {
 		// main thread
 		py.PyEval_RestoreThread(state)
 	}
-	return py.PyGILState_Ensure()
-}
-
-func gilStateOff(gil bool, on py.PyGILState) {
-	py.PyGILState_Release(on)
-	if gil {
-		// matched pair
-		runtime.UnlockOSThread()
-	} else {
-		// main thread
-		state = py.PyEval_SaveThread()
+	g := py.PyGILState_Ensure()
+	return func() {
+		py.PyGILState_Release(g)
+		if gil {
+			// matched pair
+			runtime.UnlockOSThread()
+		} else {
+			// main thread
+			state = py.PyEval_SaveThread()
+		}
 	}
 }
 
 // Call a python function.
 func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
 	Init()
-	g := gilStateOn(gil)
+	g := gilStateDefer(gil)
+	defer g()
 	f := snake.GetAttrString(name)
 	if f == nil {
-		gilStateOff(gil, g)
 		Fatal(fmt.Errorf("snake does not contain a global %s", name))
 	}
 	if !py.PyCallable_Check(f) {
-		gilStateOff(gil, g)
 		Fatal(fmt.Errorf("%s is not a global callable", name))
 	}
 	if args == nil {
@@ -151,9 +169,10 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 	// kwargs already optimized for a nil -> NULL
 	// It's a PyDict_New()
 	r := f.Call(args, kwargs)
-	gilStateOff(gil, g)
 	return r
 }
+
+var errorLock sync.Mutex
 
 func Exit() {
 	lock.Lock()
@@ -163,7 +182,9 @@ func Exit() {
 	}
 	py.PyEval_RestoreThread(state)
 	py.Py_Finalize()
-	lock.Unlock()
+	// sure needs a solid lockout
+	//lock.Unlock()
+	errorLock.Lock()
 }
 
 //=====================================
