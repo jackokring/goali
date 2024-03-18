@@ -129,11 +129,14 @@ func gilStateOff(gil bool, on py.PyGILState) {
 // Call a python function.
 func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyObject {
 	Init()
+	g := gilStateOn(gil)
 	f := snake.GetAttrString(name)
 	if f == nil {
+		gilStateOff(gil, g)
 		Fatal(fmt.Errorf("snake does not contain a global %s", name))
 	}
 	if !py.PyCallable_Check(f) {
+		gilStateOff(gil, g)
 		Fatal(fmt.Errorf("%s is not a global callable", name))
 	}
 	if args == nil {
@@ -141,7 +144,6 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 	}
 	// kwargs already optimized for a nil -> NULL
 	// It's a PyDict_New()
-	g := gilStateOn(gil)
 	r := f.Call(args, kwargs)
 	gilStateOff(gil, g)
 	return r
