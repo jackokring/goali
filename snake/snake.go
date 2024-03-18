@@ -14,46 +14,9 @@ import (
 	fe "github.com/jackokring/goali/filerr"
 )
 
-/* // double wrapped prototypes of functions available from python
-#cgo pkg-config: python3-embed
-
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
-int go_api_stdout(const char*, int);
-int go_api_stderr(const char*, int);
-char *go_api_stdinBuffer(int);
-int go_api_stdinLen();
-void go_api_free(const char*);
-
-// PyCFunction signature (both the tuple and the dictionary)
-
-PyObject *py_api_stdout(PyObject *self, PyObject *args, PyObject *kwargs) {
-	const char *arg = NULL;
-	Py_ssize_t len = 0;
-	PyArg_ParseTuple(args, "y#", &arg, &len);
-	int i = go_api_stdout(arg, (int)len);
-	return Py_BuildValue("i", i);
-}
-
-PyObject *py_api_stderr(PyObject *self, PyObject *args, PyObject *kwargs) {
-	const char *arg = NULL;
-	Py_ssize_t len = 0;
-	PyArg_ParseTuple(args, "y#", &arg, &len);
-	int i = go_api_stderr(arg, (int)len);
-	return Py_BuildValue("i", i);
-}
-
-PyObject *py_api_stdin(PyObject *self, PyObject *args, PyObject *kwargs) {
-	Py_ssize_t len = -1;
-	PyArg_ParseTuple(args, "|i", &len);
-	char *r = go_api_stdinBuffer((int)len);
-	int ok = go_api_stdinLen();
-	PyObject *ret = Py_BuildValue("y#", r, ok);
-	go_api_free(r);
-	return ret;
-}
-*/
+//// double wrapped prototypes of functions available from python
+//#cgo pkg-config: python3-embed
+//#include "snake.h"
 import "C"
 
 type Command struct {
@@ -187,9 +150,10 @@ func Exit() {
 // N.B. Only the *self (internal?), *args (tuple), *kwargs (dictionary) API
 //
 // 1. Decide on function names and make a go function below here
-// 2. Wrap go_api of go function (for py_api to call) below here
-// 3. Add go_api forward prototype at top of this file (in C)
-// 4. Add py_api to top of this file (in C)
+// 2. Wrap Go_api of go function (for py_api to call) below here
+//		It is critical that it is comment marked "//export <name>"
+// 3. Add Go_api extern forward prototype at in .h file (in C)
+// 4. Add py_api to .h file (in C)
 // 5. Wonder at the C ... rap jokes ...
 
 func AddFunc(name string, function unsafe.Pointer) {
@@ -224,6 +188,7 @@ func AddAll(r fe.FilterReader, w fe.FilterWriter) {
 
 // IO use the reader and writer ...
 
+//export go_api_stdout
 func go_api_stdout(s unsafe.Pointer, n C.int) C.int {
 	return C.int(stdout(C.GoBytes(s, n)))
 }
@@ -232,6 +197,7 @@ func stdout(s []byte) int {
 	return files.FilterWriter.Write(s)
 }
 
+//export go_api_stderr
 func go_api_stderr(s unsafe.Pointer, n C.int) C.int {
 	return C.int(stderr(C.GoBytes(s, n)))
 }
@@ -242,14 +208,17 @@ func stderr(s []byte) int {
 	return len(s)
 }
 
+//export go_api_stdinBuffer
 func go_api_stdinBuffer(s C.int) unsafe.Pointer {
 	return C.CBytes(stdin(int(s))) // malloc a buffer
 }
 
+//export go_api_stdinLen
 func go_api_stdinLen() C.int {
 	return C.int(stdinLen)
 }
 
+//export go_api_free
 func go_api_free(s unsafe.Pointer) {
 	C.free(s)
 }
