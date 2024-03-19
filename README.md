@@ -15,16 +15,18 @@
 - [ ] TUI for all but GUI.
 - [ ] ...
 
-## Features Maybe? Likely Deleted this later
+## Features
 
-* User configuration `.yaml` files.
-* `--pro-file=PROFILE` process configuration override.
+* `--pro-file=PROFILE` process configuration override with `.yaml` files.
 * Logging and `os.Stderr` fallback.
-* Debug 'n panic `Fatal(err) void`/`Error(err) bool` framework.
 * `os.Stdin`/`os.Stdout` use by `-` filename.
 * GZip IO wrapping CLI options.
+* Use `c`, `python` and/or `go` to develop possibilities.
+
+## Maybe? Likely Delete this later
+
+* Debug 'n panic `Fatal(err) void`/`Error(err) bool` framework.
 * `FilterWriter.Rollback()` for a non-commit `Close()`.
-* `snake.py` python module for interfacing and `mypy` type checking.
 
 ---
 

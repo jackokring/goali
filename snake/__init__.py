@@ -2,6 +2,14 @@
 # import typing
 from typing import Optional
 
+# part of the PyCFunction all having self rabbit hole
+import functools
+import itertools
+import operator
+
+# some simplification definitions
+autoself = functools.singledispatch
+
 # import modules
 import sys
 
