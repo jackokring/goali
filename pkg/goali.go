@@ -143,6 +143,6 @@ func Goali() {
 	if ra != nil {
 		ra.RunAfter() // post TUI model postAction receiver
 	}
-	snake.Exit() // close processing
-	fe.CloseAll()
+	snake.Exit()       // close processing
+	fe.CloseAll(false) // natural exit
 }

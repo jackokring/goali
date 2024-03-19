@@ -60,12 +60,16 @@ func Error(e error) bool {
 var closers []io.Closer = []io.Closer{}
 
 // CloseAll open things.
-func CloseAll() {
+func CloseAll(roll bool) {
 	// apparently logical for closing the outer streams first
 	for i, j := 0, len(closers)-1; i < j; i, j = i+1, j-1 {
 		closers[i], closers[j] = closers[j], closers[i]
 	}
 	for _, c := range closers {
+		w, ok := c.(FilterWriter)
+		if ok {
+			w.Rollback(nil)
+		}
 		Error(c.Close())
 	}
 }
@@ -83,7 +87,7 @@ func Fatal(e error) {
 		// the close is to allow file write
 		// sync to already done options
 		// No Notify() proxy as serious terminal error
-		CloseAll()
+		CloseAll(g.Rollback) // rollback
 		if g.Debug {
 			// this should always drop somewhere
 			log.Panic(e)
@@ -238,7 +242,7 @@ type FilterWriter interface {
 	// useful for RW paradigm
 	getRollback() string
 	// rollback future
-	Rollback(closeBefore FilterReader) (e error)
+	Rollback(closeBefore FilterReader)
 	io.Seeker
 }
 
@@ -274,7 +278,7 @@ func (w GWriter) Write(b []byte) int {
 }
 
 // Rollback the writer and allow closing an associated reader (this can be null).
-func (w GWriter) Rollback(closeBefore FilterReader) (e error) {
+func (w GWriter) Rollback(closeBefore FilterReader) {
 	// as interface (nil, nil)
 	if closeBefore != nil {
 		Error(closeBefore.Close())
@@ -301,8 +305,6 @@ func (w GWriter) Rollback(closeBefore FilterReader) (e error) {
 		}
 		Fatal(os.Remove(w.rollback))
 	}
-	// already handled display of errors
-	return nil
 }
 
 func (w GWriter) getRollback() string {

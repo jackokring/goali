@@ -44,7 +44,7 @@ import (
 // o
 // p	x		x	x
 // q	x		x	x
-// r
+// r		x
 // s	x		x	x
 // t
 // u			x
