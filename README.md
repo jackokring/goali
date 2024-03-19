@@ -1,13 +1,17 @@
 # Goali
 
-## Decided Features
+## Links
 
-* `unicorn` Unicode mangler. Also [The Word][the_word]
-* `snake` Embedded and expanded python
-* `mickey` A nice GUI for something
-* `knap` A web servia thing
+* [Goali Blog][blog] A github pages site.
 
-**Under Construction**
+## `goali` Main Commands
+
+* `unicorn` Unicode mangler. Also [The Word][the_word]...
+* `snake` Embedded and expanded python...
+* `mickey` Nice GUI for something...
+* `knap` Web servia thing...
+
+**Under Construction TODO**
 
 - [ ] Unicode format checking and conversion.
 - [ ] GUI interface.
@@ -23,7 +27,7 @@
 * GZip IO wrapping CLI options.
 * Use `c`, `python` and/or `go` to develop possibilities.
 
-## Maybe? Likely Delete this later
+## Coding Framework Features
 
 * Debug 'n panic `Fatal(err) void`/`Error(err) bool` framework.
 * `FilterWriter.Rollback()` for a non-commit `Close()`.
@@ -37,7 +41,7 @@ Much faster code compile too.
 
 `go build -ldflags "-w -s"` saves 5 MB using the linker optimizer.
 
-## Modules Used (and Indirect)
+## Go Modules Used (and Indirect)
 
 * [kong][kong] - CLI parse
 * [fyne][fyne] - GUI toolkit
@@ -57,6 +61,8 @@ This place is kind of a brain storming section, stuff in the decision matrix.
 A python virtual environment was added to the project. Its major directories
 `lib`, and `bin` were added to `.gitignore`. This may be altered later 
 depending on functional use. A `snake_test.ipynb` test Jupyter notebook is included.
+
+---
 
 ## Go Likes and Dislikes
 
@@ -121,14 +127,11 @@ should hold off when close to memory 70% or core usage above 50% like
 give the syntax check a stop for a minute or two. I only deleted a `}`. I'm sure
 I'll manage without the extra or fewer items in the "intelli-drop-list".
 
-## TODO
-
-Wrong place to organize this. Sneaker text, old skool penning?
-
 ---
 
-#### Extracted Link Definitions (Invisible)
+## Extracted Link Definitions (Invisible)
 
+[blog]: jackokring.github.io/goali
 [bubbles]: github.com/charmbracelet/bubbles
 [bubbletea]: github.com/charmbracelet/bubbletea
 [chi]: github.com/go-chi/chi/v5
