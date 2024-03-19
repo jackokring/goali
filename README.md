@@ -1,5 +1,28 @@
 # Goali
 
+## Install
+```
+$ sudo apt install git python-is-python3 golang python3-pip python3-dev
+$ git clone git@github.com:jackokring/goali.git
+$ cd goali
+$ # the cpy3 submodule for embedding python
+$ git submodule update --init --recursive
+$ # pull and satisfy requirements then go build
+$ ./require.sh
+```
+
+## Fork
+```
+$ # go to repository directory
+$ cd goali
+$ # use your fork URL
+$ git remote set-url origin git@github.com:<username>/goali.git
+$ git push origin master
+$ # check requirements and git add commit push
+$ ./freeze.sh
+```
+And then create pull requests if you feel like it.
+
 ## Links
 
 * [Goali Blog][blog] A github pages site.
