@@ -16,22 +16,35 @@ import (
 	fe "github.com/jackokring/goali/filerr"
 )
 
+type PostAction interface {
+	RunAfter()
+}
+
 // A default tea Model
 type Model struct {
-	spinner spinner.Model
-	keys    keyMap
-	help    help.Model
-	text    string
+	spinner  spinner.Model
+	keys     keyMap
+	help     help.Model
+	text     string
+	RunAfter PostAction
 }
 
 // Quit the TUI
-type QuitMsg tea.Msg
+type QuitMsg struct {
+	tea.Msg // embedded container has receivers
+}
 
 // Action message (extend for more specifics)
 type ActionMsg struct {
 	tea.Msg
 	// expanded data
 	text string // string to set on action
+}
+
+// PostAction message (after TUI close)
+type PostActionMsg struct {
+	tea.Msg
+	run PostAction
 }
 
 // User channel to return model on TUI quit
@@ -112,6 +125,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case ActionMsg:
 		// decode action messages
 		m.text = msg.text
+	case PostActionMsg:
+		// set a clean up action based on final Model
+		m.RunAfter = msg.run
 	case QuitMsg:
 		// exit request
 		return m, tea.Quit

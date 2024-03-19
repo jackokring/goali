@@ -78,13 +78,16 @@ func DeferClose(c io.Closer) {
 // Fatal error logging.
 func Fatal(e error) {
 	if Error(e) {
+		//goali.Tea(gin.QuitMsg)
+		// As a panic or exit due anyway
+		// the close is to allow file write
+		// sync to already done options
+		// No Notify() proxy as serious terminal error
+		CloseAll()
 		if g.Debug {
 			// this should always drop somewhere
 			log.Panic(e)
 		}
-		//
-		// No Notify() proxy as serious terminal error
-		CloseAll()
 		log.Fatal("FATAL: ", e)
 	}
 }
