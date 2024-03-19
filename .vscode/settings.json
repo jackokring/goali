@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
         "alecthomas",
+        "autometh",
+        "autoreg",
         "autoself",
         "bubbletea",
         "CESU",
@@ -40,6 +42,7 @@
         "mypy",
         "Oakham",
         "ORIC",
+        "partmeth",
         "PROGRAMDATA",
         "pylance",
         "skool",

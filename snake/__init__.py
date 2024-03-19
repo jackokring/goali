@@ -1,14 +1,32 @@
-"""The imported snake python template with mypy stub definitions and any needed wrappers."""
-# import typing
-from typing import Optional
+"""The imported snake python template with mypy stub definitions and any needed wrappers.
 
-# part of the PyCFunction all having self rabbit hole
+Various imports are also made an some efficiency definitions made for 'from snake import *'
+to provide ease of coding."""
+# import typing common ADTs
+from typing import Optional, Any, List, Dict, Union, Set, Tuple
+
+# part of the PyCFunction all having "self" (the module) rabbit hole
 import functools
 import itertools
 import operator
 
+# dynamic "typing" based dispatch via @overload / @overloads(f_certain)
+from snake.overloading import *
+
 # some simplification definitions
+# @autoself and then f.register
+# might be more compact and "standard" for special case processing
 autoself = functools.singledispatch
+autometh = functools.singledispatchmethod
+# partial application on functions and methods
+partial = functools.partial
+partmeth = functools.partialmethod
+# caching
+lru = functools.lru_cache
+# total ordering using just __eq__(), and one other like __lt__() (by subtraction -ve number?)
+ordered = functools.total_ordering
+# decorator wraps (use in decorator to wraps(f) before f use in returned wrapper())
+wraps = functools.wraps
 
 # import modules
 import sys
