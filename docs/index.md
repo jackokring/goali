@@ -5,10 +5,8 @@
 # Use "_posts/2024-03-19-welcome-to-jekyll.md" as a "post" template
 
 layout: home
+title: The Goali Homepage and Blog
 ---
-
-## The Goali Homepage and Blog
-
 Welcome.
 
 ## Goali Links

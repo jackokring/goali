@@ -6,7 +6,7 @@ permalink: /about/
 
 # Goali
 
-A CLI tool made by Simon Jackson. Made initiallly to test out `Go` it is and will be expanded
+A CLI tool made by Simon Jackson. Made initially to test out `Go` it is and will be expanded
 to include anything he thinks is worth adding.
 
 This site is built using Jekyll, written in git flavoured markdown and hosted on GitHub Pages.

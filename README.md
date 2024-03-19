@@ -25,7 +25,7 @@ And then create pull requests if you feel like it.
 
 ## Links
 
-* [Goali Blog][blog] A github pages site.
+* [Goali Blog][blog] A github pages site. Keeps the speculation off this readme.
 * [TODO bot][todo] A github bot using commented `@todo`/`@body` to raise automatic issues.
 
 ## `goali` Main Commands
@@ -35,13 +35,7 @@ And then create pull requests if you feel like it.
 * `mickey` Nice GUI for something...
 * `knap` Web servia thing...
 
-**Under Construction TODO**
-
-- [ ] Unicode format checking and conversion.
-- [ ] GUI interface.
-- [ ] Python embedded, default extra available functions.
-- [ ] TUI for all but GUI.
-- [ ] ...
+**Under Construction TODO...**
 
 ## Features
 
