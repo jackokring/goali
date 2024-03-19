@@ -3,6 +3,7 @@
 ## Links
 
 * [Goali Blog][blog] A github pages site.
+* [TODO bot][todo] A github bot using commented `@todo`/`@body` to raise automatic issues.
 
 ## `goali` Main Commands
 
@@ -46,7 +47,7 @@ Much faster code compile too.
 * [kong][kong] - CLI parse
 * [fyne][fyne] - GUI toolkit
 * [chi][chi] - A kind of node.js express router in go
-* [cpy3][cpy3] - Python 3.11 wrapper (`git submodule` [CPY3][CPY3])
+* [cpy3][cpy3] - Python 3.11 wrapper `git submodule update --init --recursive` ([CPY3.md][CPY3])
 * [bubbletea][bubbletea] - TUI toolkit
 * [lipgloss][lipgloss] - ANSI sequences
 * [bubbles][bubbles] - TUI extended controls
@@ -141,5 +142,6 @@ I'll manage without the extra or fewer items in the "intelli-drop-list".
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml
 [lipgloss]: github.com/charmbracelet/lipgloss
+[todo]: https://todo.jasonet.co
 
 [the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
