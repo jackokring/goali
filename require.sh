@@ -3,4 +3,4 @@
 git pull
 python -m venv .
 pip install -r requirements.txt
-go build
+source gob.sh
