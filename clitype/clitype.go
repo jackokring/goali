@@ -18,7 +18,7 @@ type Config kong.ConfigFlag
 type Globals struct {
 	Debug      bool             `help:"Enable debug mode (includes panic tracing)." short:"d"`
 	ProFile    Profile          `help:"Use PROFILE file (*.yaml) of ${appName}." type:"yamlfile" short:"p"`
-	Quiet      bool             `help:"Enable quiet mode errors (overrides -v)." short:"q"`
+	Quiet      bool             `help:"Enable quiet mode errors (overrides some of -d)." short:"q"`
 	Rollback   bool             `help:"Enable rollback mode on fatal errors." short:"r"`
 	SysLog     bool             `help:"Enable syslog output." short:"s"`
 	TempConfig Config           `help:"Override configuration CONFIG file (*.yaml) of ${appName} (usually ${localConfig})." short:"t"`

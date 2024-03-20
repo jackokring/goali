@@ -6,6 +6,7 @@ package snake
 
 import (
 	"fmt"
+	"math"
 	"runtime"
 	"sync"
 	"unsafe"
@@ -248,9 +249,18 @@ func AddAll(r fe.FilterReader, w fe.FilterWriter) {
 
 // IO use the reader and writer ...
 
+var maxCInt C.Py_ssize_t = math.MaxInt32
+
+func trunc64(n C.Py_ssize_t) C.int {
+	if n > maxCInt {
+		n = maxCInt
+	}
+	return C.int(n)
+}
+
 //export go_api_stdout
-func go_api_stdout(s unsafe.Pointer, n C.int) C.int {
-	return C.int(stdout(C.GoBytes(s, n)))
+func go_api_stdout(s unsafe.Pointer, n C.Py_ssize_t) C.Py_ssize_t {
+	return C.Py_ssize_t(stdout(C.GoBytes(s, trunc64(n))))
 }
 
 func stdout(s []byte) int {
@@ -258,24 +268,35 @@ func stdout(s []byte) int {
 }
 
 //export go_api_stderr
-func go_api_stderr(s unsafe.Pointer, n C.int) C.int {
-	return C.int(stderr(C.GoBytes(s, n)))
+func go_api_stderr(s unsafe.Pointer, n C.Py_ssize_t) C.Py_ssize_t {
+	return C.Py_ssize_t(stderr(C.GoBytes(s, trunc64(n))))
 }
 
 func stderr(s []byte) int {
+	// so the error stream of a single trace is a
+	// single print?
+	// also what happens to an error if
+	// for some reason NotImplementedError
+	// is also triggered on stdout write?
+	// also if an error happens won't the
+	// python invoke return a non zero int?
+	// or is that just for system errors?
+	// likely fail to non zero before system
+	// exit(-1)
 	fe.Error(fmt.Errorf("python: %s", string(s)))
 	// fail or true fact
 	return len(s)
 }
 
 //export go_api_stdinBuffer
-func go_api_stdinBuffer(s C.int) unsafe.Pointer {
-	return C.CBytes(stdin(int(s))) // malloc a buffer
+func go_api_stdinBuffer(s C.Py_ssize_t) unsafe.Pointer {
+	// a big 2GB buffer?
+	return C.CBytes(stdin(int(trunc64(s)))) // malloc a buffer
 }
 
 //export go_api_stdinLen
-func go_api_stdinLen() C.int {
-	return C.int(stdinLen)
+func go_api_stdinLen() C.Py_ssize_t {
+	return C.Py_ssize_t(stdinLen)
 }
 
 //export go_api_free
