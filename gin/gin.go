@@ -139,19 +139,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil // default return values unless specified earlier
 }
 
+// Tea the gin TUI export of the send message function
+var Tea func(tea.Msg)
+
 // The TUI goroutine to thread the TUI (returns message send function pointer)
-func Tui() func(msg tea.Msg) {
+func Tui() {
 	p := tea.NewProgram(initialModel())
 	// p.send(msgType)
 	// functional closure on p
 	go func() {
+		fe.Lock.Lock() // has the IO been unlocked?
+		defer fe.Lock.Unlock()
 		m, err := p.Run()
 		if err != nil {
 			close(userChan) // check _, ok := ... for error state on user channel via select/case
 		}
 		userChan <- m.(Model) // return of Model implies correct termination of user channel
 	}()
-	return p.Send
+	Tea = p.Send
 }
 
 // Get TUI model of TUI interaction if ok is true

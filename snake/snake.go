@@ -34,58 +34,47 @@ type Command struct {
 }
 
 func (c *Command) Help() string {
-	return `An embedded python script interpreter.`
+	return `An embedded python script interpreter.
+A snake module is added into the global name space.
+This can be further imported for shorter names.
+Input and output are both redirected.`
 }
 
 func (c *Command) Run(p *clit.Globals) error {
 	// unicorn command hook
 	fe.SetGlobals(p)
 	r, w := fe.GetIO(c.StreamFilter)
-	addAll(r, w)
+	fe.Lock.Unlock() // IO unlocked
+	AddAll(r, w)
 	RunFile(c.PyFile, false) // run global (not threaded)
+	Exit()
 	return nil
 }
 
-//var raceLock sync.Mutex
-
-func Fatal(e error) {
-	//raceLock.Lock()
-	// at this point a likely lock on the GIL
-	if e != nil {
-		Exit()
-		// at this point a lock on errorLock
-		// preventing Init() via second Fatal
-		// errorLock.Lock() set already (Fatal un-function on Init())
-		// lock.Lock() set already (can't Init() or Exit())
-	}
-	fe.Fatal(e)
-	// just in case it's not an error
-	// Fatal(err) action if error style
-	//raceLock.Unlock()
-}
-
+// Run some python code
 func Run(s string, gil bool) {
 	Init()
 	g := gilStateDefer(gil)
 	defer g()
 	rtn := py.PyRun_SimpleString(s)
 	if rtn != 0 {
-		Fatal(fmt.Errorf("python exception: %s", s))
+		fe.Fatal(fmt.Errorf("python exception: %s", s))
 	}
 }
 
+// Run a file of python
 func RunFile(f clit.PyFile, gil bool) {
 	Init()
 	//if f.Expand {
-	//fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
+	//fe.fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
 	// ignore flag as may be present for data files
 	//}
 	g := gilStateDefer(gil)
 	defer g()
 	code, err := py.PyRun_AnyFile(f.PyFile)
-	Fatal(err)
+	fe.Fatal(err)
 	if code != 0 {
-		Fatal(fmt.Errorf("python exception in file: %s", f.PyFile))
+		fe.Fatal(fmt.Errorf("python exception in file: %s", f.PyFile))
 	}
 }
 
@@ -101,11 +90,14 @@ var initialized bool
 // Python may be a singleton, but a Mutex might be nice
 var lock sync.Mutex
 
+// Initialize python
+//
+// This is often done automatically. You should not need to call it.
 func Init() {
 	if !errorLock.TryLock() {
 		// of course the implicit assumption is grant if available
 		// and not don't grant to throttle processing
-		Fatal(fmt.Errorf("there can be only one, low lander! reevaluate initial assumptions"))
+		fe.Fatal(fmt.Errorf("there can be only one, low lander! reevaluate initial assumptions"))
 	}
 	lock.Lock()
 	defer lock.Unlock()
@@ -119,11 +111,14 @@ func Init() {
 	//Run("import snake")
 	snake = py.PyImport_ImportModule("snake")
 	if snake == nil {
-		Fatal(fmt.Errorf("snake module not available to import"))
+		fe.Fatal(fmt.Errorf("snake module not available to import"))
 	}
 	state = py.PyEval_SaveThread()
 }
 
+// Create a GIL lock if gil is true else use initial thread.
+//
+// Call the returned function to release the GIL lock.
 func gilStateDefer(gil bool) func() {
 	// remove the GIL?
 	// Just Make a New Process(TM) ...
@@ -160,10 +155,10 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 	defer g()
 	f := snake.GetAttrString(name)
 	if f == nil {
-		Fatal(fmt.Errorf("snake does not contain a global %s", name))
+		fe.Fatal(fmt.Errorf("snake does not contain a global %s", name))
 	}
 	if !py.PyCallable_Check(f) {
-		Fatal(fmt.Errorf("%s is not a global callable", name))
+		fe.Fatal(fmt.Errorf("%s is not a global callable", name))
 	}
 	if args == nil {
 		args = py.PyTuple_New(0)
@@ -176,6 +171,7 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 
 var errorLock sync.Mutex
 
+// Exit the python interpreter and ensure it is not initialized again.
 func Exit() {
 	lock.Lock()
 	if !initialized {
@@ -210,16 +206,17 @@ func Exit() {
 // 4. Add py_api to .h file (in C)
 // 5. Wonder at the C ... rap jokes ...
 
+// Add a C function to the python snake module
 func AddFunc(name string, function unsafe.Pointer) {
 	// remove old before new?
 	// not sure if it's needed but ...
 	// allows "snake.py" to have dummy mypy functions
 	Init()
 	if snake.DelAttrString(name) != 0 {
-		Fatal(fmt.Errorf("%s has no global template in the snake module", name))
+		fe.Fatal(fmt.Errorf("%s has no global template in the snake module", name))
 	}
 	if snake.AddModuleCFunction(name, function) != 0 {
-		Fatal(fmt.Errorf("%s couldn't be added to the snake module", name))
+		fe.Fatal(fmt.Errorf("%s couldn't be added to the snake module", name))
 	}
 }
 
@@ -230,7 +227,10 @@ type io struct {
 
 var files io
 
-func addAll(r fe.FilterReader, w fe.FilterWriter) {
+// Add all the default functions to the snake module
+//
+// Also set the IO used for standard IO
+func AddAll(r fe.FilterReader, w fe.FilterWriter) {
 	files = io{
 		FilterReader: r,
 		FilterWriter: w,

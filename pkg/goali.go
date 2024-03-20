@@ -10,6 +10,12 @@ package goali
 //					|			|			|			-> consts
 //					|			|			-> clitype
 //					|			-> mickey	-> filerr	-> clitype
+//					|			|			|			-> consts
+//					|			|			-> clitype
+//					|			-> snake	-> filerr	-> clitype
+//					|			|			|			-> consts
+//					|			|			-> clitype
+//					|			-> knap		-> filerr	-> clitype
 //					|						|			-> consts
 //					|						-> clitype
 //					-> filerr	-> clitype
@@ -19,12 +25,12 @@ package goali
 //											-> consts
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-
-	tea "github.com/charmbracelet/bubbletea"
+	"time"
 
 	"github.com/alecthomas/kong"
 	kongyaml "github.com/alecthomas/kong-yaml"
@@ -36,7 +42,6 @@ import (
 	con "github.com/jackokring/goali/consts"
 	fe "github.com/jackokring/goali/filerr"
 	"github.com/jackokring/goali/gin"
-	"github.com/jackokring/goali/snake"
 )
 
 //=====================================
@@ -58,9 +63,6 @@ func SystemConfigDir() string { // Linux
 	// should be fine on a well configured system
 	return systemConfig[0]
 }
-
-// Tea the gin TUI export of the send message function
-var Tea func(tea.Msg)
 
 // # Main Entry Point
 func Goali() {
@@ -115,7 +117,8 @@ func Goali() {
 		fe.Fatal(e)
 		log.SetOutput(logwriter)
 	}
-	Tea = gin.Tui()
+	fe.Lock.Lock() // lock the IO temporarily
+	gin.Tui()
 
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
@@ -133,7 +136,18 @@ func Goali() {
 	//
 	// Yes, returning a nil is an option. Source code error?
 
-	Tea(gin.QuitMsg{})
+	// Are the messages on a separate thread?
+	// Tea might channel lock if ctx.Run() did not
+	// cause fe.Lock.Unlock() to be called.
+	// If the IO was not unlocked (by accident)
+	// then the tea program is not running.
+	// If the IO was unlocked the tea program has "likely" started.
+	// In a rare case it will be waiting on the fe.Lock ...
+	time.Sleep(250 * time.Millisecond) // give a waiter a try?
+	if !fe.Lock.TryLock() {            // can not grant so shut down error
+		fe.Fatal(fmt.Errorf("the file lock needs unlocking in the command run function"))
+	}
+	gin.Tea(gin.QuitMsg{})
 	var finalModel gin.Model
 	var okToExit bool = false
 	for !okToExit {
@@ -143,6 +157,5 @@ func Goali() {
 	if ra != nil {
 		ra.RunAfter() // post TUI model postAction receiver
 	}
-	snake.Exit()       // close processing
 	fe.CloseAll(false) // natural exit
 }
