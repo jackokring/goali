@@ -27,19 +27,18 @@ func SetGlobals(globals *clit.Globals) {
 	g = globals
 }
 
-// Notify the current logger writer.
-func Notify(s any) {
+// notify the current logger writer.
+//
+// Use a nest of 0 for the details of the caller of notify()
+func notify(s string, nest int) {
 	if g.Quiet {
 		return
 	}
-	if g.SysLog { // external so OK as no collide TUI
-		log.Print(s)
-	} else { // external not used
+	if g.SysLog || os.Stderr != os.Stdout { // external so OK as no collide TUI
 		// - STDOUT target situation barrier
 		// auto quiet
-		if os.Stderr != os.Stdout {
-			log.Print(s)
-		}
+		// caller of notify() skips 2 stack frames
+		log.Output(nest+2, s)
 	}
 }
 
@@ -51,7 +50,12 @@ func Error(e error) bool {
 	// you know, as an empty {} ... filled on use?
 	//
 	if e != nil {
-		Notify(e) // {} here handler
+		// and a level of nest for caller of Error()
+		notify(e.Error(), 1) // {} here handler
+		if g.Wrong {
+			FatalNest(e, 1) // caller of Error
+			return false    // never happens
+		}
 		return true
 	}
 	return false
@@ -82,37 +86,32 @@ func DeferClose(c io.Closer) {
 
 // Fatal error logging.
 func Fatal(e error) {
-	if Error(e) {
+	FatalNest(e, 1) // one stack frame for the proxy call
+}
+
+// FatalNest with skipped stack frames
+func FatalNest(e error, skip int) {
+	if e != nil { // don't use Error() as nest is wrong file
 		//goali.Tea(gin.QuitMsg)
 		// As a panic or exit due anyway
 		// the close is to allow file write
 		// sync to already done options
-		// No Notify() proxy as serious terminal error
+		// No notify() proxy as serious terminal error
 		CloseAll(g.Rollback) // rollback
 		if g.Debug {
 			// this should always drop somewhere
-			log.Panic(e)
+			log.Panic(e.Error())
 		}
-		log.Fatal("FATAL: ", e)
+		// stack skip Output and Fatal (2)
+		log.Output(2, e.Error())
+		os.Exit(1)
 	}
-}
-
-// Hard error check logging.
-//
-// Check to see if the hard error flag is set
-// and cause all errors to stop the application.
-func Hard(e error) bool {
-	if g.Wrong {
-		Fatal(e)
-		return false
-	}
-	return Error(e)
 }
 
 // Notify a debug message to the current logger writer.
-func Debug(s any) {
+func Debug(s string) {
 	if g.Debug {
-		Notify(s)
+		notify(s, 1) // the caller of Debug()
 	}
 }
 
@@ -360,7 +359,7 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 		out := os.Stdout
 		// Handle TUI expectations
 		os.Stdout = os.Stderr
-		// already -q as command may have Notify()
+		// already -q as command may have notify()
 		// on logger mixing
 		DeferClose(out) // just in case pipe
 		return GWriter{out, nil, "", 0, ""}

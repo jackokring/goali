@@ -263,7 +263,7 @@ func go_api_stderr(s unsafe.Pointer, n C.int) C.int {
 }
 
 func stderr(s []byte) int {
-	fe.Notify(s)
+	fe.Debug(string(s))
 	// fail or true fact
 	return len(s)
 }
