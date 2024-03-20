@@ -116,21 +116,6 @@ func Debug(s any) {
 	}
 }
 
-// Verbose measure of the logged output status to show.
-func Verbose() int {
-	if g.Quiet { // quiet or STDOUT priority?
-		return 0
-	}
-	v := int(g.Verbose)
-	if v < 0 {
-		v = 0
-	}
-	if v > MaxVerbose {
-		v = MaxVerbose
-	}
-	return v
-}
-
 //=====================================
 //**** File Abstraction Section *******
 //=====================================

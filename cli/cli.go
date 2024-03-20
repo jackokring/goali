@@ -47,7 +47,7 @@ import (
 // q	x		x	x
 // r		x
 // s	x		x	x
-// t
+// t	x
 // u			x
 // v	x		x	x
 // w		x	x
@@ -59,8 +59,8 @@ import (
 var Cli struct {
 	clit.Globals
 	// see individual named Command packages
-	Knap    knap.Command    `cmd:"" help:"Web servia"`
-	Mickey  mickey.Command  `cmd:"" help:"GUI launcher"`
-	Snake   snake.Command   `cmd:"" help:"Python interpreter"`
-	Unicorn unicorn.Command `cmd:"" help:"Unicode mangler"`
+	Knap    knap.Command    `cmd:"" help:"Web servia."`
+	Mickey  mickey.Command  `cmd:"" help:"GUI launcher."`
+	Snake   snake.Command   `cmd:"" help:"Python interpreter."`
+	Unicorn unicorn.Command `cmd:"" help:"Unicode mangler."`
 }

@@ -28,7 +28,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -49,51 +48,53 @@ import (
 //=====================================
 
 // Find the system configuration directory
-func SystemConfigDir() string { // Linux
+func SystemConfigDir() []string { // Linux
 	// yes you're crazy configuration sets are a NO!
 	// i guess the first is the best as per $PATH
 	// and it's not an over merge apply of last to first
 	systemConfig := strings.Split(os.Getenv("XDG_CONFIG_DIRS"), ":")
-	if len(systemConfig) == 0 { // Windows
+	if len(systemConfig[0]) == 0 { // Windows
 		systemConfig = []string{os.Getenv("PROGRAMDATA")}
 		if len(systemConfig[0]) == 0 { // MacOS
 			systemConfig[0] = "/Library/Application Support"
 		}
 	}
 	// should be fine on a well configured system
-	return systemConfig[0]
+	return systemConfig
 }
 
 // # Main Entry Point
 func Goali() {
+	paths := make([]string, 0)
 	// full config loading
 	// the pro-file sub tree can be supplied from a file on the CLI
-	//globalConfig := "/etc/" + AppName + "/config.yaml"
 	dir, err := os.UserConfigDir() // {
 	// should the error handler go here syntax wise??
 	// tuple implicit?
 	// }
 	if err != nil { // Error(err) not used as not critical
-		dir2, err2 := os.UserHomeDir()
-		// pretty critical to have a home directory?
-		// maybe some sort of demon process?
-		// Fatal(err2)
-		dir = dir2
-		if err2 != nil {
-			// pretends to be Darwin on failing
-			dir = SystemConfigDir()
-		}
+		paths = append(paths, dir)
 	}
-	localConfig := filepath.Join(dir, "."+con.AppName+".yaml")
+	dir2, err2 := os.UserHomeDir()
+	// pretty critical to have a home directory?
+	// maybe some sort of demon process?
+	// Fatal(err2)
+	if err2 != nil {
+		paths = append(paths, dir2)
+	}
+	// pretends to be Darwin on failing
+	paths = append(SystemConfigDir(), paths...)
+	for idx, val := range paths {
+		paths[idx] = filepath.Join(val, con.AppName+".yaml")
+	}
 	// Now we can parse
 	ctx := kong.Parse(&cli.Cli,
-		kong.Configuration(kongyaml.Loader /* globalConfig, */, localConfig),
+		kong.Configuration(kongyaml.Loader /* globalConfig, */, paths...),
 		kong.Vars{
 			// ${<name>} in `tags`
-			//"globalConfig": globalConfig,
-			"localConfig": localConfig,
+			"localConfig": filepath.Join(dir, con.AppName+".yaml"),
 			"appName":     con.AppName,
-			"maxVerbose":  strconv.Itoa(fe.MaxVerbose),
+			"version":     con.Version,
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),
