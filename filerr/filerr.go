@@ -26,7 +26,7 @@ type E struct {
 type R interface {
 	error
 	Exit() uint8
-	With(exit uint8)
+	With(exit uint8) R
 }
 
 // The simplest contract number
@@ -35,8 +35,9 @@ func (e E) Exit() uint8 {
 }
 
 // Set the exit code
-func (e *E) With(exit uint8) {
+func (e *E) With(exit uint8) R {
 	e.exit = exit
+	return e
 }
 
 var g *clit.Globals
