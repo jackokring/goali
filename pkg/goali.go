@@ -156,6 +156,8 @@ func Goali() {
 	}
 	ra := finalModel.RunAfter
 	if ra != nil {
+		// null check as can't invoke nil interface
+		// can invoke nil concrete type though
 		ra.RunAfter() // post TUI model postAction receiver
 	}
 	fe.CloseAll(false) // natural exit
