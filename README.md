@@ -27,6 +27,7 @@ And then create pull requests if you feel like it.
 
 * [Goali Blog][blog] A github pages site. Keeps the speculation off this readme.
 * [TODO bot][todo] A github bot using commented `@todo`/`@body` to raise automatic issues.
+* [A Goali][David] This repository has nothing to do with footie or crisps.
 
 ## `goali` Main Commands
 
@@ -162,3 +163,4 @@ I'll manage without the extra or fewer items in the "intelli-drop-list".
 [todo]: https://todo.jasonet.co
 
 [the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
+[David]: en.wikipedia.org/wiki/David_Seaman
