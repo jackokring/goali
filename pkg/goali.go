@@ -145,7 +145,7 @@ func Goali() {
 	// then the tea program is not running.
 	// If the IO was unlocked the tea program has "likely" started.
 	// In a rare case it will be waiting on the fe.Lock ...
-	fe.Lock.Signal() // unlock IO just in case command code forgot
+	gin.Signal() // unlock IO just in case command code forgot
 	// could use Broadcast here but ...
 	// did you see any TUI IO?
 	gin.Tea(gin.QuitMsg{}) // send quit

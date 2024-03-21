@@ -14,6 +14,7 @@ import (
 	py "github.com/jackokring/cpy3"
 	clit "github.com/jackokring/goali/clitype"
 	fe "github.com/jackokring/goali/filerr"
+	"github.com/jackokring/goali/gin"
 )
 
 //// double wrapped prototypes of functions available from python
@@ -45,7 +46,7 @@ func (c *Command) Run(p *clit.Globals) error {
 	// unicorn command hook
 	fe.SetGlobals(p)
 	r, w := fe.GetIO(c.StreamFilter)
-	fe.Lock.Signal() // IO unlock
+	gin.Signal() // IO unlock
 	AddAll(r, w)
 	RunFile(c.PyFile, false) // run global (not threaded)
 	Exit()

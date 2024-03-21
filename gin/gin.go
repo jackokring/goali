@@ -7,6 +7,7 @@ package gin
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -142,15 +143,26 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // Tea the gin TUI export of the send message function
 var Tea func(tea.Msg)
 
+// The IO channel file lock (prevents TUI IO)
+var cond sync.Cond = *sync.NewCond(&lock)
+var lock sync.Mutex
+
+func Wait() {
+	cond.L.Lock() // has the IO been unlocked?
+	cond.Wait()   // wait for IPO setup
+	cond.L.Unlock()
+}
+
+func Signal() {
+	cond.Signal()
+}
+
 // The TUI goroutine to thread the TUI (returns message send function pointer)
 func Tui() {
 	p := tea.NewProgram(initialModel())
 	// p.send(msgType)
 	// functional closure on p
 	go func() {
-		fe.Lock.L.Lock() // has the IO been unlocked?
-		fe.Lock.Wait()   // wait for IPO setup
-		defer fe.Lock.L.Unlock()
 		m, err := p.Run()
 		if err != nil {
 			close(userChan) // check _, ok := ... for error state on user channel via select/case

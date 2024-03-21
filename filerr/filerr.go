@@ -7,7 +7,6 @@ import (
 	"io/fs"
 	"log"
 	"os"
-	"sync"
 
 	clit "github.com/jackokring/goali/clitype"
 	con "github.com/jackokring/goali/consts"
@@ -138,24 +137,6 @@ func Debug(s string) {
 //=====================================
 //**** File Abstraction Section *******
 //=====================================
-
-// The IO channel file lock (prevents TUI IO)
-var Lock sync.Cond = *sync.NewCond(&lock)
-var lock sync.Mutex
-
-/*
-// A more sophisticated condition lock
-//
-// Usually a for loop with a !condition test ensure wait return condition
-// before the final unlock
-var Lock sync.Cond = *sync.NewCond(&lock)
-
-// A barrier fence on the Lock
-func Barrier() {
-	Lock.L.Lock()
-	Lock.Wait()
-	Lock.L.Unlock()
-} */
 
 // GetIO
 //
