@@ -118,7 +118,7 @@ func FatalNest(e error, skip int) {
 		// stack skip Output and Fatal (2)
 		log.Output(2, e.Error())
 		var i uint8 = 1
-		r, ok := e.(R)
+		r, ok := e.(R) // here, here <<<< values?
 		if ok {
 			i = r.Exit() // get exit code
 		}
