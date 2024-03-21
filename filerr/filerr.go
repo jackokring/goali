@@ -26,11 +26,17 @@ type E struct {
 type R interface {
 	error
 	Exit() uint8
+	With(exit uint8)
 }
 
 // The simplest contract number
 func (e E) Exit() uint8 {
 	return e.exit
+}
+
+// Set the exit code
+func (e *E) With(exit uint8) {
+	e.exit = exit
 }
 
 var g *clit.Globals
