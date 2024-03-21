@@ -66,10 +66,20 @@ func Run(s string, gil bool) {
 // Run a file of python
 func RunFile(f clit.PyFile, gil bool) {
 	Init()
-	//if f.Expand {
-	//fe.fe.Fatal(fmt.Errorf("flag -e not allowed: %s", f.InputFile))
-	// ignore flag as may be present for data files
-	//}
+	if f.PyFile == "-" {
+		// No not the REPL, and then what would c.InputFile == "-" mean?
+		// dunder main?
+		p := Call("main", nil, nil, gil)
+		if p != nil {
+			q := p.Str()
+			p.DecRef()
+			s := py.PyUnicode_AsUTF8(q)
+			q.DecRef()
+			// just to be fancy
+			fe.Error(fmt.Errorf("python: main: return: %s", s))
+		}
+		return
+	}
 	g := gilStateDefer(gil)
 	defer g()
 	code, err := py.PyRun_AnyFile(f.PyFile)
@@ -311,6 +321,10 @@ func stdin(size int) []byte {
 		r := make([]byte, 0)
 		// all the file as one buffer
 		for !files.FilterReader.EOF() {
+			if len(r) > math.MaxInt-1024 {
+				// -d option panic stack go > C > go
+				fe.Fatal(fmt.Errorf("python: fatal concept of read size of -1"))
+			}
 			i := stdin(1024)
 			r = append(r, i...) // automatic varadic expansion
 		}

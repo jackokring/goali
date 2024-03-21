@@ -24,6 +24,8 @@ package goali
 //					-> gin		-> filerr	-> clitype
 //											-> consts
 
+// So a general OS -> CLI_APP -> CLI_COMMAND -> IO_ERROR -> OS
+
 import (
 	"fmt"
 	"os"

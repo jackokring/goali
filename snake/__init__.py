@@ -66,3 +66,7 @@ def Err(b: bytes) -> int:
 def In(size: Optional[int] = -1) -> bytes:
     """Standard input stream stub."""
     raise NotImplementedError
+
+# Main on file "-"
+def main():
+    return "default main"
