@@ -16,28 +16,42 @@ import (
 //****** Error Handler Section ********
 //=====================================
 
+type ExitCode int // uint8
+
+const (
+	// general error
+	ERR_GENERAL ExitCode = 1 << iota
+)
+
 // A concrete extended error type
 type E struct {
 	error
-	exit uint8
+	exit ExitCode
 }
 
 // The extended error cast interface
 type R interface {
 	error
-	Exit() uint8
-	With(exit uint8) R
+	Exit()
+	With(exit ExitCode) R
 }
 
 // The simplest contract number
-func (e E) Exit() uint8 {
-	return e.exit
+func (e E) Exit() {
+	os.Exit(int(e.exit)) // bumped up to typed int for 32 set entries
 }
 
 // Set the exit code
-func (e *E) With(exit uint8) R {
-	e.exit = exit
+func (e *E) With(exit ExitCode) R {
+	e.exit = exit | e.exit
 	return e
+}
+
+// Make a new error
+func NewE(e error, x ExitCode) R {
+	return &E{
+		e, x,
+	}
 }
 
 var g *clit.Globals
@@ -124,12 +138,12 @@ func FatalNest(e error, skip int) {
 		}
 		// stack skip Output and Fatal (2)
 		log.Output(2, e.Error())
-		var i uint8 = 1
 		r, ok := e.(R) // here, here <<<< values?
 		if ok {
-			i = r.Exit() // get exit code
+			r.Exit() // exit with code
 		}
-		os.Exit(int(i)) // technically this should be a uint8, but these days of 32 bit adults ...
+		// a botch general error
+		os.Exit(1) // technically this should be a uint8, but these days of 32 bit adults ...
 		// and 64 bit kids ...
 	}
 }
