@@ -147,7 +147,7 @@ var Tea func(tea.Msg)
 var cond sync.Cond = *sync.NewCond(&lock)
 var lock sync.Mutex
 
-func Wait() {
+func wait() {
 	cond.L.Lock() // has the IO been unlocked?
 	cond.Wait()   // wait for IPO setup
 	cond.L.Unlock()
@@ -163,6 +163,9 @@ func Tui() {
 	// p.send(msgType)
 	// functional closure on p
 	go func() {
+		wait() // wait
+		// the case for commoning out a lock and not an Tui in
+		// each command comes down to the RunAfter() interface
 		m, err := p.Run()
 		if err != nil {
 			close(userChan) // check _, ok := ... for error state on user channel via select/case
