@@ -45,7 +45,7 @@ func (c *Command) Run(p *clit.Globals) error {
 	// unicorn command hook
 	fe.SetGlobals(p)
 	r, w := fe.GetIO(c.StreamFilter)
-	fe.Lock.Unlock() // IO unlocked
+	fe.Lock.Signal() // IO unlock
 	AddAll(r, w)
 	RunFile(c.PyFile, false) // run global (not threaded)
 	Exit()

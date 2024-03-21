@@ -148,8 +148,9 @@ func Tui() {
 	// p.send(msgType)
 	// functional closure on p
 	go func() {
-		fe.Lock.Lock() // has the IO been unlocked?
-		defer fe.Lock.Unlock()
+		fe.Lock.L.Lock() // has the IO been unlocked?
+		fe.Lock.Wait()   // wait for IPO setup
+		defer fe.Lock.L.Unlock()
 		m, err := p.Run()
 		if err != nil {
 			close(userChan) // check _, ok := ... for error state on user channel via select/case

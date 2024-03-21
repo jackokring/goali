@@ -27,11 +27,9 @@ package goali
 // So a general OS -> CLI_APP -> CLI_COMMAND -> IO_ERROR -> OS
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/alecthomas/kong"
 	kongyaml "github.com/alecthomas/kong-yaml"
@@ -122,7 +120,6 @@ func Goali() {
 		fe.Fatal(e)
 		log.SetOutput(logwriter)
 	}
-	fe.Lock.Lock() // lock the IO temporarily
 	gin.Tui()
 
 	// Call the Run() method of the selected parsed command.
@@ -148,11 +145,10 @@ func Goali() {
 	// then the tea program is not running.
 	// If the IO was unlocked the tea program has "likely" started.
 	// In a rare case it will be waiting on the fe.Lock ...
-	time.Sleep(250 * time.Millisecond) // give a waiter a try?
-	if !fe.Lock.TryLock() {            // can not grant so shut down error
-		fe.Fatal(fmt.Errorf("the file lock needs unlocking in the command run function"))
-	}
-	gin.Tea(gin.QuitMsg{})
+	fe.Lock.Signal() // unlock IO just in case command code forgot
+	// could use Broadcast here but ...
+	// did you see any TUI IO?
+	gin.Tea(gin.QuitMsg{}) // send quit
 	var finalModel gin.Model
 	var okToExit bool = false
 	for !okToExit {

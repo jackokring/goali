@@ -140,7 +140,8 @@ func Debug(s string) {
 //=====================================
 
 // The IO channel file lock (prevents TUI IO)
-var Lock sync.Mutex
+var Lock sync.Cond = *sync.NewCond(&lock)
+var lock sync.Mutex
 
 /*
 // A more sophisticated condition lock
