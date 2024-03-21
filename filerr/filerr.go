@@ -16,11 +16,18 @@ import (
 //****** Error Handler Section ********
 //=====================================
 
+// The exit code type
 type ExitCode int // uint8
 
+// The primitive exit codes
 const (
 	// general error
 	ERR_GENERAL ExitCode = 1 << iota
+)
+
+// The combination exit codes useful named list
+const (
+	ERR_MINUS_ONE ExitCode = ExitCode(^0) // two's complement inversion
 )
 
 // A concrete extended error type
@@ -47,11 +54,18 @@ func (e *E) With(exit ExitCode) R {
 	return e
 }
 
-// Make a new error
-func NewE(e error, x ExitCode) R {
-	return &E{
-		e, x,
+// Make a new error with a number of exit codes
+//
+// Has the usual len(nil) range handling for
+// a default of SUCCESS. Ironically possible.
+func NewE(e error, x ...ExitCode) R {
+	c := &E{
+		e, 0,
 	}
+	for _, ec := range x {
+		c.With(ec)
+	}
+	return c // about as good as
 }
 
 var g *clit.Globals
