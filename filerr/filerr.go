@@ -17,8 +17,22 @@ import (
 //****** Error Handler Section ********
 //=====================================
 
-// The 100% verbose level.
-const MaxVerbose = 3
+// A concrete extended error type
+type E struct {
+	error
+	exit uint8
+}
+
+// The extended error cast interface
+type R interface {
+	error
+	Exit() uint8
+}
+
+// The simplest contract number
+func (e E) Exit() uint8 {
+	return e.exit
+}
 
 var g *clit.Globals
 
@@ -100,11 +114,17 @@ func FatalNest(e error, skip int) {
 		CloseAll(g.Rollback) // rollback
 		if g.Debug {
 			// this should always drop somewhere
-			log.Panic(e.Error())
+			log.Panic(e.Error()) // your basic panic, with no error code options
 		}
 		// stack skip Output and Fatal (2)
 		log.Output(2, e.Error())
-		os.Exit(1)
+		var i uint8 = 1
+		r, ok := e.(R)
+		if ok {
+			i = r.Exit() // get exit code
+		}
+		os.Exit(int(i)) // technically this should be a uint8, but these days of 32 bit adults ...
+		// and 64 bit kids ...
 	}
 }
 

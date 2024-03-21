@@ -69,4 +69,5 @@ def In(size: Optional[int] = -1) -> bytes:
 
 # Main on file "-"
 def main():
+    """Main to run when <py-file> == \"-\""""
     return "default main"
