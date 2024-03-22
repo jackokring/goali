@@ -154,11 +154,7 @@ func Goali() {
 	for !okToExit {
 		finalModel, okToExit = gin.TuiGetModel()
 	}
-	ra := finalModel.RunAfter
-	if ra != nil {
-		// null check as can't invoke nil interface
-		// can invoke nil concrete type though
-		ra.RunAfter() // post TUI model postAction receiver
-	}
+	// a classic embedded interface no nil check
+	finalModel.RunAfter()
 	fe.CloseAll(false) // natural exit
 }

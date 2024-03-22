@@ -324,7 +324,7 @@ func stdin(size int) []byte {
 		for !files.FilterReader.EOF() {
 			if len(r) > math.MaxInt-1024 {
 				// -d option panic stack go > C > go
-				fe.Fatal(fmt.Errorf("python: fatal concept of read size of -1"))
+				fe.Fatal(fmt.Errorf("python: fatal concept of read size of -1"), fe.ERR_MINUS_ONE) // :D
 			}
 			i := stdin(1024)
 			r = append(r, i...) // automatic varadic expansion

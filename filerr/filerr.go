@@ -21,8 +21,10 @@ type ExitCode int // uint8
 
 // The primitive exit codes
 const (
-	// general error
+	// general error (all non-fatal errors become this with -x option)
 	ERR_GENERAL ExitCode = 1 << iota
+	// all fatal errors have this set
+	ERR_FATAL
 )
 
 // The combination exit codes useful named list
@@ -52,20 +54,6 @@ func (e E) Exit() {
 func (e *E) With(exit ExitCode) R {
 	e.exit = exit | e.exit
 	return e
-}
-
-// Make a new error with a number of exit codes
-//
-// Has the usual len(nil) range handling for
-// a default of SUCCESS. Ironically possible.
-func NewE(e error, x ...ExitCode) R {
-	c := &E{
-		e, 0,
-	}
-	for _, ec := range x {
-		c.With(ec)
-	}
-	return c // about as good as
 }
 
 var g *clit.Globals
@@ -99,11 +87,12 @@ func Error(e error) bool {
 	//
 	if e != nil {
 		// and a level of nest for caller of Error()
-		notify(e.Error(), 1) // {} here handler
 		if g.Wrong {
-			FatalNest(e, 1) // caller of Error
-			return false    // never happens
+			fatalNest(&E{e, ERR_GENERAL}, 1) // caller of Error
+			return false                     // never happens
 		}
+		// print once
+		notify(e.Error(), 1) // {} here handler
 		return true
 	}
 	return false
@@ -133,33 +122,37 @@ func DeferClose(c io.Closer) {
 }
 
 // Fatal error logging.
-func Fatal(e error) {
-	FatalNest(e, 1) // one stack frame for the proxy call
+func Fatal(e error, x ...ExitCode) {
+	if e == nil {
+		return
+	}
+	c := &E{
+		e, ERR_FATAL, // essential to have non-zero default
+	}
+	for _, ec := range x {
+		c.With(ec)
+	}
+	fatalNest(c, 1) // one stack frame for the proxy call
 }
 
 // FatalNest with skipped stack frames
-func FatalNest(e error, skip int) {
-	if e != nil { // don't use Error() as nest is wrong file
-		//goali.Tea(gin.QuitMsg)
-		// As a panic or exit due anyway
-		// the close is to allow file write
-		// sync to already done options
-		// No notify() proxy as serious terminal error
-		CloseAll(g.Rollback) // rollback
-		if g.Debug {
-			// this should always drop somewhere
-			log.Panic(e.Error()) // your basic panic, with no error code options
-		}
-		// stack skip Output and Fatal (2)
-		log.Output(2, e.Error())
-		r, ok := e.(R) // here, here <<<< values?
-		if ok {
-			r.Exit() // exit with code
-		}
-		// a botch general error
-		os.Exit(1) // technically this should be a uint8, but these days of 32 bit adults ...
-		// and 64 bit kids ...
+func fatalNest(e R, skip int) {
+	//goali.Tea(gin.QuitMsg)
+	// As a panic or exit due anyway
+	// the close is to allow file write
+	// sync to already done options
+	// No notify() proxy as serious terminal error
+	CloseAll(g.Rollback) // rollback
+	if g.Debug {
+		// this should always drop somewhere
+		log.Panic(e.Error()) // your basic panic, with no error code options
 	}
+	// stack skip Output and Fatal (2)
+	log.Output(skip+2, e.Error())
+	e.Exit()
+	// a botch general error
+	// technically this should be a uint8, but these days of 32 bit adults ...
+	// and 64 bit kids ...
 }
 
 // Notify a debug message to the current logger writer.

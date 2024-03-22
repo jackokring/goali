@@ -23,11 +23,15 @@ type PostAction interface {
 
 // A default tea Model
 type Model struct {
-	spinner  spinner.Model
-	keys     keyMap
-	help     help.Model
-	text     string
-	RunAfter PostAction
+	spinner spinner.Model
+	keys    keyMap
+	help    help.Model
+	text    string
+	PostAction
+}
+
+func (p *PostAction) RunAfter() {
+
 }
 
 // Quit the TUI
@@ -128,7 +132,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.text = msg.text
 	case PostActionMsg:
 		// set a clean up action based on final Model
-		m.RunAfter = msg.run
+		m.PostAction = msg.run
 	case QuitMsg:
 		// exit request
 		return m, tea.Quit

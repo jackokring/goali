@@ -27,4 +27,5 @@ LDFLAGS=(
 
 # STEP 3: Actual Go build process
 
+go generate
 go build -ldflags="${LDFLAGS[*]}"
