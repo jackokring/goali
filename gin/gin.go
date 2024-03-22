@@ -17,22 +17,25 @@ import (
 	fe "github.com/jackokring/goali/filerr"
 )
 
+// Run after completion interface for Model
 type PostAction interface {
 	RunAfter()
 }
 
 // A default tea Model
 type Model struct {
-	spinner spinner.Model
-	keys    keyMap
-	help    help.Model
-	text    string
-	PostAction
+	spinner    spinner.Model
+	keys       keyMap
+	help       help.Model
+	text       string
+	PostAction // why when unnamed and embedded leads to != nil tautology?
+	// ah, the auto method inheritance of unnamed embedded interfaces
 }
 
-func (p *PostAction) RunAfter() {
+// A simple null function concrete run after implementation
+type knol struct{}
 
-}
+func (k knol) RunAfter() {}
 
 // Quit the TUI
 type QuitMsg struct {
@@ -43,13 +46,13 @@ type QuitMsg struct {
 type ActionMsg struct {
 	tea.Msg
 	// expanded data
-	text string // string to set on action
+	string // string to set on action
 }
 
 // PostAction message (after TUI close)
 type PostActionMsg struct {
 	tea.Msg
-	run PostAction
+	PostAction
 }
 
 // User channel to return model on TUI quit
@@ -91,9 +94,11 @@ func initialModel() Model {
 	s.Spinner = spinner.Dot
 	s.Style = consts.Gloss
 	return Model{
-		spinner: s,
-		keys:    keys,
-		help:    help.New(),
+		spinner:    s,
+		keys:       keys,
+		help:       help.New(),
+		text:       "",
+		PostAction: knol{}, // empty struct with no action
 	}
 }
 
@@ -129,10 +134,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case ActionMsg:
 		// decode action messages
-		m.text = msg.text
+		m.text = msg.string
 	case PostActionMsg:
 		// set a clean up action based on final Model
-		m.PostAction = msg.run
+		m.PostAction = msg.PostAction
 	case QuitMsg:
 		// exit request
 		return m, tea.Quit
