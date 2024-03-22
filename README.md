@@ -1,5 +1,7 @@
 # Goali
 
+Not to be confused with the non-existent marsh-soup-eal the Koali.
+
 ## Install
 ```
 $ sudo apt install git python-is-python3 golang python3-pip python3-dev
