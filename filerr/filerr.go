@@ -21,15 +21,31 @@ type ExitCode int // uint8
 
 // The primitive exit codes
 const (
-	// general error (all non-fatal errors become this with -x option)
+	// general error (used by kong errors, and other library errors)
 	ERR_GENERAL ExitCode = 1 << iota
-	// all fatal errors have this set
+	// all fatal errors have this set (all non-fatal errors become this with -x option)
 	ERR_FATAL
+	//
+	ERR_2
+	//
+	ERR_3
+	//
+	ERR_4
+	//
+	ERR_5
+	//
+	ERR_6
+	// internal code 128+n for signals like SIGHUP, SIGTERM etc.
+	ERR_SIGNAL_HANDLER
+	// > uint8
+	ERR_RANGE_PLUS_ONE
 )
 
 // The combination exit codes useful named list
 const (
-	ERR_MINUS_ONE ExitCode = ExitCode(^0) // two's complement inversion
+	ERR_MINUS_ONE     ExitCode = ExitCode(^0) // two's complement inversion
+	ERR_SIGNAL_CTRL_C          = ERR_SIGNAL_HANDLER | ERR_FATAL
+	ERR_RANGE                  = ERR_RANGE_PLUS_ONE - 1 // 255
 )
 
 // A concrete extended error type
@@ -88,8 +104,8 @@ func Error(e error) bool {
 	if e != nil {
 		// and a level of nest for caller of Error()
 		if g.Wrong {
-			fatalNest(&E{e, ERR_GENERAL}, 1) // caller of Error
-			return false                     // never happens
+			fatalNest(&E{e, ERR_FATAL}, 1) // caller of Error
+			return false                   // never happens
 		}
 		// print once
 		notify(e.Error(), 1) // {} here handler
