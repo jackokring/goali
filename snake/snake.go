@@ -77,7 +77,7 @@ func RunFile(f clit.PyFile, gil bool) {
 			s := py.PyUnicode_AsUTF8(q)
 			q.DecRef()
 			// just to be fancy
-			stderr([]byte(s)) // log main returned string value
+			actionMsg(s) // log main returned string value
 		}
 		return
 	}
@@ -250,6 +250,7 @@ func AddAll(r fe.FilterReader, w fe.FilterWriter) {
 	AddFunc("Out", C.py_api_stdout)
 	AddFunc("Err", C.py_api_stderr)
 	AddFunc("In", C.py_api_stdin)
+	AddFunc("ActionMsg", C.py_api_action_msg)
 }
 
 //=====================================
@@ -337,4 +338,13 @@ func stdin(size int) []byte {
 		stdinLen = i
 		return r[:i] // python EOF style
 	}
+}
+
+//export go_api_action_msg
+func go_api_action_msg(s *C.char, n C.Py_ssize_t) {
+	actionMsg(C.GoStringN(s, trunc64(n)))
+}
+
+func actionMsg(s string) {
+	gin.SetMsg(s) // set the status message
 }

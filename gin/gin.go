@@ -154,6 +154,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // Tea the gin TUI export of the send message function
 var Tea func(tea.Msg)
 
+// Set status message
+func SetMsg(s string) {
+	Tea(ActionMsg{
+		string: s,
+	})
+}
+
 // The IO channel file lock (prevents TUI IO)
 var cond sync.Cond = *sync.NewCond(&lock)
 var lock sync.Mutex

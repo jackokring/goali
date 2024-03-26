@@ -27,3 +27,11 @@ PyObject *py_api_stdin(PyObject *self, PyObject *args, PyObject *kwargs) {
 	go_api_free(r);
 	return ret;
 }
+
+PyObject *py_api_action_msg(PyObject *self, PyObject *args, PyObject *kwargs) {
+	const char *arg = NULL;
+	Py_ssize_t len = 0;
+	PyArg_ParseTuple(args, "s#", &arg, &len);// unicode UTF-8
+	go_api_action_msg((char*)arg, len);
+	Py_RETURN_NONE;
+}

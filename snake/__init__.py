@@ -67,6 +67,10 @@ def In(size: Optional[int] = -1) -> bytes:
     """Standard input stream stub."""
     raise NotImplementedError
 
+def ActionMsg(s: str) -> None:
+    """Tea gin message status stub."""
+    raise NotImplementedError
+
 # Main on file "-"
 def main():
     """Main to run when <py-file> == \"-\""""
