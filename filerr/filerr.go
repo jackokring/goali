@@ -25,27 +25,34 @@ const (
 	ERR_GENERAL ExitCode = 1 << iota
 	// all fatal errors have this set (all non-fatal errors become this with -x option)
 	ERR_FATAL
+	// 5 bits of error code with flags in lover mask
+	ERR_0
+	//
+	ERR_1
 	//
 	ERR_2
 	//
 	ERR_3
 	//
 	ERR_4
-	//
-	ERR_5
-	//
-	ERR_6
 	// internal code 128+n for signals like SIGHUP, SIGTERM etc.
 	ERR_SIGNAL_HANDLER
 	// > uint8
 	ERR_RANGE_PLUS_ONE
 )
 
+const ( // maximum of 32 possible bit patterns before "shell" overflow
+	// basic error code space for more specific errors
+	E_1 ExitCode = iota << 2
+	// ...
+)
+
 // The combination exit codes useful named list
 const (
-	ERR_MINUS_ONE     ExitCode = ExitCode(^0) // two's complement inversion
-	ERR_SIGNAL_CTRL_C          = ERR_SIGNAL_HANDLER | ERR_FATAL
-	ERR_RANGE                  = ERR_RANGE_PLUS_ONE - 1 // 255
+	ERR_MINUS_ONE     ExitCode = ExitCode(^0)                   // two's complement inversion
+	ERR_SIGNAL_CTRL_C          = ERR_SIGNAL_HANDLER | ERR_FATAL // for example
+	ERR_RANGE                  = ERR_RANGE_PLUS_ONE - 1         // 255 (technically also ERR_MINUS_ONE)
+	ERR_WRONG                  = ERR_FATAL | ERR_GENERAL        // both as general non fatal made fatal
 )
 
 // A concrete extended error type
@@ -104,7 +111,7 @@ func Error(e error) bool {
 	if e != nil {
 		// and a level of nest for caller of Error()
 		if g.Wrong {
-			fatalNest(&E{e, ERR_FATAL}, 1) // caller of Error
+			fatalNest(&E{e, ERR_WRONG}, 1) // caller of Error
 			return false                   // never happens
 		}
 		// print once
