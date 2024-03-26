@@ -43,8 +43,8 @@ const (
 
 const ( // maximum of 16 possible bit patterns before "shell" overflow
 	// basic error code space for more specific errors
-	E_00 ExitCode = iota << 2
-	E_01
+	ERR_RESET_UNCLASSIFIED ExitCode = iota << 2
+	ERR_STREAM
 	E_02
 	E_03
 	// ...
@@ -93,6 +93,9 @@ func (e E) Exit() {
 
 // Set the exit code
 func (e *E) With(exit ExitCode) R {
+	if exit == ERR_RESET_UNCLASSIFIED { // allows extended codes by lower bits reset
+		e.exit = e.exit & ^3 // clear lower bits
+	}
 	e.exit = exit | e.exit
 	return e
 }
@@ -172,6 +175,9 @@ func Fatal(e error, x ...ExitCode) {
 	}
 	for _, ec := range x {
 		c.With(ec)
+	}
+	if c.exit == ERR_RESET_UNCLASSIFIED { // check success by accident
+		c.With(ERR_FATAL) // make fatal again
 	}
 	fatalNest(c, 1) // one stack frame for the proxy call
 }

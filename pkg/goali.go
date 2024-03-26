@@ -117,14 +117,15 @@ func Goali() {
 	if cli.Cli.SysLog {
 		// Configure logger to write to the syslog.
 		logwriter, e := syslog.New(syslog.LOG_NOTICE, con.AppName)
-		fe.Fatal(e)
+		fe.Fatal(e, fe.ERR_RESET_UNCLASSIFIED, fe.ERR_STREAM) // unique stream code
 		log.SetOutput(logwriter)
 	}
 	gin.Tui()
 
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
-	fe.Fatal(ctx.Run(&cli.Cli.Globals))
+	// returns exit code 1 like a Kong error
+	fe.Fatal(ctx.Run(&cli.Cli.Globals), fe.ERR_RESET_UNCLASSIFIED, fe.ERR_GENERAL) // not handled nil code
 	// So you've found an Error?
 	// Have you considered using the functions:
 	//
