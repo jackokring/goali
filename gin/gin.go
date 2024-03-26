@@ -19,7 +19,7 @@ import (
 
 // Run after completion interface for Model
 type PostAction interface {
-	RunAfter()
+	RunAfter() error
 }
 
 // A default tea Model
@@ -35,7 +35,9 @@ type Model struct {
 // A simple null function concrete run after implementation
 type knol struct{}
 
-func (k knol) RunAfter() {}
+func (k knol) RunAfter() error {
+	return nil
+}
 
 // Quit the TUI
 type QuitMsg struct {
@@ -189,7 +191,8 @@ func TuiGetModel() (m Model, ok bool) {
 	select {
 	case u, ok := <-userChan:
 		if !ok {
-			fe.Fatal(fmt.Errorf("internal gin channel closed unexpectedly"))
+			// unique TUI internal error code
+			fe.Fatal(fmt.Errorf("internal gin channel closed unexpectedly"), fe.ERR_RESET_UNCLASSIFIED, fe.ERR_STREAM)
 		}
 		// completed
 		return u, true

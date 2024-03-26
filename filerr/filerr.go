@@ -20,6 +20,8 @@ import (
 type ExitCode int // uint8
 
 // The primitive exit codes
+//
+// Some combinations are used as unique goali and TUI errors
 const (
 	// general error (used by kong errors, and other library errors)
 	ERR_GENERAL ExitCode = 1 << iota
@@ -43,9 +45,16 @@ const (
 
 const ( // maximum of 16 possible bit patterns before "shell" overflow
 	// basic error code space for more specific errors
+	// this one is special as it clears the lower 2 bits when used on its own
 	ERR_RESET_UNCLASSIFIED ExitCode = iota << 2
+	// ERR_STREAM File IO error (in combination with:)
+	// 00 - TUI gin error
+	// 01 - goali error log
+	// 10 - Fatal stream error (Normal)
+	// 11 - goali error RunAfter
 	ERR_STREAM
-	E_02
+	// ERR_PYTHON Snake error (not file IO related)
+	ERR_PYTHON
 	E_03
 	// ...
 	E_10
@@ -244,7 +253,7 @@ func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
 	// use backup as input file
 	n := w.getRollback()
 	if n == "" { // there is no rollback file
-		Fatal(fmt.Errorf("can't construct input file from old output file content"))
+		Fatal(fmt.Errorf("can't construct input file from old output file content"), ERR_STREAM)
 	}
 	// see Rollback(closeBefore FilterReader)
 	r := GetReader(clit.InputFile{InputFile: n, Expand: io.Compand}) // closed first
@@ -294,7 +303,7 @@ func (r *GReader) Read(b []byte) int {
 		// delay spec for while style test of EOF
 		r.thisEof = true
 	} else {
-		Fatal(e)
+		Fatal(e, ERR_STREAM)
 	}
 	return n
 }
@@ -352,7 +361,7 @@ func (w GWriter) Close() error {
 
 func (w GWriter) Write(b []byte) int {
 	i, e := w.this.Write(b)
-	Fatal(e)
+	Fatal(e, ERR_STREAM)
 	return i
 }
 
@@ -368,21 +377,21 @@ func (w GWriter) Rollback(closeBefore FilterReader) {
 	}
 	if w.rollback != "" {
 		flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
-		Fatal(os.Remove(w.out))
+		Fatal(os.Remove(w.out), ERR_STREAM)
 		in, e := os.Open(w.rollback)
-		Fatal(e)
+		Fatal(e, ERR_STREAM)
 		out, e2 := os.OpenFile(w.out, flags, w.mode)
 		if e2 != nil {
 			Error(in.Close())
-			Fatal(e2)
+			Fatal(e2, ERR_STREAM)
 		}
 		_, e3 := io.Copy(out, in)
 		if e3 != nil {
 			Error(in.Close())
 			Error(out.Close())
-			Fatal(e3)
+			Fatal(e3, ERR_STREAM)
 		}
-		Fatal(os.Remove(w.rollback))
+		Fatal(os.Remove(w.rollback), ERR_STREAM)
 	}
 }
 
@@ -413,17 +422,17 @@ func getReaderBase(i clit.InputFile) FilterReader {
 	if i.InputFile == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
-		Fatal(e)
+		Fatal(e, ERR_STREAM)
 		os.Stdin = nin
 		DeferClose(in)
 		return &GReader{in, nil, false}
 	}
 	f, err := os.Open(i.InputFile)
-	Fatal(err)
+	Fatal(err, ERR_STREAM)
 	DeferClose(f)
 	if i.Expand {
 		f2, err2 := gzip.NewReader(f)
-		Fatal(err2)
+		Fatal(err2, ERR_STREAM)
 		DeferClose(f2)
 		return &GReader{f2, f, false}
 	}
@@ -463,30 +472,30 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 		// commit vs. rollback.
 		// make backup?
 		r, e := os.Open(o.OutputFile)
-		Fatal(e)
+		Fatal(e, ERR_STREAM)
 		w, e2 := os.CreateTemp("", con.AppName+"-*.bak")
 		if e2 != nil {
 			Error(r.Close())
-			Fatal(e2)
+			Fatal(e2, ERR_STREAM)
 		}
 		_, e3 := io.Copy(w, r)
 		if e3 != nil {
 			Error(r.Close())
 			Error(w.Close())
-			Fatal(e3)
+			Fatal(e3, ERR_STREAM)
 		}
 		Error(r.Close())
 		Error(w.Close())
-		Fatal(os.Remove(o.OutputFile))
+		Fatal(os.Remove(o.OutputFile), ERR_STREAM)
 		rollback = w.Name()
 		// Backed up!
 	}
 	f, err := os.OpenFile(o.OutputFile, flags, perms)
-	Fatal(err)
+	Fatal(err, ERR_STREAM)
 	DeferClose(f)
 	if o.Compress {
 		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
-		Fatal(err2)
+		Fatal(err2, ERR_STREAM)
 		DeferClose(f2)
 		return GWriter{f2, f, rollback, mode, f.Name()}
 	}

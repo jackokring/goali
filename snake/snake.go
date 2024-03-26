@@ -60,7 +60,7 @@ func Run(s string, gil bool) {
 	defer g()
 	rtn := py.PyRun_SimpleString(s)
 	if rtn != 0 {
-		fe.Fatal(fmt.Errorf("python exception: %s", s))
+		fe.Fatal(fmt.Errorf("python exception: %s", s), fe.ERR_PYTHON)
 	}
 }
 
@@ -77,16 +77,16 @@ func RunFile(f clit.PyFile, gil bool) {
 			s := py.PyUnicode_AsUTF8(q)
 			q.DecRef()
 			// just to be fancy
-			fe.Error(fmt.Errorf("python: main: return: %s", s))
+			stderr([]byte(s)) // log main returned string value
 		}
 		return
 	}
 	g := gilStateDefer(gil)
 	defer g()
 	code, err := py.PyRun_AnyFile(f.PyFile)
-	fe.Fatal(err)
+	fe.Fatal(err, fe.ERR_STREAM)
 	if code != 0 {
-		fe.Fatal(fmt.Errorf("python exception in file: %s", f.PyFile))
+		fe.Fatal(fmt.Errorf("python exception in file: %s", f.PyFile), fe.ERR_PYTHON)
 	}
 }
 
@@ -123,7 +123,7 @@ func Init() {
 	//Run("import snake")
 	snake = py.PyImport_ImportModule("snake")
 	if snake == nil {
-		fe.Fatal(fmt.Errorf("snake module not available to import"))
+		fe.Fatal(fmt.Errorf("snake module not available to import"), fe.ERR_STREAM)
 	}
 	state = py.PyEval_SaveThread()
 }
@@ -167,10 +167,10 @@ func Call(name string, args *py.PyObject, kwargs *py.PyObject, gil bool) *py.PyO
 	defer g()
 	f := snake.GetAttrString(name)
 	if f == nil {
-		fe.Fatal(fmt.Errorf("snake does not contain a global %s", name))
+		fe.Fatal(fmt.Errorf("snake does not contain a global %s", name), fe.ERR_PYTHON)
 	}
 	if !py.PyCallable_Check(f) {
-		fe.Fatal(fmt.Errorf("%s is not a global callable", name))
+		fe.Fatal(fmt.Errorf("%s is not a global callable", name), fe.ERR_PYTHON)
 	}
 	if args == nil {
 		args = py.PyTuple_New(0)
@@ -225,10 +225,10 @@ func AddFunc(name string, function unsafe.Pointer) {
 	// allows "snake.py" to have dummy mypy functions
 	Init()
 	if snake.DelAttrString(name) != 0 {
-		fe.Fatal(fmt.Errorf("%s has no global template in the snake module", name))
+		fe.Fatal(fmt.Errorf("%s has no global template in the snake module", name), fe.ERR_PYTHON)
 	}
 	if snake.AddModuleCFunction(name, function) != 0 {
-		fe.Fatal(fmt.Errorf("%s couldn't be added to the snake module", name))
+		fe.Fatal(fmt.Errorf("%s couldn't be added to the snake module", name), fe.ERR_PYTHON)
 	}
 }
 
