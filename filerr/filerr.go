@@ -25,7 +25,7 @@ const (
 	ERR_GENERAL ExitCode = 1 << iota
 	// all fatal errors have this set (all non-fatal errors become this with -x option)
 	ERR_FATAL
-	// 5 bits of error code with flags in lover mask
+	// 4 bits of error code with flags in lover mask
 	ERR_0
 	//
 	ERR_1
@@ -33,18 +33,35 @@ const (
 	ERR_2
 	//
 	ERR_3
-	//
-	ERR_4
-	// internal code 128+n for signals like SIGHUP, SIGTERM etc.
+	// for some shell errors lower than 128 (64+n)
+	ERR_SHELL
+	// internal code (128+n) for signals like SIGHUP, SIGTERM etc.
 	ERR_SIGNAL_HANDLER
-	// > uint8
+	// (> uint8) maybe used but, some applications and the shell might not support the code
 	ERR_RANGE_PLUS_ONE
 )
 
-const ( // maximum of 32 possible bit patterns before "shell" overflow
+const ( // maximum of 16 possible bit patterns before "shell" overflow
 	// basic error code space for more specific errors
-	E_1 ExitCode = iota << 2
+	E_00 ExitCode = iota << 2
+	E_01
+	E_02
+	E_03
 	// ...
+	E_10
+	E_11
+	E_12
+	E_13
+	//
+	E_20
+	E_21
+	E_22
+	E_23
+	//
+	E_30
+	E_31
+	E_32
+	E_33
 )
 
 // The combination exit codes useful named list
@@ -53,6 +70,7 @@ const (
 	ERR_SIGNAL_CTRL_C          = ERR_SIGNAL_HANDLER | ERR_FATAL // for example
 	ERR_RANGE                  = ERR_RANGE_PLUS_ONE - 1         // 255 (technically also ERR_MINUS_ONE)
 	ERR_WRONG                  = ERR_FATAL | ERR_GENERAL        // both as general non fatal made fatal
+	ERR_SHELL_CMPLX            = ERR_SIGNAL_HANDLER | ERR_SHELL // both for some complex shell errors (196+n)
 )
 
 // A concrete extended error type
