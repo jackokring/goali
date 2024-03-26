@@ -35,3 +35,8 @@ PyObject *py_api_action_msg(PyObject *self, PyObject *args, PyObject *kwargs) {
 	go_api_action_msg((char*)arg, len);
 	Py_RETURN_NONE;
 }
+
+// C API
+void* c_api_fn(void* x) {
+	return x;
+}

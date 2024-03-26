@@ -14,3 +14,5 @@ extern PyObject *py_api_stdout(PyObject *self, PyObject *args, PyObject *kwargs)
 extern PyObject *py_api_stderr(PyObject *self, PyObject *args, PyObject *kwargs);
 extern PyObject *py_api_stdin(PyObject *self, PyObject *args, PyObject *kwargs);
 extern PyObject *py_api_action_msg(PyObject *self, PyObject *args, PyObject *kwargs);
+
+extern void* c_api_fn(void*);

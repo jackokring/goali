@@ -348,3 +348,12 @@ func go_api_action_msg(s *C.char, n C.Py_ssize_t) {
 func actionMsg(s string) {
 	gin.SetMsg(s) // set the status message
 }
+
+//=====================================
+//********* Extensions In C ***********
+//=====================================
+
+// C fn
+func c(x unsafe.Pointer) unsafe.Pointer {
+	return C.c_api_fn(x)
+}
