@@ -17,6 +17,7 @@ PACKAGE="github.com/$(basename $HOME)/$(basename $(pwd))$BRANCHVERSYNTAX"
 VERSION="$(git describe --tags --always --abbrev=0 --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null | sed 's/^.//')"
 COMMIT_HASH="$(git rev-parse --short HEAD)"
 BUILD_TIMESTAMP=$(date '+%Y-%m-%dT%H:%M:%S%Z')
+DYNAMIC="dynamic"
 
 # STEP 2: Build the ldflags
 
@@ -29,3 +30,15 @@ LDFLAGS=(
 
 go generate
 go build -ldflags="${LDFLAGS[*]}"
+
+# STEP 4: The dynamic ldflags 
+
+LDFLAGS=(
+  "-X '${PACKAGE}/consts.Version=${VERSION}-${COMMIT_HASH}'"
+  "-X '${PACKAGE}/consts.BuildTime=${BUILD_TIMESTAMP}'"
+  "-X '${PACKAGE}/consts.Dynamic=${DYNAMIC}'"
+)
+
+# STEP 5: Build shared C object
+
+go build -ldflags="${LDFLAGS[*]}" -buildmode=c-shared
