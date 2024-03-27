@@ -23,3 +23,6 @@ const DateTimeFormat = "2006-01-02 Mon 15:04:05 MST"
 
 // Default CLI style (pseudo constant).
 var Gloss = lipgloss.NewStyle().Foreground(lipgloss.Color("#ff00ff"))
+
+// The application build dynamic library poke (pseudo constant).
+var Dynamic = "static"
