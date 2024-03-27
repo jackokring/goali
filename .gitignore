@@ -1,5 +1,6 @@
 # the bin file
 goali
+goali.so
 # leave venv out of repo
 *.pyc
 bin/
