@@ -19,19 +19,7 @@ COMMIT_HASH="$(git rev-parse --short HEAD)"
 BUILD_TIMESTAMP=$(date '+%Y-%m-%dT%H:%M:%S%Z')
 DYNAMIC="dynamic"
 
-# STEP 2: Build the ldflags
-
-LDFLAGS=(
-  "-X '${PACKAGE}/consts.Version=${VERSION}-${COMMIT_HASH}'"
-  "-X '${PACKAGE}/consts.BuildTime=${BUILD_TIMESTAMP}'"
-)
-
-# STEP 3: Actual Go build process
-
-go generate
-go build -ldflags="${LDFLAGS[*]}"
-
-# STEP 4: The dynamic ldflags 
+# STEP 2: The dynamic ldflags 
 
 LDFLAGS=(
   "-X '${PACKAGE}/consts.Version=${VERSION}-${COMMIT_HASH}'"
@@ -39,6 +27,21 @@ LDFLAGS=(
   "-X '${PACKAGE}/consts.Dynamic=${DYNAMIC}'"
 )
 
-# STEP 5: Build shared C object
+# STEP 3: Build shared C object
 
+go generate
 go build -ldflags="${LDFLAGS[*]}" -buildmode=c-shared
+# rename .so dynamic lib
+mv goali goali.so 
+
+# STEP 4: Build the ldflags
+
+LDFLAGS=(
+  "-X '${PACKAGE}/consts.Version=${VERSION}-${COMMIT_HASH}'"
+  "-X '${PACKAGE}/consts.BuildTime=${BUILD_TIMESTAMP}'"
+)
+
+# STEP 5: Actual Go build process
+
+go generate
+go build -ldflags="${LDFLAGS[*]}"
