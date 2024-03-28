@@ -1,3 +1,12 @@
 [submodule "cpy3"]
 	path = cpy3
 	url = git@github.com:jackokring/cpy3.git
+[submodule "htmx"]
+	path = htmx
+	url = git@github.com:bigskysoftware/htmx.git
+[submodule "less.js"]
+	path = less.js
+	url = git@github.com:less/less.js.git
+[submodule "showdown"]
+	path = showdown
+	url = git@github.com:showdownjs/showdown.git
