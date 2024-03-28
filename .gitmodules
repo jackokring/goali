@@ -10,3 +10,6 @@
 [submodule "showdown"]
 	path = showdown
 	url = git@github.com:showdownjs/showdown.git
+[submodule "bootstrap"]
+	path = bootstrap
+	url = git@github.com:twbs/bootstrap.git
