@@ -7,6 +7,7 @@ Not to be confused with the non-existent marsh-soup-eal the Koali.
 $ sudo apt install git python-is-python3 golang python3-pip python3-dev
 $ git clone git@github.com:jackokring/goali.git
 $ cd goali
+$ # you may find the sudo for package dependencies in require.sh in a comment
 $ # the cpy3 submodule for embedding python
 $ # pull and satisfy requirements then go build
 $ ./require.sh
@@ -70,7 +71,9 @@ Much faster code compile too.
 * [bubbletea][bubbletea] - TUI toolkit
 * [lipgloss][lipgloss] - ANSI sequences
 * [bubbles][bubbles] - TUI extended controls
-* [kong-yaml][kong-yaml] - config loader
+* [kong-yaml][kong-yaml] - YAML config loader
+* [squirrel][squirrel] - SQL statement builder
+* [pgx][pgx] - Postgres connector
 
 ## Modules to Find
 
@@ -146,6 +149,14 @@ also running a browser, with the music, and the reference internet. It
 should hold off when close to memory 70% or core usage above 50% like
 give the syntax check a stop for a minute or two. I only deleted a `}`. I'm sure
 I'll manage without the extra or fewer items in the "intelli-drop-list".
+* Aren't I lucky I didn't install the C tools recommended `-jINFINTE` balls.
+Sure the `mc` in da house.
+* `pylance` maybe a slightly bigger boil than it need be.
+* Yes, the environment slows down when altering ANY cgo file.
+* `VSCodeLIght` with less gfx buffers? Oh, that fancy fast compositor
+gigabyte depositor. But sorry, "BOINC" is more appropriate. You know
+"useful" sh*t @ home?
+* OK, as a prototype it kind of works ;D. Tai-Ping? Is he 'ard lady boy?
 
 ---
 
@@ -161,7 +172,9 @@ I'll manage without the extra or fewer items in the "intelli-drop-list".
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml
 [lipgloss]: github.com/charmbracelet/lipgloss
-[todo]: https://todo.jasonet.co
+[pgx]: github.com/jackc/pgx
+[squirrel]: github.com/Masterminds/squirrel
+[todo]: todo.jasonet.co
 
 [the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
 [David]: en.wikipedia.org/wiki/David_Seaman
