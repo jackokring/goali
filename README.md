@@ -158,6 +158,13 @@ gigabyte depositor. But sorry, "BOINC" is more appropriate. You know
 "useful" sh*t @ home?
 * OK, as a prototype it kind of works ;D. Tai-Ping? Is he 'ard lady boy?
 
+### Things which are Really Sinter Net Things
+
+* Ah, hot metal. Maybe a proxy JS wall and `*.md` server? Like for local
+`*.html` building? Some user control data sharding? It obviously needs some
+authority based access protocols for utility. `_O_-_ETA_` yeah, like, bean
+ear lawn?
+
 ---
 
 ## Extracted Link Definitions (Invisible)
