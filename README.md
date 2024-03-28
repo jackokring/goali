@@ -8,7 +8,6 @@ $ sudo apt install git python-is-python3 golang python3-pip python3-dev
 $ git clone git@github.com:jackokring/goali.git
 $ cd goali
 $ # the cpy3 submodule for embedding python
-$ git submodule update --init --recursive
 $ # pull and satisfy requirements then go build
 $ ./require.sh
 ```
