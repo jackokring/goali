@@ -93,10 +93,11 @@ func Goali() {
 		kong.Configuration(kongyaml.Loader /* globalConfig, */, paths...),
 		kong.Vars{
 			// ${<name>} in `tags`
-			"localConfig": filepath.Join(dir, con.AppName+".yaml"),
-			"appName":     con.AppName,
-			"version":     con.Version,
-			"built":       con.BuildTime,
+			"localConfig":  filepath.Join(dir, con.AppName+".yaml"),
+			"appName":      con.AppName,
+			"appNameUpper": strings.ToUpper(con.AppName),
+			"version":      con.Version,
+			"built":        con.BuildTime,
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),

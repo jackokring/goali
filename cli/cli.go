@@ -57,7 +57,7 @@ import (
 
 // Alphabetically sorted command line arrangement.
 var Cli struct {
-	clit.Globals `envprefix:"${appName}_"` // global prefix of any `env:"xxx"`
+	clit.Globals `envprefix:"${appNameUpper}_"` // global prefix of any `env:"xxx"`
 	// see individual named Command packages
 	Knap    knap.Command    `cmd:"" help:"Web servia."`
 	Mickey  mickey.Command  `cmd:"" help:"GUI launcher."`
