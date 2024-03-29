@@ -62,7 +62,7 @@ Much faster code compile too.
 
 `go build -ldflags "-w -s"` saves 5 MB using the linker optimizer.
 
-## Go Modules Used (and Indirect)
+## Go Modules Used (and Their Indirect Modules)
 
 * [kong][kong] - CLI parse
 * [fyne][fyne] - GUI toolkit
@@ -74,10 +74,13 @@ Much faster code compile too.
 * [kong-yaml][kong-yaml] - YAML config loader
 * [squirrel][squirrel] - SQL statement builder
 * [pgx][pgx] - Postgres connector
+* [go-keyring][go-keyring] - Secret keyring handler (needs local `login` keyring via `seahorse`)
 
 ## Modules to Find
 
 This place is kind of a brain storming section, stuff in the decision matrix.
+
+* [Awesome Go with Stars][Awesome]
 
 ## Python `venv`
 
@@ -174,7 +177,7 @@ ear lawn?
 [bubbletea]: github.com/charmbracelet/bubbletea
 [chi]: github.com/go-chi/chi/v5
 [cpy3]: github.com/jackokring/cpy3
-[CPY3]: CPY3.md
+[go-keyring]: github.com/zalando/go-keyring
 [fyne]: fyne.io/fyne/v2
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml
@@ -183,5 +186,8 @@ ear lawn?
 [squirrel]: github.com/Masterminds/squirrel
 [todo]: todo.jasonet.co
 
-[the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
+[Awesome]: github.com/amanbolat/awesome-go-with-stars
+[CPY3]: CPY3.md
 [David]: en.wikipedia.org/wiki/David_Seaman
+
+[the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing

@@ -18,6 +18,12 @@ require github.com/charmbracelet/bubbles v0.18.0
 require github.com/go-chi/chi/v5 v5.0.12
 
 require (
+	github.com/alessio/shellescape v1.4.1 // indirect
+	github.com/danieljoos/wincred v1.2.0 // indirect
+	github.com/zalando/go-keyring v0.2.4
+)
+
+require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
