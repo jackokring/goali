@@ -4,7 +4,10 @@ package clitype
 //******** Types Only Section *********
 //=====================================
 
-import "github.com/alecthomas/kong"
+import (
+	"github.com/alecthomas/kong"
+	"github.com/jackokring/goali/consts"
+)
 
 // Profile allows options beyond command line switches.
 type Profile struct {
@@ -16,14 +19,14 @@ type Config kong.ConfigFlag
 
 // The global switches used by the application.
 type Globals struct {
-	Debug      bool             `help:"Enable debug mode (includes panic tracing)." short:"d"`
-	ProFile    Profile          `help:"Use PROFILE file (*.yaml) of ${appName}." type:"yamlfile" short:"p"`
-	Quiet      bool             `help:"Enable quiet mode errors (overrides some of -d)." short:"q"`
-	Rollback   bool             `help:"Enable rollback mode on fatal errors." short:"r"`
-	SysLog     bool             `help:"Enable syslog output." short:"s"`
-	TempConfig Config           `help:"Override configuration CONFIG file (*.yaml) of ${appName} (usually ${localConfig})." short:"t"`
-	Version    kong.VersionFlag `help:"Show ${appName} version (${version})." short:"v"`
-	Wrong      bool             `help:"Enable fail on first error wrong mode." short:"x"`
+	Debug      consts.DebugLevel `help:"Enable debug mode (includes panic tracing)." short:"d" type:"counter"`
+	ProFile    Profile           `help:"Use PROFILE file (*.yaml) of ${appName}." type:"yamlfile" short:"p"`
+	Quiet      bool              `help:"Enable quiet mode errors (overrides some of -d)." short:"q"`
+	Rollback   bool              `help:"Enable rollback mode on fatal errors." short:"r"`
+	SysLog     bool              `help:"Enable syslog output." short:"s"`
+	TempConfig Config            `help:"Override configuration CONFIG file (*.yaml) of ${appName} (usually ${localConfig})." short:"t"`
+	Version    kong.VersionFlag  `help:"Show ${appName} version (${version})." short:"v"`
+	Wrong      bool              `help:"Enable fail on first error wrong mode." short:"x"`
 }
 
 // A python code file type.

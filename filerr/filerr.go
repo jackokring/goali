@@ -16,83 +16,17 @@ import (
 //****** Error Handler Section ********
 //=====================================
 
-// The exit code type
-type ExitCode int // uint8
-
-// The primitive exit codes
-//
-// Some combinations are used as unique goali and TUI errors
-const (
-	// general error (used by kong errors, and other library errors)
-	ERR_GENERAL ExitCode = 1 << iota
-	// all fatal errors have this set (all non-fatal errors become this with -x option)
-	ERR_FATAL
-	// 4 bits of error code with flags in lover mask
-	ERR_0
-	//
-	ERR_1
-	//
-	ERR_2
-	//
-	ERR_3
-	// for some shell errors lower than 128 (64+n)
-	ERR_SHELL
-	// internal code (128+n) for signals like SIGHUP, SIGTERM etc.
-	ERR_SIGNAL_HANDLER
-	// (> uint8) maybe used but, some applications and the shell might not support the code
-	ERR_RANGE_PLUS_ONE
-)
-
-const ( // maximum of 16 possible bit patterns before "shell" overflow
-	// basic error code space for more specific errors
-	// this one is special as it clears the lower 2 bits when used on its own
-	ERR_RESET_UNCLASSIFIED ExitCode = iota << 2
-	// ERR_STREAM File IO error (in combination with:)
-	// 00 - TUI gin error
-	// 01 - goali error log
-	// 10 - Fatal stream error (Normal)
-	// 11 - goali error RunAfter
-	ERR_STREAM
-	// ERR_PYTHON Snake error (not file IO related)
-	ERR_PYTHON
-	E_03
-	// ...
-	E_10
-	E_11
-	E_12
-	E_13
-	//
-	E_20
-	E_21
-	E_22
-	E_23
-	//
-	E_30
-	E_31
-	E_32
-	E_33
-)
-
-// The combination exit codes useful named list
-const (
-	ERR_MINUS_ONE     ExitCode = ExitCode(^0)                   // two's complement inversion
-	ERR_SIGNAL_CTRL_C          = ERR_SIGNAL_HANDLER | ERR_FATAL // for example
-	ERR_RANGE                  = ERR_RANGE_PLUS_ONE - 1         // 255 (technically also ERR_MINUS_ONE)
-	ERR_WRONG                  = ERR_FATAL | ERR_GENERAL        // both as general non fatal made fatal
-	ERR_SHELL_CMPLX            = ERR_SIGNAL_HANDLER | ERR_SHELL // both for some complex shell errors (196+n)
-)
-
 // A concrete extended error type
 type E struct {
 	error
-	exit ExitCode
+	exit con.ExitCode
 }
 
 // The extended error cast interface
 type R interface {
 	error
 	Exit()
-	With(exit ExitCode) R
+	With(exit con.ExitCode) R
 }
 
 // The simplest contract number
@@ -101,8 +35,8 @@ func (e E) Exit() {
 }
 
 // Set the exit code
-func (e *E) With(exit ExitCode) R {
-	if exit == ERR_RESET_UNCLASSIFIED { // allows extended codes by lower bits reset
+func (e *E) With(exit con.ExitCode) R {
+	if exit == con.ERR_RESET_UNCLASSIFIED { // allows extended codes by lower bits reset
 		e.exit = e.exit & ^3 // clear lower bits
 	}
 	e.exit = exit | e.exit
@@ -141,8 +75,8 @@ func Error(e error) bool {
 	if e != nil {
 		// and a level of nest for caller of Error()
 		if g.Wrong {
-			fatalNest(&E{e, ERR_WRONG}, 1) // caller of Error
-			return false                   // never happens
+			fatalNest(&E{e, con.ERR_WRONG}, 1) // caller of Error
+			return false                       // never happens
 		}
 		// print once
 		notify(e.Error(), 1) // {} here handler
@@ -175,20 +109,26 @@ func DeferClose(c io.Closer) {
 }
 
 // Fatal error logging.
-func Fatal(e error, x ...ExitCode) {
+func Fatal(e error, x ...con.ExitCode) {
 	if e == nil {
 		return
 	}
 	c := &E{
-		e, ERR_FATAL, // essential to have non-zero default
+		e, con.ERR_FATAL, // essential to have non-zero default
 	}
 	for _, ec := range x {
 		c.With(ec)
 	}
-	if c.exit == ERR_RESET_UNCLASSIFIED { // check success by accident
-		c.With(ERR_FATAL) // make fatal again
+	if c.exit == con.ERR_RESET_UNCLASSIFIED { // check success by accident
+		c.With(con.ERR_PYTHON) // make unmodified success error
+		// logical to be a python error if constructing
+		// error become allowed from snake (soft code)
 	}
 	fatalNest(c, 1) // one stack frame for the proxy call
+}
+
+func validLevel(plus int) bool {
+	return int(g.Debug)-plus > 0
 }
 
 // FatalNest with skipped stack frames
@@ -199,7 +139,7 @@ func fatalNest(e R, skip int) {
 	// sync to already done options
 	// No notify() proxy as serious terminal error
 	CloseAll(g.Rollback) // rollback
-	if g.Debug {
+	if validLevel(0) {   // any debug level
 		// this should always drop somewhere
 		log.Panic(e.Error()) // your basic panic, with no error code options
 	}
@@ -212,8 +152,8 @@ func fatalNest(e R, skip int) {
 }
 
 // Notify a debug message to the current logger writer.
-func Debug(s string) {
-	if g.Debug {
+func Debug(src con.DebugSource, verbose int, s string) {
+	if validLevel(int(con.DebugMin[src]-1) + verbose) { // if level valid for source and verbose
 		notify(s, 1) // the caller of Debug()
 	}
 }
@@ -253,7 +193,7 @@ func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
 	// use backup as input file
 	n := w.getRollback()
 	if n == "" { // there is no rollback file
-		Fatal(fmt.Errorf("can't construct input file from old output file content"), ERR_STREAM)
+		Fatal(fmt.Errorf("can't construct input file from old output file content"), con.ERR_STREAM)
 	}
 	// see Rollback(closeBefore FilterReader)
 	r := GetReader(clit.InputFile{InputFile: n, Expand: io.Compand}) // closed first
@@ -303,7 +243,7 @@ func (r *GReader) Read(b []byte) int {
 		// delay spec for while style test of EOF
 		r.thisEof = true
 	} else {
-		Fatal(e, ERR_STREAM)
+		Fatal(e, con.ERR_STREAM)
 	}
 	return n
 }
@@ -361,7 +301,7 @@ func (w GWriter) Close() error {
 
 func (w GWriter) Write(b []byte) int {
 	i, e := w.this.Write(b)
-	Fatal(e, ERR_STREAM)
+	Fatal(e, con.ERR_STREAM)
 	return i
 }
 
@@ -377,21 +317,21 @@ func (w GWriter) Rollback(closeBefore FilterReader) {
 	}
 	if w.rollback != "" {
 		flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
-		Fatal(os.Remove(w.out), ERR_STREAM)
+		Fatal(os.Remove(w.out), con.ERR_STREAM)
 		in, e := os.Open(w.rollback)
-		Fatal(e, ERR_STREAM)
+		Fatal(e, con.ERR_STREAM)
 		out, e2 := os.OpenFile(w.out, flags, w.mode)
 		if e2 != nil {
 			Error(in.Close())
-			Fatal(e2, ERR_STREAM)
+			Fatal(e2, con.ERR_STREAM)
 		}
 		_, e3 := io.Copy(out, in)
 		if e3 != nil {
 			Error(in.Close())
 			Error(out.Close())
-			Fatal(e3, ERR_STREAM)
+			Fatal(e3, con.ERR_STREAM)
 		}
-		Fatal(os.Remove(w.rollback), ERR_STREAM)
+		Fatal(os.Remove(w.rollback), con.ERR_STREAM)
 	}
 }
 
@@ -422,17 +362,17 @@ func getReaderBase(i clit.InputFile) FilterReader {
 	if i.InputFile == "-" {
 		in := os.Stdin
 		nin, e := os.Open(os.DevNull)
-		Fatal(e, ERR_STREAM)
+		Fatal(e, con.ERR_STREAM)
 		os.Stdin = nin
 		DeferClose(in)
 		return &GReader{in, nil, false}
 	}
 	f, err := os.Open(i.InputFile)
-	Fatal(err, ERR_STREAM)
+	Fatal(err, con.ERR_STREAM)
 	DeferClose(f)
 	if i.Expand {
 		f2, err2 := gzip.NewReader(f)
-		Fatal(err2, ERR_STREAM)
+		Fatal(err2, con.ERR_STREAM)
 		DeferClose(f2)
 		return &GReader{f2, f, false}
 	}
@@ -472,30 +412,30 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 		// commit vs. rollback.
 		// make backup?
 		r, e := os.Open(o.OutputFile)
-		Fatal(e, ERR_STREAM)
+		Fatal(e, con.ERR_STREAM)
 		w, e2 := os.CreateTemp("", con.AppName+"-*.bak")
 		if e2 != nil {
 			Error(r.Close())
-			Fatal(e2, ERR_STREAM)
+			Fatal(e2, con.ERR_STREAM)
 		}
 		_, e3 := io.Copy(w, r)
 		if e3 != nil {
 			Error(r.Close())
 			Error(w.Close())
-			Fatal(e3, ERR_STREAM)
+			Fatal(e3, con.ERR_STREAM)
 		}
 		Error(r.Close())
 		Error(w.Close())
-		Fatal(os.Remove(o.OutputFile), ERR_STREAM)
+		Fatal(os.Remove(o.OutputFile), con.ERR_STREAM)
 		rollback = w.Name()
 		// Backed up!
 	}
 	f, err := os.OpenFile(o.OutputFile, flags, perms)
-	Fatal(err, ERR_STREAM)
+	Fatal(err, con.ERR_STREAM)
 	DeferClose(f)
 	if o.Compress {
 		f2, err2 := gzip.NewWriterLevel(f, gzip.BestCompression)
-		Fatal(err2, ERR_STREAM)
+		Fatal(err2, con.ERR_STREAM)
 		DeferClose(f2)
 		return GWriter{f2, f, rollback, mode, f.Name()}
 	}

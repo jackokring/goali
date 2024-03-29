@@ -109,7 +109,7 @@ func Goali() {
 	)
 	log.SetOutput(os.Stderr)
 	debug := 0
-	if cli.Cli.Debug {
+	if cli.Cli.Debug > 0 {
 		debug += log.Lshortfile | log.Lmicroseconds
 	}
 	log.SetFlags(log.LstdFlags | log.LUTC | debug)
@@ -117,7 +117,7 @@ func Goali() {
 	if cli.Cli.SysLog {
 		// Configure logger to write to the syslog.
 		logwriter, e := syslog.New(syslog.LOG_NOTICE, con.AppName)
-		fe.Fatal(e, fe.ERR_RESET_UNCLASSIFIED, fe.ERR_STREAM) // unique stream code
+		fe.Fatal(e, consts.ERR_RESET_UNCLASSIFIED, consts.ERR_STREAM) // unique stream code
 		log.SetOutput(logwriter)
 	}
 	gin.Tui()
@@ -156,6 +156,6 @@ func Goali() {
 		finalModel, okToExit = gin.TuiGetModel()
 	}
 	// a classic embedded interface no nil check
-	fe.Fatal(finalModel.RunAfter(), fe.ERR_WRONG) // unique post RunAfter error
-	fe.CloseAll(false)                            // natural exit
+	fe.Fatal(finalModel.RunAfter(), consts.ERR_WRONG) // unique post RunAfter error
+	fe.CloseAll(false)                                // natural exit
 }

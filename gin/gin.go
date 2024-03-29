@@ -199,7 +199,9 @@ func TuiGetModel() (m Model, ok bool) {
 	case u, ok := <-userChan:
 		if !ok {
 			// unique TUI internal error code
-			fe.Fatal(fmt.Errorf("internal gin channel closed unexpectedly"), fe.ERR_RESET_UNCLASSIFIED, fe.ERR_STREAM)
+			fe.Fatal(fmt.Errorf("internal gin channel closed unexpectedly"),
+				consts.ERR_RESET_UNCLASSIFIED,
+				consts.ERR_STREAM)
 		}
 		// completed
 		return u, true
