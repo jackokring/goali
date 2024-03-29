@@ -117,7 +117,7 @@ func Goali() {
 	if cli.Cli.SysLog {
 		// Configure logger to write to the syslog.
 		logwriter, e := syslog.New(syslog.LOG_NOTICE, con.AppName)
-		fe.Fatal(e, consts.ERR_RESET_UNCLASSIFIED, consts.ERR_STREAM) // unique stream code
+		fe.Fatal(e, con.ERR_RESET_UNCLASSIFIED, con.ERR_STREAM) // unique stream code
 		log.SetOutput(logwriter)
 	}
 	gin.Tui()
@@ -125,7 +125,7 @@ func Goali() {
 	// Call the Run() method of the selected parsed command.
 	// Extra context arg as not cast to command
 	// returns exit code 1 like a Kong error
-	fe.Fatal(ctx.Run(&cli.Cli.Globals), fe.ERR_RESET_UNCLASSIFIED, fe.ERR_GENERAL|fe.ERR_STREAM) // not handled nil code
+	fe.Fatal(ctx.Run(&cli.Cli.Globals), con.ERR_RESET_UNCLASSIFIED, con.ERR_GENERAL|con.ERR_STREAM) // not handled nil code
 	// So you've found an Error?
 	// Have you considered using the functions:
 	//
@@ -156,6 +156,6 @@ func Goali() {
 		finalModel, okToExit = gin.TuiGetModel()
 	}
 	// a classic embedded interface no nil check
-	fe.Fatal(finalModel.RunAfter(), consts.ERR_WRONG) // unique post RunAfter error
-	fe.CloseAll(false)                                // natural exit
+	fe.Fatal(finalModel.RunAfter(), con.ERR_WRONG) // unique post RunAfter error
+	fe.CloseAll(false)                             // natural exit
 }

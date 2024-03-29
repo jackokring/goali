@@ -1,16 +1,10 @@
+#!/usr/bin/bash
 code --install-extension golang.go
-code --install-extension jheilingbrunner.vscode-hp42s-free42
 code --install-extension matangover.mypy
-code --install-extension mechatroner.rainbow-csv
-code --install-extension ms-python.debugpy
 code --install-extension ms-python.python
-code --install-extension ms-python.vscode-pylance
 code --install-extension ms-toolsai.jupyter
 code --install-extension ms-toolsai.jupyter-keymap
 code --install-extension ms-toolsai.jupyter-renderers
 code --install-extension ms-toolsai.vscode-jupyter-cell-tags
 code --install-extension ms-toolsai.vscode-jupyter-slideshow
-code --install-extension ms-vscode.cpptools
-code --install-extension platformio.platformio-ide
 code --install-extension streetsidesoftware.code-spell-checker
-code --install-extension tamasfe.even-better-toml
