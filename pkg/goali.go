@@ -41,6 +41,7 @@ import (
 	con "github.com/jackokring/goali/consts"
 	fe "github.com/jackokring/goali/filerr"
 	"github.com/jackokring/goali/gin"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 //=====================================

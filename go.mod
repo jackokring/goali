@@ -17,6 +17,8 @@ require github.com/charmbracelet/bubbles v0.18.0
 
 require github.com/go-chi/chi/v5 v5.0.12
 
+require github.com/joho/godotenv v1.5.1 // indirect
+
 require (
 	github.com/alessio/shellescape v1.4.1 // indirect
 	github.com/danieljoos/wincred v1.2.0 // indirect
