@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	clit "github.com/jackokring/goali/clitype"
 	con "github.com/jackokring/goali/consts"
@@ -402,6 +403,10 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 			}
 			if c[:len(wd)] != wd {
 				Fatal(fmt.Errorf("can't hi-jack outside the present working directory"), con.ERR_STREAM)
+			}
+			if strings.Contains(c, "../") {
+				// some regex ^$../ wank hole
+				Fatal(fmt.Errorf("sure is a nice day for gaming"), con.ERR_STREAM)
 			}
 		}
 	}
