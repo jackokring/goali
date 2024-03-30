@@ -188,7 +188,7 @@ func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
 		Compress:   io.Compand,
 		Force:      true,
 		Group:      io.Group,
-		Jack:       true, // as by definition it's a replace processing
+		Jack:       io.Jack, // as by definition it's a replace processing
 		OutputFile: io.IoFile,
 		Write:      io.Write,
 	})

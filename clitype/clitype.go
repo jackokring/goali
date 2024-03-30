@@ -45,6 +45,7 @@ type IoFile struct {
 	Compand bool   `help:"Compress and expand with gzip the <io-file>." short:"c"`
 	Group   bool   `help:"The <io-file> is restricted to user and group access permissions." short:"g"`
 	IoFile  string `arg:"" help:"The <io-file> to ${appName} (implies -f)." type:"existingfile"`
+	Jack    bool   `help:"The <io-file> can hi-jack the file system outside ${pwd}." short:"j"`
 	Write   bool   `help:"The <io-file> gains group write access permission" short:"w"`
 }
 
