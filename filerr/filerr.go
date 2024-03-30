@@ -154,9 +154,9 @@ func fatalNest(e R, skip int) {
 }
 
 // Notify a debug message to the current logger writer.
-func Debug(src con.DebugSource, verbose int, s string) {
+func Debug(src con.DebugSource, verbose int, stack int, s string, values ...any) {
 	if validLevel(int(con.DebugMin[src]-1) + verbose) { // if level valid for source and verbose
-		notify(s, 1) // the caller of Debug()
+		notify(fmt.Sprintf(s, values...), 1+stack) // the caller of Debug()
 	}
 }
 
@@ -176,7 +176,7 @@ func Debug(src con.DebugSource, verbose int, s string) {
 // on Rollback() with the replacement
 // happening atomically on the Close().
 func GetIO(io clit.StreamFilter) (FilterReader, FilterWriter) {
-	return GetReader(io.InputFile), GetWriter(io.OutputFile)
+	return getReader(io.InputFile), getWriter(io.OutputFile)
 }
 
 // Sure I need an GetIORW(io IoFile) (FilterReader, FilterWriter).
@@ -185,7 +185,7 @@ func GetIO(io clit.StreamFilter) (FilterReader, FilterWriter) {
 // you can io.Copy to if you do need an exact clone to start. This may cause problems
 // as not all file kinds can then Seek back to the beginning.
 func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
-	w := GetWriter(clit.OutputFile{
+	w := getWriter(clit.OutputFile{
 		Compress:   io.Compand,
 		Force:      true,
 		Group:      io.Group,
@@ -199,7 +199,7 @@ func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
 		Fatal(fmt.Errorf("can't construct input file from old output file content"), con.ERR_STREAM)
 	}
 	// see Rollback(closeBefore FilterReader)
-	r := GetReader(clit.InputFile{InputFile: n, Expand: io.Compand}) // closed first
+	r := getReader(clit.InputFile{InputFile: n, Expand: io.Compand}) // closed first
 	return r, w
 }
 
@@ -353,7 +353,7 @@ func (w GWriter) Seek(offset int64, whence int) (int64, error) {
 }
 
 // Get reader
-func GetReader(i clit.InputFile) FilterReader {
+func getReader(i clit.InputFile) FilterReader {
 	r := getReaderBase(i)
 	r.Read(make([]byte, 0)) // sure needs a zero length EOF set
 	// I prefer a `for !EOF {}` kind of thing
@@ -383,7 +383,7 @@ func getReaderBase(i clit.InputFile) FilterReader {
 }
 
 // Get writer
-func GetWriter(o clit.OutputFile) FilterWriter {
+func getWriter(o clit.OutputFile) FilterWriter {
 	if o.OutputFile == "-" {
 		out := os.Stdout
 		// Handle TUI expectations
@@ -402,14 +402,17 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 				Fatal(ewd, con.ERR_STREAM)
 			}
 			if c[:len(wd)] != wd {
-				Fatal(fmt.Errorf("can't hi-jack outside the present working directory"), con.ERR_STREAM)
+				Fatal(fmt.Errorf("can't hi-jack outside the present working directory: %s", c), con.ERR_STREAM)
 			}
 			if strings.HasPrefix(c, "../") || strings.HasPrefix(c, "/../") {
 				// and for weird filename.. case
 				// some regex ^$../ wank hole
-				Fatal(fmt.Errorf("sure is a nice day for gaming"), con.ERR_STREAM)
+				Fatal(fmt.Errorf("sure is a nice day for gaming ...: %s", c), con.ERR_STREAM)
 			}
 		}
+		// notify at the caller of getWriter() -> stack = 2
+		// so used IO creation function -> stack =3
+		Debug(con.APP_DEBUG_SOURCE, 0, 3, "-j option in use: %s", c)
 	}
 	var perms fs.FileMode = 0644
 	if o.Write && !o.Group {
