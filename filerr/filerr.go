@@ -404,7 +404,8 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 			if c[:len(wd)] != wd {
 				Fatal(fmt.Errorf("can't hi-jack outside the present working directory"), con.ERR_STREAM)
 			}
-			if strings.Contains(c, "../") {
+			if strings.HasPrefix(c, "../") || strings.HasPrefix(c, "/../") {
+				// and for weird filename.. case
 				// some regex ^$../ wank hole
 				Fatal(fmt.Errorf("sure is a nice day for gaming"), con.ERR_STREAM)
 			}
