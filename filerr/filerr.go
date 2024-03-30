@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"path/filepath"
 
 	clit "github.com/jackokring/goali/clitype"
 	con "github.com/jackokring/goali/consts"
@@ -187,6 +188,7 @@ func GetRW(io clit.IoFile) (FilterReader, FilterWriter) {
 		Compress:   io.Compand,
 		Force:      true,
 		Group:      io.Group,
+		Jack:       true, // as by definition it's a replace processing
 		OutputFile: io.IoFile,
 		Write:      io.Write,
 	})
@@ -391,6 +393,18 @@ func GetWriter(o clit.OutputFile) FilterWriter {
 		return GWriter{out, nil, "", 0, ""}
 	}
 	// create if not exist <- N.B.
+	if !o.Jack {
+		c := filepath.Clean(o.OutputFile)
+		if filepath.IsAbs(c) {
+			wd, ewd := os.Getwd()
+			if ewd != nil {
+				Fatal(ewd, con.ERR_STREAM)
+			}
+			if c[:len(wd)] != wd {
+				Fatal(fmt.Errorf("can't hi-jack outside the present working directory"), con.ERR_STREAM)
+			}
+		}
+	}
 	var perms fs.FileMode = 0644
 	if o.Write && !o.Group {
 		perms = 0664 // give group permissive permissions

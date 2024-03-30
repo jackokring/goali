@@ -89,6 +89,10 @@ func Goali() {
 		paths[idx] = filepath.Join(val, con.AppName+".yaml")
 	}
 	// Now we can parse
+	pwd, ewd := os.Getwd()
+	if ewd != nil {
+		fe.Fatal(ewd, con.ERR_STREAM)
+	}
 	ctx := kong.Parse(&cli.Cli,
 		kong.Configuration(kongyaml.Loader /* globalConfig, */, paths...),
 		kong.Vars{
@@ -98,6 +102,7 @@ func Goali() {
 			"appNameUpper": strings.ToUpper(con.AppName),
 			"version":      con.Version,
 			"built":        con.BuildTime,
+			"pwd":          pwd,
 		},
 		// loading defaults for flags and options
 		kong.NamedMapper("yamlfile", kongyaml.YAMLFileMapper),

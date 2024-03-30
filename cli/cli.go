@@ -36,7 +36,7 @@ import (
 // g		x	x
 // h	x 		x	x
 // i
-// j
+// j		x
 // k			x
 // >> L was almost going to be monotone ^G jingle bells.
 // l

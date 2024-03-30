@@ -52,9 +52,10 @@ type IoFile struct {
 type OutputFile struct {
 	Compress   bool   `help:"Compress with gzip the <output-file>." short:"c"`
 	Force      bool   `help:"Force overwriting of an existing <output-file>." short:"f"`
-	Group      bool   `help:"The <output-file> is restricted to user and group access permissions." short:"g" env:"NO_PUBLIC"`
+	Group      bool   `help:"The <output-file> is restricted to user and group access permissions." short:"g"`
+	Jack       bool   `help:"The <output-file> can hi-jack the file system outside ${pwd}." short:"j"`
 	OutputFile string `arg:"" help:"The <output-file> from ${appName} (- is STDOUT maybe use -q)." type:"path"`
-	Write      bool   `help:"The <output-file> gains group write access permission." short:"w" env:"GROUP_OK"`
+	Write      bool   `help:"The <output-file> gains group write access permission." short:"w"`
 }
 
 // A pair of files for IO.
