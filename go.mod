@@ -17,7 +17,11 @@ require github.com/charmbracelet/bubbles v0.18.0
 
 require github.com/go-chi/chi/v5 v5.0.12
 
-require github.com/joho/godotenv v1.5.1 // indirect
+require (
+	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
+	gopkg.in/niemeyer/godeb.v1 v1.0.0-20190905183927-9fc299d0adba // indirect
+)
 
 require (
 	github.com/alessio/shellescape v1.4.1 // indirect

@@ -75,6 +75,7 @@ Much faster code compile too.
 * [squirrel][squirrel] - SQL statement builder
 * [pgx][pgx] - Postgres connector
 * [go-keyring][go-keyring] - Secret keyring handler (needs local `login` keyring via `seahorse`)
+* [godeb][godeb] - A go version automatic `.deb` maker (`godeb`) to install go versions (`go install gopkg.in/niemeyer/godeb.v1/cmd/godeb`).
 
 ## Modules to Find
 
@@ -178,6 +179,7 @@ ear lawn?
 [chi]: github.com/go-chi/chi/v5
 [cpy3]: github.com/jackokring/cpy3
 [go-keyring]: github.com/zalando/go-keyring
+[godeb]: gopkg.in/niemeyer/godeb.v1/cmd/godeb
 [fyne]: fyne.io/fyne/v2
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml
