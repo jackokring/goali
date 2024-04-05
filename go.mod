@@ -19,6 +19,7 @@ require github.com/go-chi/chi/v5 v5.0.12
 
 require (
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb // indirect
+	github.com/expr-lang/expr v1.16.3 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	gopkg.in/niemeyer/godeb.v1 v1.0.0-20190905183927-9fc299d0adba // indirect
 )
