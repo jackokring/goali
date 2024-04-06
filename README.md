@@ -77,6 +77,7 @@ Much faster code compile too.
 * [go-keyring][go-keyring] - Secret keyring handler (needs local `login` keyring via `seahorse`)
 * [godeb][godeb] - A go version automatic `.deb` maker (`godeb`) to install go versions (`go install gopkg.in/niemeyer/godeb.v1/cmd/godeb`).
 * [expr][expr] - An expression language.
+* [govalidator][govalidator] A data format validator.
 
 ## Modules to Find
 
@@ -182,6 +183,7 @@ ear lawn?
 [expr]: github.com/expr-lang/expr
 [go-keyring]: github.com/zalando/go-keyring
 [godeb]: gopkg.in/niemeyer/godeb.v1/cmd/godeb
+[govalidator]: github.com/asaskevich/govalidator
 [fyne]: fyne.io/fyne/v2
 [kong]: github.com/alecthomas/kong
 [kong-yaml]: github.com/alecthomas/kong-yaml

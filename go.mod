@@ -18,6 +18,7 @@ require github.com/charmbracelet/bubbles v0.18.0
 require github.com/go-chi/chi/v5 v5.0.12
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb // indirect
 	github.com/expr-lang/expr v1.16.3 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
