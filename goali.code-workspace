@@ -7,10 +7,13 @@
 	"extensions": {
 		"recommendations": [
 			"golang.go",
-			"matangover.mypy",
-			"ms-python.debugpy",
+			"ms-python.mypy-type-checker",
 			"ms-python.python",
-			"ms-python.vscode-pylance",
+			"ms-toolsai.jupyter",
+			"ms-toolsai.jupyter-keymap",
+			"ms-toolsai.jupyter-renderers",
+			"ms-toolsai.vscode-jupyter-cell-tags",
+			"ms-toolsai.vscode-jupyter-slideshow",
 			"streetsidesoftware.code-spell-checker"
 		]
 	},

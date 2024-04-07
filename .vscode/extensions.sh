@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 code --install-extension golang.go
-code --install-extension matangover.mypy
+code --install-extension ms-python.mypy-type-checker 
 code --install-extension ms-python.python
 code --install-extension ms-toolsai.jupyter
 code --install-extension ms-toolsai.jupyter-keymap
