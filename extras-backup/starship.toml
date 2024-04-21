@@ -1,0 +1,52 @@
+command_timeout = 30000
+
+[git_branch]
+symbol = '🌱 '
+
+[container]
+disabled = true
+
+[custom.fof]
+# stderr version number print
+command = "echo $(gforth --version 2>&1 | grep ^gforth | awk '{ print $2 }')"
+description = 'forth source code'
+symbol = '4ᵀᴴ '
+style = 'bold cyan'
+detect_extensions = ['4th'] # filters *.4th files
+
+[custom.sh]
+command = "echo $(ls *.sh)"
+description = 'shell scripts'
+symbol = './ '
+style = 'bold green'
+detect_extensions = ['sh'] # filters *.sh files
+
+[custom.py]
+command = "echo $(ls *.py)"
+description = 'python scripts'
+symbol = './python '
+style = 'bold white'
+detect_extensions = ['py'] # filters *.py files
+
+[custom.duino]
+description = 'platformio source code'
+symbol = 'PlatformIO '
+style = 'bold blue'
+detect_files = ['platformio.ini'] # filter files
+
+[battery]
+full_symbol = '🔋 '
+charging_symbol = '⚡️ '
+discharging_symbol = '💀 '
+
+[[battery.display]]
+threshold = 100
+style = 'bold green'
+
+[[battery.display]]
+threshold = 80
+style = 'bold yellow'
+
+[[battery.display]]
+threshold = 20
+style = 'bold red'

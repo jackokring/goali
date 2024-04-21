@@ -2,8 +2,8 @@
 pip freeze | tee requirements.txt
 # copy some user file backups
 pushd extras-backup
-copy ~/.bashrc .
-copy ~/.config/starship.toml .
+cp ~/.bashrc .
+cp ~/.config/starship.toml .
 popd
 # add commit push
 gacp () {
