@@ -1,5 +1,10 @@
 #!/usr/bin/bash
 pip freeze | tee requirements.txt
+# copy some user file backups
+pushd extras-backup
+copy ~/.bashrc .
+copy ~/.config/starship.toml .
+popd
 # add commit push
 gacp () {
 	date=$(date +"%A %Y-%m-%d %H:%M:%S")
