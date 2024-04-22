@@ -1,15 +1,9 @@
 # imports of types
-from array import ArrayType as array
 from io import StringIO, BytesIO
-from typing import Union, Any, Optional
-from ctypes import _CData
-from pickle import PickleBuffer
-from mmap import mmap
+from typing import Optional
 
 # import module __init.py__ for IO adapters
 import snake
-
-ByteAlias = Union[bytes, Union[bytearray, memoryview, array[Any], mmap, _CData, PickleBuffer]]
 
 def SurrogateEscaped(char: str) -> bool:
     """Is the last character an escaped Unicode surrogate error?"""
@@ -41,7 +35,7 @@ def WriteProxy(buffer: BytesIO, string: str) -> int:
 # stdio redirect logic to goali streams
 class ByteOut(BytesIO):
     """Internal adapter."""
-    def write(self, outBytes: ByteAlias) -> int:
+    def write(self, outBytes) -> int:
         return snake.Out(bytes(outBytes))
     
 class StdOut(StringIO):
@@ -52,7 +46,7 @@ class StdOut(StringIO):
 
 class ByteErr(BytesIO):
     """Internal adapter."""
-    def write(self, errBytes: ByteAlias) -> int:
+    def write(self, errBytes) -> int:
         return snake.Err(bytes(errBytes))
 
 class StdErr(StringIO):
