@@ -121,6 +121,7 @@ s() { # do sudo, or sudo the last command if no argument given
 }
 
 function extract {
+# might add *.blwz from PiPy phinka module some time
  if [ $# -eq 0 ]; then
     # display usage if no parameters given
     echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz|.zlib|.cso|.zst|.lha>"
@@ -260,19 +261,19 @@ alias echo='echo -e'
 
 # notes (denoise echo vs. remove action => grouping)
 printf "# command and location history search\n\
-$GREEN^R$NONE is reverse command search. $GREEN^S$NONE is forward command\
+$CYAN^R$NONE is reverse command search. $CYAN^S$NONE is forward command\
  search (No XON/XOFF). Directory autojump ${GREEN}j$NONE (and ${GREEN}jc$NONE)\
  are installed. First parameter for match. ${GREEN}tldr$NONE for command help.\
  ${GREEN}fuck$NONE command corrector. Also ${GREEN}s$NONE last command sudo.\
-  ${GREEN}h$NONE is for command history $RED!$NONE\n\n"
+ ${GREEN}h$NONE is for command history $RED!$NONE\n\n"
 printf "# useful knowledge and additions\n\
-$GREEN^D$NONE is end of stream terminate process. $GREEN^Z$NONE is process \
+$CYAN^D$NONE is end of stream terminate process. $CYAN^Z$NONE is process \
 stop and ${GREEN}fg$NONE (and ${GREEN}bg$NONE) job control numbers.\
  ${GREEN}ll$NONE and ${GREEN}la$NONE do modified ${GREEN}ls$NONE types.\
  ${GREEN}espeak-ng$NONE for robot voice.\
  ${GREEN}entr$NONE file watcher command execute.\
  ${GREEN}extract$NONE archive type detection and extract.\
- ${RED}Shft+^V$NONE is paste.\n\n"
+ ${CYAN}Shft+^V$NONE is paste in some contexts.\n\n"
 printf "# modified behaviour\n\
 Copy ${GREEN}cp$NONE has a single argument only automatic target of the\
  ${GREEN}pwd$NONE.\n\n"
@@ -289,16 +290,19 @@ printf "# $RED~/bin$NONE general user binaries.\n"
 ls ~/bin
 echo
 printf "# $RED~/.local/bin$NONE for ${GREEN}pipx$NONE. You may need to allow\
- packages to use the global python context installed via ${GREEN}apt$NONE.\n"
+ packages to use the global python context installed via ${GREEN}apt$NONE.\
+ $RED~/.local/pipx/venvs/*/pyvenv.cfg$NONE\n"
 ls ~/.local/bin
 echo
-#printf "# $RED~/.cargo/bin$NONE for ${GREEN}cargo$NONE.\n"
+# vscode seems to have tmux restart issue
+printf "# ${GREEN}tmux ${CYAN}^B s <left/right/up/down>$NONE ...\n"
+# bloat
 #ls ~/.cargo/bin
-#echo
+echo
 # continue by doing the reset of the .profiloe file
-printf "# .profile\n"
+printf "# .profile for perhaps .NET\n"
 
-# Install Ruby Gems to ~/gems
+# Install Ruby Gems to ~/gems (for jekyll.sh github.com docs)
 export GEM_HOME="$HOME/gems"
 export PATH="$HOME/gems/bin:$PATH"
 
