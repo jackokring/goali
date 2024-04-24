@@ -75,9 +75,9 @@ Much faster code compile too.
 * [squirrel][squirrel] - SQL statement builder
 * [pgx][pgx] - Postgres connector
 * [go-keyring][go-keyring] - Secret keyring handler (needs local `login` keyring via `seahorse`)
-* [godeb][godeb] - A go version automatic `.deb` maker (`godeb`) to install go versions (`go install gopkg.in/niemeyer/godeb.v1/cmd/godeb`).
-* [expr][expr] - An expression language.
-* [govalidator][govalidator] A data format validator.
+* [godeb][godeb] - A go version automatic `.deb` maker (`godeb`) to install go versions (`go install gopkg.in/niemeyer/godeb.v1/cmd/godeb`)
+* [expr][expr] - An expression language
+* [govalidator][govalidator] A data format validator
 
 ## Modules to Find
 
