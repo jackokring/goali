@@ -1,0 +1,163 @@
+;; -*- mode: emacs-lisp; lexical-binding:t; coding: utf-8-emacs; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Sat May  4 20:04:54 2024
+;; Desktop file format version 208
+;; Emacs version 29.3
+
+;; Global section:
+(setq desktop-saved-frameset [frameset 1 (26166 38118 437403 256000) (desktop . "208") "jackokring@penguin" nil nil ((((minibuffer . t) (undecorated) (override-redirect) (font . "-GOOG-Cousine-regular-normal-normal-*-13-*-*-*-m-0-iso10646-1") (border-width . 0) (internal-border-width . 0) (child-frame-border-width) (right-divider-width . 0) (bottom-divider-width . 0) (vertical-scroll-bars . right) (horizontal-scroll-bars) (foreground-color . "black") (background-color . "white") (mouse-color . "black") (border-color . "black") (screen-gamma) (line-spacing) (left-fringe . 8) (right-fringe . 8) (no-special-glyphs) (scroll-bar-foreground) (scroll-bar-background) (menu-bar-lines . 1) (tab-bar-lines . 0) (tool-bar-lines . 1) (title) (wait-for-wm . t) (tool-bar-position . top) (inhibit-double-buffering) (icon-type . t) (auto-raise) (auto-lower) (cursor-type . box) (scroll-bar-width . 16) (scroll-bar-height . 16) (alpha) (alpha-background) (no-focus-on-map) (no-accept-focus) (fullscreen . maximized) (visibility . t) (use-frame-synchronization) (skip-taskbar) (z-group) (display-type . color) (background-mode . light) (cursor-color . "black") (font-parameter) (sticky) (shaded) (environment) (dnd-root-window-position) (last-focus-update . t) (tabs (current-tab (name . "snake.c") (explicit-name))) (frameset--id . "C239-E300-F366-85DF") (frameset--mini t . t) (height . 46) (width . 185) (modeline . t) (unsplittable) (left . 0) (top . 40) (icon-name) (display . ":0") (explicit-name)) ((min-height . 4) (min-width . 10) (min-height-ignore . 4) (min-width-ignore . 6) (min-height-safe . 1) (min-width-safe . 2) (min-pixel-height . 60) (min-pixel-width . 80) (min-pixel-height-ignore . 60) (min-pixel-width-ignore . 48) (min-pixel-height-safe . 15) (min-pixel-width-safe . 16)) leaf (pixel-width . 1517) (pixel-height . 687) (total-width . 190) (total-height . 45) (normal-height . 1.0) (normal-width . 1.0) (buffer "*Packages*" (selected . t) (hscroll . 0) (fringes 8 8 nil nil) (margins nil) (scroll-bars nil 2 t nil 0 t nil) (vscroll . 0) (dedicated) (point . 312736) (start . 308167)) (prev-buffers ("snake.c" 1 782) ("goali.go" 1 81) ("goali" 1 2701) ("snake.go" 3245 3835) ("snake.h" 1 1) ("__init__.py" 1 1) ("snake.py" 1 1) ("*scratch*" 1 146) ("pkg" 1 201))))])
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("/home/jackokring/goali" "/home/jackokring/.emacs.d/compile-ts.el"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 208
+  "/home/jackokring/goali/snake/snake.c"
+  "snake.c"
+  'c-mode
+  '(font-lock-mode)
+  782
+  '(766 nil)
+  nil
+  nil
+  '((buffer-display-time 26166 37346 517708 749000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (766 768 782))))
+
+(desktop-create-buffer 208
+  "/home/jackokring/goali/pkg/goali.go"
+  "goali.go"
+  'go-ts-mode
+  '(font-lock-mode)
+  81
+  '(4733 nil)
+  nil
+  nil
+  '((indent-tabs-mode . t) (buffer-display-time 26166 34894 964797 679000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (4436))))
+
+(desktop-create-buffer 208
+  nil
+  "goali"
+  'dired-mode
+  '(font-lock-mode)
+  2701
+  '(2981 nil)
+  t
+  '("/home/jackokring/goali/")
+  '((buffer-display-time 26166 34851 725329 446000))
+  '((mark-ring (147 1626))))
+
+(desktop-create-buffer 208
+  "/home/jackokring/goali/go.mod"
+  "go.mod"
+  'go-mod-ts-mode
+  '(font-lock-mode)
+  1258
+  '(nil nil)
+  nil
+  nil
+  '((indent-tabs-mode . t) (buffer-display-time 26166 34851 725334 600000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "jackokring"
+  'dired-mode
+  '(font-lock-mode)
+  648
+  '(nil nil)
+  t
+  '("/home/jackokring/")
+  '((buffer-display-time 26166 34821 397182 60000))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/jackokring/goali/snake/snake.go"
+  "snake.go"
+  'go-ts-mode
+  '(font-lock-mode)
+  3835
+  '(3835 nil)
+  nil
+  nil
+  '((indent-tabs-mode . t) (buffer-display-time 26166 34690 444959 359000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/jackokring/goali/snake/snake.h"
+  "snake.h"
+  'c-mode
+  '(font-lock-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-display-time 26166 34640 849470 356000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/jackokring/goali/snake/__init__.py"
+  "__init__.py"
+  'python-ts-mode
+  '(font-lock-mode eldoc-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 26166 34577 515831 660000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "snake"
+  'dired-mode
+  '(font-lock-mode)
+  414
+  '(409 t)
+  t
+  '("/home/jackokring/goali/snake/")
+  '((buffer-display-time 26166 34568 636380 506000))
+  '((mark-ring (538 474 350 206 212 206 350 350 477 474 541 538 411 409))))
+
+(desktop-create-buffer 208
+  "/home/jackokring/goali/snake/snake.py"
+  "snake.py"
+  'python-ts-mode
+  '(font-lock-mode eldoc-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 26166 34561 710502 967000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "pkg"
+  'dired-mode
+  '(font-lock-mode)
+  201
+  '(nil nil)
+  t
+  '("/home/jackokring/goali/pkg/")
+  '((buffer-display-time 26166 34420 454758 266000))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "*info*"
+  'Info-mode
+  '(font-lock-mode isearch-fold-quotes-mode)
+  131622
+  '(nil nil)
+  t
+  '("/home/jackokring/share/info/efaq" "Packages that do not come with Emacs" nil)
+  '((tab-width . 8) (buffer-display-time 26166 37338 805073 517000) (buffer-file-coding-system . utf-8-unix) (case-fold-search . t))
+  '((mark-ring nil)))
+
