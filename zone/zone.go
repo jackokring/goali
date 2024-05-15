@@ -8,6 +8,10 @@ package zone
 //******** Game Framework *********
 //=================================
 
+type Game interface {
+	// support multiple game contexts
+}
+
 type Inventory interface {
 }
 
@@ -17,6 +21,12 @@ type InventoryLocation struct {
 }
 
 type Item interface {
+}
+
+type LocatedItem struct {
+	// join
+	Item
+	Location
 }
 
 type Location interface {
@@ -32,6 +42,10 @@ type Note interface {
 }
 
 type NoteLocation struct {
+}
+
+type Table interface {
+	// support database interface
 }
 
 type Tile interface {
