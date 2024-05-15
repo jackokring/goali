@@ -108,8 +108,9 @@ alias ....="cd ../../../"
 
 # further alias
 alias apt='sudo nala'
-alias update="apt upgrade -y; apt autopurge -y; apt clean" # apt update; not req
+alias update="apt upgrade -y; apt clean" # apt update; not req
 alias venv='python -m venv'
+alias emacs='emacs 2>/dev/null&'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given

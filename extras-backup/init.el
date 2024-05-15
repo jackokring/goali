@@ -16,6 +16,7 @@
      (css "https://github.com/tree-sitter/tree-sitter-css")
      (elisp "https://github.com/Wilfred/tree-sitter-elisp")
      (go "https://github.com/tree-sitter/tree-sitter-go")
+     (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
      (html "https://github.com/tree-sitter/tree-sitter-html")
      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
      (json "https://github.com/tree-sitter/tree-sitter-json")
@@ -39,4 +40,30 @@
    (json-mode . json-ts-mode)
    (css-mode . css-ts-mode)
    (go-mode . go-ts-mode) ; added go
+   (gomod-mode . gomod-ts-mode)
    (python-mode . python-ts-mode)))
+
+; start server for emacsclient calls use C-x # for sve exit next edit
+(server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(desktop-save-mode t)
+ '(package-selected-packages '(markdown-mode which-key go-mode casual)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+; highlights max
+(setq font-lock-maximum-decoration t)
+
+; icicles help S-TAB
+;(add-to-list 'load-path "~/.emacs.d/icicles/")
+;(require 'icicles)
+;(icy-mode 1)
+(which-key-mode)
