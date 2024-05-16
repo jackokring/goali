@@ -10,3 +10,6 @@ Definitely the easiest. Subtile things can be tacked on later.
 
 Use a constrained vocabulary encoding and a small coefficient LLM for game conversation. Perhaps a larger online model fallback with re-expression reduction of the model to the smaller encoding. Perhaps "Say `expression` differently without using the words `list`." GAN prompt automation kind of things. Limiting the words to named game nouns/adjectives and possible verbs/adverbs understood with a spattering of, auxiliary "pre-proto-logical", grammar words.
 
+## Database
+
+So, `sqlc` looks interesting as a DB generator tool, but I can't find "extra fields" which might need adding to the `struct` records. 
