@@ -12,4 +12,4 @@ Use a constrained vocabulary encoding and a small coefficient LLM for game conve
 
 ## Database
 
-So, `sqlc` looks interesting as a DB generator tool, but I can't find "extra fields" which might need adding to the `struct` records. 
+So, `sqlc` looks interesting as a DB generator tool, but I can't find "extra fields" which might need adding to the `struct` records. A `LEFT JOIN` to a "phantom" table seems a bit of a botch. 

@@ -78,6 +78,7 @@ Much faster code compile too.
 * [godeb][godeb] - A go version automatic `.deb` maker (`godeb`) to install go versions (`go install gopkg.in/niemeyer/godeb.v1/cmd/godeb`)
 * [expr][expr] - An expression language
 * [govalidator][govalidator] A data format validator
+* [sqlc][sqlc] An SQL automatic code generation wrapper 
 
 ## Modules to Find
 
@@ -189,6 +190,7 @@ ear lawn?
 [kong-yaml]: github.com/alecthomas/kong-yaml
 [lipgloss]: github.com/charmbracelet/lipgloss
 [pgx]: github.com/jackc/pgx
+[sqlc]: github.com/sqlc-dev/sqlc
 [squirrel]: github.com/Masterminds/squirrel
 [todo]: todo.jasonet.co
 
