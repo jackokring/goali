@@ -111,6 +111,7 @@ alias apt='sudo nala'
 alias update="apt upgrade -y; apt clean" # apt update; not req
 alias venv='python -m venv'
 alias emacs='emacs 2>/dev/null&'
+alias pgadmin='pgadmin4&'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
