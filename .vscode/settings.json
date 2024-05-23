@@ -22,6 +22,7 @@
         "Envar",
         "envars",
         "envprefix",
+        "espeak",
         "existingdir",
         "existingfile",
         "fdopen",
