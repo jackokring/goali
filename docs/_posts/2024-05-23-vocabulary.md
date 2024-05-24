@@ -11,3 +11,5 @@ The rest of the language should form a kind of modal logic system with some "poi
 
 ## Umm ...
 Speech should be easy as piping words into `espeak-ng` with perhaps a pronouncement exception list (not Spanish).
+
+EDIT: So the expansion of constrained "grunt" to prose becomes a general intonation residual excess to the basis. This necessitates an impetus from the "action stack" of the planning unit. Such things not being in dynamism, as just dynamic in "pointer handle" nature and not physically yet done, or sum conscious yet meta pointed to.
