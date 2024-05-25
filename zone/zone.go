@@ -8,49 +8,30 @@ package zone
 //******** Game Framework *********
 //=================================
 
-type Game interface {
-	// support multiple game contexts
+import (
+	"context"
+	"os/user"
+
+	"github.com/jackc/pgx/v5"
+	fe "github.com/jackokring/goali/filerr"
+	za "github.com/jackokring/goali/zoneauto"
+)
+
+func username() string {
+	me, err := user.Current()
+	fe.Fatal(err)
+	return me.Username
 }
 
-type Inventory interface {
-}
+func OpenConnection() (queries *za.Queries, close func()) {
+	me := username()
+	ctx := context.Background()
 
-type InventoryLocation struct {
-	// normal form, item at (has) location
-	// fast form location contains item(s)?
-}
+	conn, err := pgx.Connect(ctx, "user="+me+" dbname="+me+" sslmode=verify-full")
+	fe.Fatal(err)
 
-type Item interface {
-}
-
-type LocatedItem struct {
-	// join
-	Item
-	Location
-}
-
-type Location interface {
-}
-
-type Map interface {
-}
-
-type MapLocation struct {
-}
-
-type Note interface {
-}
-
-type NoteLocation struct {
-}
-
-type Table interface {
-	// support database interface
-}
-
-type Tile interface {
-}
-
-type TileGroup struct {
-	// sparse occupancy
+	queries = za.New(conn)
+	return queries, func() {
+		conn.Close(ctx)
+	}
 }

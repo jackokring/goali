@@ -2,6 +2,10 @@
 #go build script a.k.a. gob.sh
 # from https://belief-driven-design.com/build-time-variables-in-go-51439b26ef9/ with edits
 
+# STEP -1: DB dump for when editing done by pgadmin
+pg_dump --schema-only > schema.sql || echo have you made a default user empty database ??
+sqlc generate || echo go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest ??
+
 # STEP 0: Git to have it
 
 git add .
