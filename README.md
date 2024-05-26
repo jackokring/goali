@@ -6,15 +6,11 @@ Not to be confused with the non-existent marsh-soup-eal the Koali.
 ```
 $ # you could use godeb instead of default golang
 $ sudo apt install postgres
-$ # set up a database named after your username
-$ # after you have added you as a user with the postgres user
-$ # this is because you might need to set yourself as a supervisor
-$ pgsql -u postgres adduser --interactive
-$ pgsql -u postgres createdb $USER
-$ # the SQL virtual command "\password" can set a password on the database
 $ sudo apt install git python-is-python3 golang python3-pip python3-dev
 $ git clone git@github.com:jackokring/goali.git
 $ cd goali
+$ # create and restore db
+$ ./restore.sh
 $ # you may find the sudo for package dependencies in require.sh in a comment
 $ # the cpy3 submodule for embedding python
 $ # pull and satisfy requirements then go build
@@ -28,6 +24,8 @@ $ cd goali
 $ # use your fork URL
 $ git remote set-url origin git@github.com:<username>/goali.git
 $ git push origin master
+$ # perhaps dump the database
+$ ./dump.sh
 $ # check requirements and git add commit push
 $ ./freeze.sh
 ```
