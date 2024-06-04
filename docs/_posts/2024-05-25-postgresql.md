@@ -13,3 +13,6 @@ I'll have to look at the docs to see if foreign key indexes are in a sense merge
 
 ## Grown Language Models
 The preposition that all current popular LLMs have an intrinsic ontological mismatch between the complexity of the training data and the connectedness of the simplicity of the evolved instinctual "central" thalamic cortex controller. If you take the coordinative cerebellum, as a highly compact 70% of all brain cells as the residual intent corrector to simplify the core textual "grunt" constraints. Umm, in deeds.
+
+## `restore.sh` and `dump.sh` (EDIT: 2024-05-26)
+Added a database create restore shell script with a dump script also. This is independent of the build's `schema.sql` dump.
