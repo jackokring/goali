@@ -1,6 +1,6 @@
 # Goali
 
-Not to be confused with the non-existent marsh-soup-eal the Koali.
+Not to be confused with the non-existent marsh-soup-eal the Koali. :D
 
 ## Install
 ```
