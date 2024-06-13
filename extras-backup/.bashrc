@@ -111,7 +111,8 @@ alias apt='sudo nala'
 alias update="apt upgrade -y; apt clean" # apt update; not req
 alias venv='python -m venv'
 alias emacs='emacs 2>/dev/null&'
-alias pgadmin='pgadmin4&'
+#alias pgadmin='pgadmin4&'
+alias tor='sudo systemctl restart tor'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
@@ -275,6 +276,7 @@ stop and ${GREEN}fg$NONE (and ${GREEN}bg$NONE) job control numbers.\
  ${GREEN}espeak-ng$NONE for robot voice.\
  ${GREEN}entr$NONE file watcher command execute.\
  ${GREEN}extract$NONE archive type detection and extract.\
+ ${GREEN}dragon$NONE CLI drag and drop manager.\
  ${CYAN}Shft+^V$NONE is paste in some contexts.\n\n"
 printf "# modified behaviour\n\
 Copy ${GREEN}cp$NONE has a single argument only automatic target of the\
@@ -297,11 +299,19 @@ printf "# $RED~/.local/bin$NONE for ${GREEN}pipx$NONE. You may need to allow\
 ls ~/.local/bin
 echo
 # vscode seems to have tmux restart issue
-printf "# ${GREEN}tmux ${CYAN}^B s <left/right/up/down>$NONE ...\n"
+printf "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down>$NONE ...\n"
+printf "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050\n"
+# virtual venv
+#pushd ~/goali
+pgadmin4 2>&1 >/dev/null&
+#popd
+printf "# ${GREEN}tor$NONE on socks4://127.0.0.1:9050\n"
+printf "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)\n"
+printf "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)\n"
 # bloat
 #ls ~/.cargo/bin
 echo
-# continue by doing the reset of the .profiloe file
+# continue by doing the reset of the .profile file
 printf "# .profile for perhaps .NET\n"
 
 # Install Ruby Gems to ~/gems (for jekyll.sh github.com docs)
