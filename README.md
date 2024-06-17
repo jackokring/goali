@@ -6,7 +6,7 @@ Not to be confused with the non-existent marsh-soup-eal the Koali. :D
 ```
 $ # you could use godeb instead of default golang
 $ sudo apt install postgres
-$ sudo apt install git python-is-python3 golang python3-pip python3-dev
+$ sudo apt install git python-is-python3 golang python3-pip python3-dev libxxf86vm-dev
 $ git clone git@github.com:jackokring/goali.git
 $ cd goali
 $ # create and restore db
