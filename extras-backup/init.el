@@ -30,7 +30,7 @@
 ;; cursor remaps (b)ack, (f)orward, (p)revious, (n)ext reusable cursors?
 
 ; n map (n)ext -> (n)ew
-(define-prefix-command 'find-file)
+(global-set-key (kbd "C-n") 'find-file)
 
 ; p map (p)revious -> (p)ackages
 (global-set-key (kbd "C-p") 'list-packages)
