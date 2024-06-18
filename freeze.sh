@@ -5,7 +5,7 @@ pushd extras-backup
 cp ~/.bashrc .
 cp ~/.config/starship.toml .
 cp ~/.emacs.d/init.el .
-cp ~/.emacs.d/compile-ts.el .
+#cp ~/.emacs.d/compile-ts.el .
 popd
 # add commit push
 gacp () {
