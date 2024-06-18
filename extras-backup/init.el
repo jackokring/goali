@@ -1,12 +1,19 @@
-(make-symbolic-link ".config/emacs" "~/.emacs.d")
+;(make-symbolic-link ".config/emacs" "~/.emacs.d")
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-
-;causal calc mode help add later version emacs
-(require 'casual)
-(define-key calc-mode-map (kbd "C-o") 'casual-main-menu)
 
 ; highlights max
 (setq font-lock-maximum-decoration t)
 
-(which-key-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cua-mode t nil (cua-base)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
