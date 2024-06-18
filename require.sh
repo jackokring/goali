@@ -6,5 +6,7 @@
 git pull
 git submodule update --init --recursive
 python -m venv .
+# activate venv
+. ./bin/activate
 pip install -r requirements.txt
 source gob.sh
