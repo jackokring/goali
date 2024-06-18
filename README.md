@@ -1,6 +1,7 @@
 # Goali
 
 Not to be confused with the non-existent marsh-soup-eal the Koali. :D
+My `init.el` file for [Emacs][emacs] is growing to replace VSCode.
 
 ## Install
 ```
@@ -206,3 +207,4 @@ ear lawn?
 
 [the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
 [6602]: docs.google.com/spreadsheets/d/1ejnimh5PPYHhPX-k93yTYFoXf0_bTxylGQEbKL1TbAw/edit?usp=sharing
+[emacs]: github.com/jackokring/goali/blob/master/extras-backup/init.el
