@@ -59,3 +59,8 @@
 (global-set-key (kbd "M-<up>") 'list-buffers)
 ; end some buffers
 (global-set-key (kbd "M-<down>") 'kill-some-buffers)
+;; with shift
+(global-set-key (kbd "M-S-<left>") 'other-window)
+(global-set-key (kbd "M-S-<right>") 'split-window-right)
+(global-set-key (kbd "M-S-<up>") 'delete-window)
+(global-set-key (kbd "M-S-<down>") 'split-window-below)
