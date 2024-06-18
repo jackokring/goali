@@ -110,9 +110,17 @@ alias ....="cd ../../../"
 alias apt='sudo nala'
 alias update="apt upgrade -y; apt clean" # apt update; not req
 alias venv='python -m venv'
-alias emacs='emacs 2>/dev/null&'
+#alias emacs='emacs 2>/dev/null&'
+
+e() {
+	# emacs with files and no gtk error stream
+	emacs "$@" #2>/dev/null&
+}
+
 #alias pgadmin='pgadmin4&'
 alias tor='sudo systemctl restart tor'
+alias n='nano'
+#alias e='emacs'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
@@ -123,7 +131,7 @@ s() { # do sudo, or sudo the last command if no argument given
     fi
 }
 
-function extract {
+extract() {
 # might add *.blwz from PiPy phinka module some time
  if [ $# -eq 0 ]; then
     # display usage if no parameters given
@@ -244,7 +252,7 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 # Arm kit
-PATH="/usr/local/gcc-arm-none-eabi-8-2018-q4-major/bin:$PATH"
+#PATH="/usr/local/gcc-arm-none-eabi-8-2018-q4-major/bin:$PATH"
 
 # color vars
 export NONE='\e[0m'
