@@ -32,17 +32,19 @@
 ; n map (n)ext -> (n)ew
 (define-prefix-command 'find-file)
 
-; p map (p)revious -> (p)ackages
-(global-set-key (kbd "C-p") 'list-packages)
+; p map (p)revious -> (p)rogramming
+(define-prefix-command 'custom-p-map)
+(global-set-key (kbd "C-p") 'custom-p-map)
 
-; b map (b)ack -> (b)old -> (b)e
+; extend p as right hand extender NOT PRINTING
+(define-key custom-p-map (kbd "C-a") 'mark-whole-buffer) ; Select-all.
+(define-key custom-p-map (kbd "C-v") 'yank) ; Paste.
+(define-key custom-p-map (kbd "C-x") 'kill-region) ; Cut.
+(define-key custom-p-map (kbd "C-c") 'kill-ring-save) ; Copy.
+
+; b map (b)ack -> (b)old -> ??
 (define-prefix-command 'custom-b-map)
 (global-set-key (kbd "C-b") 'custom-b-map)
-; extend b as common ^b tmux key combination TODO...
-(define-key custom-b-map (kbd "C-a") 'mark-whole-buffer) ; Select-all.
-(define-key custom-b-map (kbd "C-v") 'yank) ; Paste.
-(define-key custom-b-map (kbd "C-x") 'kill-region) ; Cut.
-(define-key custom-b-map (kbd "C-c") 'kill-ring-save) ; Copy.
 
 ;; my remaps
 ; find (f)orward -> (f)ind
