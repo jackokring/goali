@@ -1,8 +1,13 @@
+;; This symbolic link although suggested causes a duplication error
 ;(make-symbolic-link ".config/emacs" "~/.emacs.d")
+
+;; Emacs manual online and mepla packages stable
+; https://www.gnu.org/software/emacs/manual/html_node/emacs/index.html
+; You will find this useless unless you have a very upto date Emacs version
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
-;; defaults
+;; Sensible modern defaults
 (setq font-lock-maximum-decoration t)
 (show-paren-mode 1)
 (cua-mode t)
@@ -18,33 +23,41 @@
         (comment-or-uncomment-region beg end)
         (next-line)))
 (global-set-key (kbd "C-/") 'comment-or-uncomment-line-or-region)
-;; C-a marks the whole buffer
+
+;; C-a marks the whole buffer (a)ll
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 
-;; just mine (b)ack, (p)revious, (n)ext reusable cursors?
+;; cursor remaps (b)ack, (f)orward, (p)revious, (n)ext reusable cursors?
 
-; n map
-(define-prefix-command 'custom-n-map)
-(global-set-key (kbd "C-n") 'custom-n-map)
+; n map (n)ext -> (n)ew
+(define-prefix-command 'find-file)
 
-; p map
+; p map (p)revious -> (p)rogramming
 (define-prefix-command 'custom-p-map)
 (global-set-key (kbd "C-p") 'custom-p-map)
 
-; extend p as right hand extender (user (p)rogramming)
+; extend p as right hand extender NOT PRINTING
 (define-key custom-p-map (kbd "C-a") 'mark-whole-buffer) ; Select-all.
 (define-key custom-p-map (kbd "C-v") 'yank) ; Paste.
 (define-key custom-p-map (kbd "C-x") 'kill-region) ; Cut.
 (define-key custom-p-map (kbd "C-c") 'kill-ring-save) ; Copy.
 
-; b map
+; b map (b)ack -> (b)old -> ??
 (define-prefix-command 'custom-b-map)
 (global-set-key (kbd "C-b") 'custom-b-map)
 
-;; my remap of search and save (f)orward -> (f)ind
-; find
+;; my remaps
+; find (f)orward -> (f)ind
 (global-set-key (kbd "C-f") 'isearch-forward)
-; save
+; save (s)earch -> (s)ave
 (global-set-key (kbd "C-s") 'save-buffer)
-; quit
+; quit insert code -> (q)uit
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
+
+;; buffer navigation
+(global-set-key (kbd "M-<left>") 'previous-buffer)
+(global-set-key (kbd "M-<right>") 'next-buffer)
+; a nice home list
+(global-set-key (kbd "M-<up>") 'list-buffers)
+; end some buffers
+(global-set-key (kbd "M-<down>") 'kill-some-buffers)
