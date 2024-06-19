@@ -121,7 +121,7 @@ alias venv='python -m venv'
 
 e() {
 	# emacs with files and no gtk error stream
-	emacs "$@" #2>/dev/null&
+	emacs "$@" 2>/dev/null&
 }
 
 #alias pgadmin='pgadmin4&'
