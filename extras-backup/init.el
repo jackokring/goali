@@ -46,26 +46,30 @@
 ; technically all C-c should be user defined, but prefix C-b
 (define-prefix-command 'custom-c-map)
 (global-set-key (kbd "C-b") 'custom-b-map)
+(global-set-key (kbd "C-w") 'move-beginning-of-line) ; WE remap
+(global-set-key (kbd "C-y") (kbd "C-M-c")) ; Y combinator exit recursion remap
 (global-set-key (kbd "C-S-c") (kbd "C-b c")) ; use shift pass thru
 ; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o
 ; Those control keys might not be possible to feed into Emacs
 ; as terminal may filter them, so use ^B prefix
 (define-key custom-b-map (kbd "c") 'custom-c-map) ; as C-c is copy
-(define-key custom-b-map (kbd "x") (kbd "C-S-x")) ; execute as C-x is cut
-(define-key custom-b-map (kbd "\\") (kbd "C-\\"))
-(define-key custom-b-map (kbd "u") (kbd "C-u"))
-(define-key custom-b-map (kbd "d") (kbd "C-d"))
+(define-key custom-b-map (kbd "x") ctl-x-map) ; execute as C-x is cut and no '
+(define-key custom-b-map (kbd "\\") (kbd "C-\\")) ; C mode line endings
+(define-key custom-b-map (kbd "u") (kbd "C-u")) ; universal-argument
+(define-key custom-b-map (kbd "d") (kbd "C-d")) ; cursor delete right
 (define-key custom-b-map (kbd "q") (kbd "C-q")) ; quit
 (define-key custom-b-map (kbd "s") (kbd "C-s")) ; save
 (define-key custom-b-map (kbd "z") (kbd "C-z")) ; undo
-(define-key custom-b-map (kbd "r") (kbd "C-r"))
-(define-key custom-b-map (kbd "w") (kbd "C-w"))
+(define-key custom-b-map (kbd "r") (kbd "C-r")) ; recursive edit, exit by C-M-c
+(define-key custom-b-map (kbd "w") (kbd "C-w")) ; REMAP of C-a, copy? C-y is paste too
 (define-key custom-b-map (kbd "v") (kbd "C-v")) ; paste
-(define-key custom-b-map (kbd "o") (kbd "C-o"))
-
+(define-key custom-b-map (kbd "o") (kbd "C-o")) ; open line
+; encourage recursive edits by making exit easier?
+(define-key custom-b-map (kbd "y") (kbd "C-M-c")) ; end recursive edit, Y combinator hint
 ; a few extra conveiniences
-(define-key custom-b-map (kbd "C-b") 'kill-buffer) ; double C-b kill bad buffer
+(define-key custom-b-map (kbd "b") 'kill-buffer) ; C-b b kill "bad" buffer (bibi gun)
+; no ijlm circling the K-ill to end of line
 
 ;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
 
