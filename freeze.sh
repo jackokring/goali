@@ -10,9 +10,7 @@ pushd packages
 cp ~/.emacs.d/packages/*.el .
 popd
 mkdir -p elpa
-pushd elpa
 cp -r ~/.emacs.d/elpa .
-popd
 popd
 # add commit push
 gacp () {
