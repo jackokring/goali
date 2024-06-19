@@ -4,8 +4,11 @@ pip freeze | tee requirements.txt
 pushd extras-backup
 cp ~/.bashrc .
 cp ~/.config/starship.toml .
-cp ~/.emacs.d/init.el .
-#cp ~/.emacs.d/compile-ts.el .
+cp ~/.emacs.d/*.el .
+mkdir -p packages
+pushd packages
+cp ~/.emacs.d/packages/*.el .
+popd
 popd
 # add commit push
 gacp () {

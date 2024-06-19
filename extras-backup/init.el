@@ -108,3 +108,7 @@
 (global-set-key (kbd "M-S-<right>") 'split-window-right)
 (global-set-key (kbd "M-S-<up>") 'delete-window)
 (global-set-key (kbd "M-S-<down>") 'split-window-below)
+
+;;; Externals
+;(add-to-list 'load-path "~/.emacs.d/")
+(load "externals.el")
