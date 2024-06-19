@@ -64,6 +64,9 @@
 (define-key custom-b-map (kbd "v") (kbd "C-v")) ; paste
 (define-key custom-b-map (kbd "o") (kbd "C-o"))
 
+; a few extra conveiniences
+(define-key custom-b-map (kbd "C-b") 'kill-buffer) ; double C-b kill bad buffer
+
 ;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
 
 
@@ -75,13 +78,10 @@
 ; quit insert code -> (q)uit
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 
-;; buffer navigation
-(global-set-key (kbd "M-<left>") 'previous-buffer)
-(global-set-key (kbd "M-<right>") 'next-buffer)
-; a nice home list
-(global-set-key (kbd "M-<up>") 'list-buffers)
-; end some buffers
-(global-set-key (kbd "M-<down>") 'kill-some-buffers)
+;; buffer navigation sometimes intercepted
+; left/right sometimes won't work
+(global-set-key (kbd "M-<up>") 'previous-buffer)
+(global-set-key (kbd "M-<down>") 'next-buffer)
 
 ;; with shift <up> is like backspace, <left> is like tab
 ; useful for managing window panes
