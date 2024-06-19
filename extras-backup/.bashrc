@@ -324,9 +324,11 @@ printf "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050\n"
 printf "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)\n"
 printf "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)\n"
 echo
+if [ -d "$HOME/.cargo/bin" ]; then
 printf "# $RED~/.cargo/bin$NONE for rust binaries.\n"
 ls ~/.cargo/bin
 echo
+fi
 # continue by doing the reset of the .profile file
 printf "# .profile for perhaps .NET\n"
 
