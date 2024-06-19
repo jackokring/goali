@@ -88,15 +88,22 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# set PATH so it includes cargo bin if it exists
+if [ -d "$HOME/.cargo/bin" ] ; then
+    PATH="$HOME/.cargo/bin:$PATH"
+else
+    alias eza='exa'
+fi
+
 # some more ls aliases
-alias ls='exa'
-alias ll='exa -alh --git'
+alias ls='eza'
+alias ll='eza -alh --git'
 #alias la='ls -A'
 #alias l='ls -CF'
 #alias rm='trash'
 alias top='htop'
-alias la='exa -a'
-alias tree='exa -al --tree --level=3'
+alias la='eza -a'
+alias tree='eza -al --tree --level=3'
 alias cat='batcat'
 alias gitfree='for b in $(git branch --merged | grep -v \*); do echo $b; git branch -D $b; done; git submodule foreach --recursive "for b in $(git branch --merged | grep -v \*); do echo $b; git branch -D $b; done"'
 alias h='history'
@@ -313,11 +320,12 @@ printf "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050\n"
 #pushd ~/goali
 pgadmin4 2>&1 >/dev/null&
 #popd
-printf "# ${GREEN}tor$NONE on socks4://127.0.0.1:9050\n"
+printf "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050\n"
 printf "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)\n"
 printf "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)\n"
-# bloat
-#ls ~/.cargo/bin
+echo
+printf "# $RED~/.cargo/bin$NONE for rust binaries.\n"
+ls ~/.cargo/bin
 echo
 # continue by doing the reset of the .profile file
 printf "# .profile for perhaps .NET\n"
