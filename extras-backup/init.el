@@ -15,6 +15,7 @@
 ; Can use C-S-x and C-S-c for execute and user keybinds
 ; PgUp and PgDn replace C-v or use C-<up> or C-<down>
 (cua-mode t)
+(global-unset-key (kbd "C-S-v")) ; unset shell paste
 
 ;; Define C-/ to comment and uncomment regions and lines
 (defun comment-or-uncomment-line-or-region ()
@@ -47,9 +48,23 @@
 (global-set-key (kbd "C-b") 'custom-b-map)
 (global-set-key (kbd "C-S-c") 'custom-c-map) ; use shift pass thru
 ; Extend my custom-b-map ... tmux shortcut key too
-(define-key custom-b-map (kbd "C-c") 'custom-c-map) ; as C-c is copy
+; ^ terminals via stty -a => c \ u d q s z r w v o
+; Those control keys might not be possible to feed into Emacs
+; as terminal may filter them, so use ^B prefix
+(define-key custom-b-map (kbd "c") 'custom-c-map) ; as C-c is copy
+(define-key custom-b-map (kbd "x") (kbd "C-S-x") ; execute as C-x is cut
+(define-key custom-b-map (kbd "\\") (kbd "C-\\"))
+(define-key custom-b-map (kbd "u") (kbd "C-u"))
+(define-key custom-b-map (kbd "d") (kbd "C-d"))
+(define-key custom-b-map (kbd "q") (kbd "C-q")) ; quit
+(define-key custom-b-map (kbd "s") (kbd "C-s")) ; save
+(define-key custom-b-map (kbd "z") (kbd "C-z")) ; undo
+(define-key custom-b-map (kbd "r") (kbd "C-r"))
+(define-key custom-b-map (kbd "w") (kbd "C-w"))
+(define-key custom-b-map (kbd "v") (kbd "C-v")) ; paste
+(define-key custom-b-map (kbd "o") (kbd "C-o"))
 
-;; User custom-c-map ^C usually but adapted for "user" commands
+;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
 
 
 ;; my remaps for ^f, ^s and ^q
