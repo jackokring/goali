@@ -11,3 +11,5 @@ lib64
 pyvenv.cfg
 # emacs backups
 *~
+# compiled emacs
+*.elc
