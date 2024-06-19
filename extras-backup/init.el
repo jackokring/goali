@@ -1,3 +1,5 @@
+;; N.B. Terminal mode Emacs can't capture all keybindings automatically
+
 ;; This symbolic link although suggested causes a duplication error
 ;(make-symbolic-link ".config/emacs" "~/.emacs.d")
 
@@ -5,11 +7,13 @@
 ; https://www.gnu.org/software/emacs/manual/html_node/emacs/index.html
 ; You will find this useless unless you have a very upto date Emacs version
 (require 'package)
-;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
 ;; Sensible modern defaults
 (setq font-lock-maximum-decoration t)
 (show-paren-mode 1)
+; Can use C-S-x and C-S-c for execute and user keybinds
+; PgUp and PgDn replace C-v or use C-<up> or C-<down>
 (cua-mode t)
 
 ;; Define C-/ to comment and uncomment regions and lines
@@ -29,22 +33,26 @@
 
 ;; cursor remaps (b)ack, (f)orward, (p)revious, (n)ext reusable cursors?
 
-; n map (n)ext -> (n)ew
+; ^n map (n)ext -> (n)ew
 (global-set-key (kbd "C-n") 'find-file)
 
-; p map (p)revious -> (p)ackages
+; ^p map (p)revious -> (p)ackages
 (global-set-key (kbd "C-p") 'list-packages)
 
-; b map (b)ack -> (b)old -> ??
+; My ^b map (b)ack -> (b)old -> (b)e
+; This is not "user" commands, but modified CUA easy extensions
 (define-prefix-command 'custom-b-map)
+; technically all C-c should be user defined, but prefix C-b
+(define-prefix-command 'custom-c-map)
 (global-set-key (kbd "C-b") 'custom-b-map)
-; extend b ... tmux shortcut too
-(define-key custom-b-map (kbd "C-a") 'mark-whole-buffer) ; Select-all.
-(define-key custom-b-map (kbd "C-v") 'yank) ; Paste.
-(define-key custom-b-map (kbd "C-x") 'kill-region) ; Cut.
-(define-key custom-b-map (kbd "C-c") 'kill-ring-save) ; Copy.
+(global-set-key (kbd "C-S-c") 'custom-c-map) ; use shift pass thru
+; Extend my custom-b-map ... tmux shortcut key too
+(define-key custom-b-map (kbd "C-c") 'custom-c-map) ; as C-c is copy
 
-;; my remaps
+;; User custom-c-map ^C usually but adapted for "user" commands
+
+
+;; my remaps for ^f, ^s and ^q
 ; find (f)orward -> (f)ind
 (global-set-key (kbd "C-f") 'isearch-forward)
 ; save (s)earch -> (s)ave
@@ -59,7 +67,9 @@
 (global-set-key (kbd "M-<up>") 'list-buffers)
 ; end some buffers
 (global-set-key (kbd "M-<down>") 'kill-some-buffers)
-;; with shift
+
+;; with shift <up> is like backspace, <left> is like tab
+; useful for managing window panes
 (global-set-key (kbd "M-S-<left>") 'other-window)
 (global-set-key (kbd "M-S-<right>") 'split-window-right)
 (global-set-key (kbd "M-S-<up>") 'delete-window)
