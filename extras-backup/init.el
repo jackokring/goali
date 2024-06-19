@@ -46,13 +46,13 @@
 ; technically all C-c should be user defined, but prefix C-b
 (define-prefix-command 'custom-c-map)
 (global-set-key (kbd "C-b") 'custom-b-map)
-(global-set-key (kbd "C-S-c") 'custom-c-map) ; use shift pass thru
+(global-set-key (kbd "C-S-c") (kbd "C-b c")) ; use shift pass thru
 ; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o
 ; Those control keys might not be possible to feed into Emacs
 ; as terminal may filter them, so use ^B prefix
 (define-key custom-b-map (kbd "c") 'custom-c-map) ; as C-c is copy
-(define-key custom-b-map (kbd "x") (kbd "C-S-x") ; execute as C-x is cut
+(define-key custom-b-map (kbd "x") (kbd "C-S-x")) ; execute as C-x is cut
 (define-key custom-b-map (kbd "\\") (kbd "C-\\"))
 (define-key custom-b-map (kbd "u") (kbd "C-u"))
 (define-key custom-b-map (kbd "d") (kbd "C-d"))
