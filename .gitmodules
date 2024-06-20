@@ -14,17 +14,17 @@
 	path = bootstrap
 	url = git@github.com:twbs/bootstrap.git
 [submodule "tmux-continuum"]
-	path = extras-backup/.tmux/plugins
+	path = extras-backup/.tmux/plugins/tmux-continuum
 	url = git@github.com:tmux-plugins/tmux-continuum.git
 [submodule "tmux-resurrect"]
-	path = extras-backup/.tmux/plugins
-	url = git@github.com:tmux-plugins/tmux-ressurect.git
+	path = extras-backup/.tmux/plugins/tmux-resurrect
+	url = git@github.com:tmux-plugins/tmux-resurrect.git
 [submodule "tmux-sensible"]
-	path = extras-backup/.tmux/plugins
+	path = extras-backup/.tmux/plugins/tmux-sensible
 	url = git@github.com:tmux-plugins/tmux-sensible.git
 [submodule "tmux-yank"]
-	path = extras-backup/.tmux/plugins
+	path = extras-backup/.tmux/plugins/tmux-yank
 	url = git@github.com:tmux-plugins/tmux-yank.git
 [submodule "tpm"]
-	path = extras-backup/.tmux/plugins
+	path = extras-backup/.tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
