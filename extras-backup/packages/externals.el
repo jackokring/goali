@@ -4,3 +4,7 @@
 
 ; theme
 (load-theme 'gruvbox-dark-medium t)
+
+; enable which key help browsing
+(require 'which-key)
+(which-key-mode)
