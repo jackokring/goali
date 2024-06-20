@@ -4,6 +4,8 @@ pushd extras-backup
 cp .bashrc ~
 cp starship.toml ~/.config
 cp *.el ~/.emacs.d
+cp -r .tmux ~
+cp .tmux.conf ~
 mkdir -p ~/.emacs.d/packages
 pushd packages
 cp *.el ~/.emacs.d/packages

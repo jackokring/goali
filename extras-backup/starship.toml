@@ -21,6 +21,13 @@ symbol = './ '
 style = 'bold green'
 detect_extensions = ['sh'] # filters *.sh files
 
+[custom.el]
+command = "echo $(ls *el)"
+description = 'emacs lisp'
+symbol = '📄 '
+style = 'bold grey'
+detect_extensions = ['el']
+
 [custom.py]
 command = "echo $(ls *.py)"
 description = 'python scripts'
