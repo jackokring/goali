@@ -9,6 +9,7 @@ lib/
 share/
 lib64
 pyvenv.cfg
+.mypi_cache
 # emacs backups
 *~
 # compiled emacs
