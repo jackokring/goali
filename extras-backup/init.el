@@ -148,7 +148,7 @@
  '(custom-safe-themes
    '("72ed8b6bffe0bfa8d097810649fd57d2b598deef47c992920aef8b5d9599eefe" default))
  '(package-selected-packages
-   '(autothemer gruvbox-theme helm-core ini-mode js2-mode lua-mode markdown-mode nix-mode org pdf-tools rust-mode which-key go-mode html-to-markdown json-mode python-mode yaml-mode rainbow-delimiters)))
+   '(rainbow-mode autothemer gruvbox-theme helm-core ini-mode js2-mode lua-mode markdown-mode nix-mode org pdf-tools rust-mode which-key go-mode html-to-markdown json-mode python-mode yaml-mode rainbow-delimiters)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
