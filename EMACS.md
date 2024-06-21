@@ -7,7 +7,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-b` Special prefix *see below*
  * `C-c` Copy
  * `C-S-c ?` User command `?`. Or `C-c ?` if there is no text selection. Prefix `mode-specific-map`. See `C-b C-c ?` and file `packages/c-map.el`
-  * Only upper and lower case letters are allowed for "user" customizations
+   * Only upper and lower case letters are allowed for "user" customizations
  * `C-f` Find. Also forward find again. `C-r` recusive edit in find. See `C-y`
  * `C-n` New/Open. `C-o` does blank line inserts
  * `C-p` List packages
@@ -17,7 +17,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-w` Beginning of line
  * `C-x` Cut
  * `C-S-x ?` Execute `?`. Or `C-x ?` if there is no text selection. See `C-b C-x ?`
-  * After execute `\` behaves as though `C-b C-x C-\` was entered
+   * After execute `\` behaves as though `C-b C-x C-\` was entered
  * `C-y` Exit recursive edit
  * `C-\` Another special prefix `custom-escape-map`. See file `packages/escape-map.el`
 ## Alt Codes
