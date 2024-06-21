@@ -1,6 +1,6 @@
 # Emacs `init.el`
 
-It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-install.sh`.
+It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-install.sh`. *WARNING*: Read `EXTRAS-README.md`.
 
 ## Control Codes
  * `C-a` Select all
