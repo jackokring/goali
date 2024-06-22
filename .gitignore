@@ -12,5 +12,7 @@ pyvenv.cfg
 .mypi_cache
 # emacs backups
 *~
+\#*#
+.\#*
 # compiled emacs
 *.elc
