@@ -58,6 +58,7 @@
 ; C-x = system, C-c = user "letters only", C-\ = as a prefix, it's got previous backing
 ; M-v -> don't encourage an opposite now working as paste
 (global-set-key (kbd "C-\\") 'custom-escape-map)
+; an extra map prefix
 (global-set-key (kbd "M-v") 'custom-v-map) ; page up opposite to C-v page down replaced by paste
 
 ;; technically all C-c should be user defined, but prefix C-b
@@ -69,6 +70,7 @@
 ; might as well have a new beginning of line as select all CUA on C-a
 (global-set-key (kbd "C-w") 'move-beginning-of-line) ; WE remap beginning/end of line
 ; stop those pasty yanking fingers
+; It's also the first macro style mapping. Beware recursive errors of calling oneself
 (global-set-key (kbd "C-y") (kbd "C-M-c")) ; Y combinator exit recursive edit remap Yλ upside down of a join for a longer end?
 
 ;; Extend my custom-b-map ... tmux shortcut key too
@@ -78,25 +80,29 @@
 (define-key custom-b-map (kbd "C-c") mode-specific-map) ; as C-c is copy
 (define-key custom-b-map (kbd "C-x") ctl-x-map) ; execute as C-x is cut
 ; a few extra conveiniences
-(define-key custom-b-map (kbd "C-b") 'kill-buffer) ; C-b b kill "bad" buffer (bibi gun)
+(define-key custom-b-map (kbd "C-b") 'kill-buffer) ; C-b C-b kill "bad" buffer (bibi gun), tmux -> (C-b)^4
 
 ; terminal catch extras beyond C-c SIGINT -> simpler terminal requirement
-(define-key custom-b-map (kbd "\\") 'custom-escape-map) ; C mode line endings appears like only found C-x C-\
-(define-key ctl-x-map (kbd "\\") (kbd "C-x C-\\")) ; just to allow THE code through
+(define-key custom-b-map (kbd "\\") 'custom-escape-map) ; C mode line endings appears like only found C-\ use
+; another key macro
+(define-key ctl-x-map (kbd "\\") (kbd "C-x C-\\")) ; just to allow THE code through C-x C-\
 
+; use macro form as direct binds to actions would ont map on changing that which is bound to
 ; add any funny shell business here to retarget control key combinations
 (define-key custom-b-map (kbd "u") (kbd "C-u")) ; universal-argument
 (define-key custom-b-map (kbd "d") (kbd "C-d")) ; cursor delete right
 (define-key custom-b-map (kbd "q") (kbd "C-q")) ; quit
 (define-key custom-b-map (kbd "s") (kbd "C-s")) ; save
 (define-key custom-b-map (kbd "z") (kbd "C-z")) ; undo
-(define-key custom-b-map (kbd "r") (kbd "C-r")) ; recursive edit, exit by C-M-c
+(define-key custom-b-map (kbd "r") (kbd "C-r")) ; recursive edit, exit by C-M-c -> C-y
 (define-key custom-b-map (kbd "w") (kbd "C-w")) ; REMAP of C-a beginning of line, copy? C-y is paste too
 (define-key custom-b-map (kbd "v") (kbd "C-v")) ; paste
 (define-key custom-b-map (kbd "o") (kbd "C-o")) ; open line
 ; no ijlm circling the K-ill to end of line
+; I mean some might try binds for cursor movement, but I'm sure that needs a raw keyboard terminal map ^M = CR
 ;; End of the B map
 
+; ====================================================================
 ;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
 ; N.B. "mode-specific-map" replaces custom-c-map for C-c
 ; also help-map for C-h
@@ -111,6 +117,7 @@
 ; not to encourage an opposite of a taken by paste
 (load "v-map.el")
 
+; ===========================================
 ;; Some other more logical keys for CUA users
 ;; my remaps for ^f, ^s and ^q
 ; find (f)orward -> (f)ind
@@ -122,6 +129,7 @@
 ; quit insert code -> (q)uit
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 
+; ================================
 ;; Buffer and window manipulations 
 ; buffer navigation sometimes intercepted
 ; left/right sometimes won't work (depends on buffer modes)
@@ -135,10 +143,13 @@
 (global-set-key (kbd "M-S-<up>") 'delete-window)
 (global-set-key (kbd "M-S-<down>") 'split-window-below)
 
-;;; Externals related to packages
+; ===========================================================
+;;; Externals related to other external not included packages
+; keeps the basic init.el clean of code which is not default
 (load "externals.el")
 
-;;; Custom addition by Emacs DON'T EDIT BELOW
+; ========================================================================
+;;; Custom addition by Emacs DON'T EDIT BELOW, IT'S AUTOMAGICALLY INSERTED
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
