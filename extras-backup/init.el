@@ -126,6 +126,8 @@
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
 ; save (s)earch -> (s)ave
 (global-set-key (kbd "C-s") 'save-buffer)
+; and a save as, as I find it useful for saving a new template with select all DEL
+(global-set-key (kbd "C-S-s") 'write-file)
 ; quit insert code -> (q)uit
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 
