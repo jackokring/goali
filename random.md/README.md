@@ -12,7 +12,17 @@ Ah, the XApp absractions and the `gtk3-nocsd` debacle. I'm not sure why you'd mo
 
 Since doing an expansion of CUA mode by an `init.el` with some more muscle memory key combinations, it's been much "easier" to use. I could almost disable the tool bar as I'm picking it up, and have `which-key` help installed. A little theme addition, and perhaps some language modes plus some other tooling, and I'm almost regretting not banishing VSCode earlier. It's not as fast as Nano, but sure is faster than VSCode. Also Nano has some operational slowness even though it loads very fast for quick edits on small files. If anything Nano could also do with somekind of CUA overhaul too. I guess there's always the `mc` editor too, but I just don't like `vi(m)` which sure can be customized, but it has such an unfamiliar key layout steming back to "very old" line editors. Emacs and its embedded LISP is positively 1960s in comparison, with lots of 80s and 90s additions.
 
-## How to Export a Theme, Maybe
+## How to Export a Theme, Maybe or Already
 
 Wouldn't it be nice just to have a few command line switches for any app say `--supports-exporting-theme <feature>` and `--export-theme-xdg <feature>` such that one checks if it would work by returning an exit code other than zero, and the other actually alters the theme using the `xdg-desktop-portal`. The hard part would be making sure bad command switches are reported as errors in all tools. This brings me back to Emacs. It accepts, the bad option, as it has an internal LISP and so has the option to attach handlers onto command line options. So technically it would need to have the option to exit on a bad command line option. Apparently there is `command-switch-alist` which should have dotted pairs `("--option" . function-to-call)` added to handle options. The `function-to-call` recieves `"--option"` as its argument, and `command-line-args-left` contains the remaing command line, which can be modified to consume the `cdr` if needed for a `<fearure>`. Then there's `(exit 0)` for handling a return code status with zero being true (an ironic situation of negative logic in the shell).
 
+I mean it's not as though `icon-set` or `mouse-icons` would be able to come from themes that are colour based. Some themes would just be a colour list to match, while others would be some weird CSS. The mismatched CSD, just becoming an option to theme might be more problematic given the security need to cancel decorations exceeding the clip box. Notice how browser information dialogs do not centre, but obscure some of your toolbar screen estate? Ah the pop-up hell of the 90s incarnate.
+
+## Writing Time Independnt Code
+
+Languages. They are somewhat interesting. Some of the features include prepositions as auxilliary verbs, word order designed to illicit imagination, or dumb found a lingo of fish rife elle ah re add. How se aid, kinda no vailable insruct to be maid. It's a pizza, nun left? Sew, you could arse-k yourself? "Watt is to be do-né ear?", and wi' t' sigh lent 'ate shhhh.
+
+They get built as sure as time follows desire. The wants flowing into the universal Bob of the infinite bank of build. Selling shorts, for finer weathers or knots.
+
+Yours In-Seerly
+*Simon "Jacko" Jackson, BEng.*
