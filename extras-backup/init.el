@@ -149,6 +149,8 @@
 ;;; Externals related to other external not included packages
 ; keeps the basic init.el clean of code which is not default
 (load "externals.el")
+; for when it's available
+(load "tree-sitter.el")
 
 ; ========================================================================
 ;;; Custom addition by Emacs DON'T EDIT BELOW, IT'S AUTOMAGICALLY INSERTED
