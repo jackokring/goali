@@ -16,3 +16,6 @@
 
 ; enable which key help browsing
 (which-key-mode)
+
+; form feed separation
+(global-form-feed-mode)

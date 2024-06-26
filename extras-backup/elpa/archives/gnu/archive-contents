@@ -1143,7 +1143,7 @@
 	 (:url . "https://elpa.gnu.org/packages/djvu.html")
 	 (:commit . "071c8ab168588897475899c46eaa16e70141db8c"))])
  (do-at-point .
-	      [(0 1 1)
+	      [(0 1 2)
 	       ((emacs
 		 (26 1)))
 	       "Generic context-sensitive action dispatcher." tar
@@ -1152,7 +1152,7 @@
 		(:maintainer "Philip Kaludercic" . "~pkal/public-inbox@lists.sr.ht")
 		(:authors
 		 ("Philip Kaludercic" . "philipk@posteo.net"))
-		(:commit . "3244b2a765315ad640deab34b1b2f90ac2277df3"))])
+		(:commit . "da0742df74cbb36347aefd5dcb17d674ee4846d3"))])
  (doc-toc .
 	  [(1 2)
 	   ((emacs
@@ -1356,7 +1356,7 @@
 		     (:url . "https://elpa.gnu.org/packages/elisp-benchmarks.html")
 		     (:commit . "1a3d97954957a95a179806e0d49ca6d178b097af"))])
  (ellama .
-	 [(0 9 10)
+	 [(0 9 11)
 	  ((emacs
 	    (28 1))
 	   (llm
@@ -1369,7 +1369,7 @@
 	   (:maintainer "Sergey Kostyaev" . "sskostyaev@gmail.com")
 	   (:authors
 	    ("Sergey Kostyaev" . "sskostyaev@gmail.com"))
-	   (:commit . "3d6192ea09cfbd2e3d3e13dcada5f543bd79b968"))])
+	   (:commit . "968b8631d102c7fd051dbe9eb077755964bb47a2"))])
  (emacs-gc-stats .
 		 [(1 4 2)
 		  ((emacs
@@ -2440,6 +2440,17 @@
 	   (:authors
 	    ("Adam Porter" . "adam@alphapapa.net"))
 	   (:commit . "61c511541af474027c012de7063ddfdb3f8cc780"))])
+ (literate-scratch .
+		   [(1 0)
+		    ((emacs
+		      (29 1)))
+		    "Lisp Interaction w/ text paragraphs" tar
+		    ((:url . "https://git.spwhitton.name/dotfiles/tree/.emacs.d/site-lisp/literate-scratch.el")
+		     (:keywords "lisp" "text")
+		     (:maintainer "Sean Whitton" . "spwhitton@spwhitton.name")
+		     (:authors
+		      ("Sean Whitton" . "spwhitton@spwhitton.name"))
+		     (:commit . "c22a15e86acf28da716532c26ba1371574c8e979"))])
  (llm .
       [(0 16 1)
        ((emacs
@@ -2943,7 +2954,7 @@
 	       ("Omar Antolín Camarena" . "omar@matem.unam.mx"))
 	      (:commit . "3847f311077efa17951a786d2759f2639c5f43c8"))])
  (org .
-      [(9 7 4)
+      [(9 7 5)
        ((emacs
 	 (26 1)))
        "Outline-based notes management and organizer" tar
@@ -2952,7 +2963,7 @@
 	(:maintainer "Bastien Guerry" . "bzg@gnu.org")
 	(:authors
 	 ("Carsten Dominik" . "carsten.dominik@gmail.com"))
-	(:commit . "1387e361350794610ac1d5e5629381652713197b"))])
+	(:commit . "eafa479069687d87d81c11ddf655c181dd57f8b5"))])
  (org-contacts .
 	       [(1 1)
 		((emacs
@@ -4336,7 +4347,7 @@
 	       (:url . "https://elpa.gnu.org/packages/transcribe.html")
 	       (:commit . "89832e4cdc1e6d8262a4a2c9d1ff70f398b8faf0"))])
  (transient .
-	    [(0 7 1)
+	    [(0 7 2)
 	     ((emacs
 	       (26 1))
 	      (compat
@@ -4349,7 +4360,7 @@
 	      (:maintainer "Jonas Bernoulli" . "emacs.transient@jonas.bernoulli.dev")
 	      (:authors
 	       ("Jonas Bernoulli" . "emacs.transient@jonas.bernoulli.dev"))
-	      (:commit . "f78aebdd03292241b45023c4379bcad5c746fc4c"))])
+	      (:commit . "2d6fae0ca232c2423facbbbf8ece18c856e7d31d"))])
  (transient-cycles .
 		   [(1 0)
 		    ((emacs

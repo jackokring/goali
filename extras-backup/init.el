@@ -20,33 +20,47 @@
 ; Can use C-S-x and C-S-c for execute and user keybinds
 ; PgUp and PgDn replace C-v or use C-<up> or C-<down>
 (cua-mode t)
-(global-unset-key (kbd "C-S-v")) ; unset "shell paste" bad to encourage stuff not work in terminal 
+
+;; mapping functions as defined https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html
+(defun keymap-global-set (key bound)
+  "Do key bind."
+  (global-set-key (kbd key) bound))
+(defun keymap-set (map key bound)
+  "Do map key bind."
+  (define-key map (kbd key) bound))
+
+(keymap-global-set "C-S-v" nil) ; unset "shell paste" bad to encourage stuff not work in terminal
+
+;; Not sure if this might change or has a newer version
+(defun kbdfn (bind)
+  "Find function bound to."
+  (key-binding bind))
 
 ;; Define C-/ to comment and uncomment regions and lines
 (defun comment-or-uncomment-line-or-region ()
-    "Comments or uncomments the region or the current line if there's no active region."
-    (interactive)
-    (let (beg end)
-        (if (region-active-p)
-            (setq beg (region-beginning) end (region-end))
-            (setq beg (line-beginning-position) end (line-end-position)))
-        (comment-or-uncomment-region beg end)
-        (next-line)))
-(global-set-key (kbd "C-/") 'comment-or-uncomment-line-or-region)
+  "Comments or uncomments the region or the current line if there's no active region."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+      (setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end)
+    (next-line)))
+(keymap-global-set "C-/" 'comment-or-uncomment-line-or-region)
 
 ;; C-a marks the whole buffer (a)ll
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
+(keymap-global-set "C-a" 'mark-whole-buffer)
 
 ;; cursor remaps (b)ack, (f)orward, (p)revious, (n)ext reusable cursors?
 ; This is an obvious improvement as the cursor keys and mouse work fine
 ; muscle memory just makes for a good experience
 
 ; ^n map (n)ext -> (n)ew
-(global-set-key (kbd "C-n") 'find-file) ; also does open style functionality
+(keymap-global-set "C-n" 'find-file) ; also does open style functionality
 ; yes ... editing these comments really put C-o on the map ;D
 
 ; ^p map (p)revious -> (p)ackages
-(global-set-key (kbd "C-p") 'list-packages) ; easier than the manual
+(keymap-global-set "C-p" 'list-packages) ; easier than the manual
 
 ;; Custom maps used
 ; My ^b map (b)ack -> (b)old -> (b)e
@@ -57,50 +71,76 @@
 (define-prefix-command 'custom-v-map)
 ; C-x = system, C-c = user "letters only", C-\ = as a prefix, it's got previous backing
 ; M-v -> don't encourage an opposite now working as paste
-(global-set-key (kbd "C-\\") 'custom-escape-map)
+(keymap-global-set "C-\\" 'custom-escape-map)
 ; an extra map prefix
-(global-set-key (kbd "M-v") 'custom-v-map) ; page up opposite to C-v page down replaced by paste
+(keymap-global-set "M-v" 'custom-v-map) ; page up opposite to C-v page down replaced by paste
 
 ;; technically all C-c should be user defined, but prefix C-b
 ; B, X and C are handled different as a SIGINT, plus 2 passthroughs
 ; for Bad Buffer, eXecute and Command after C-b
 ; the rest are for easy intercept requirements
-(global-set-key (kbd "C-b") 'custom-b-map)
+(keymap-global-set "C-b" 'custom-b-map)
 
 ; might as well have a new beginning of line as select all CUA on C-a
-(global-set-key (kbd "C-w") 'move-beginning-of-line) ; WE remap beginning/end of line
+(keymap-global-set "C-w" 'move-beginning-of-line) ; WE remap beginning/end of line
 ; stop those pasty yanking fingers
 ; It's also the first macro style mapping. Beware recursive errors of calling oneself
-(global-set-key (kbd "C-y") (kbd "C-M-c")) ; Y combinator exit recursive edit remap Yλ upside down of a join for a longer end?
+(keymap-global-set "C-y" 'exit-recursive-edit) ; Y combinator exit recursive edit remap Yλ upside down of a join for a longer end?
+
+; ===========================================
+;; Some other more logical keys for CUA users
+;; my remaps for ^f, ^s and ^q
+; find (f)orward -> (f)ind
+(keymap-global-set "C-f" 'isearch-forward)
+; special for use insode incremental active searches
+(keymap-set isearch-mode-map "C-f" 'isearch-repeat-forward)
+; save (s)earch -> (s)ave
+(keymap-global-set "C-s" 'save-buffer)
+; and a save as, as I find it useful for saving a new template with select all DEL
+(keymap-global-set "C-S-s" 'write-file)
+; quit insert code -> (q)uit
+(keymap-global-set "C-q" 'save-buffers-kill-terminal)
 
 ;; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o
 ; Those control keys might not be possible to feed into Emacs
 ; as terminal may filter them, so use ^B prefix
-(define-key custom-b-map (kbd "C-c") mode-specific-map) ; as C-c is copy
-(define-key custom-b-map (kbd "C-x") ctl-x-map) ; execute as C-x is cut
+(keymap-set custom-b-map "C-c" mode-specific-map) ; as C-c is copy
+(keymap-set custom-b-map "C-x" ctl-x-map) ; execute as C-x is cut
 ; a few extra conveiniences
-(define-key custom-b-map (kbd "C-b") 'kill-buffer) ; C-b C-b kill "bad" buffer (bibi gun), tmux -> (C-b)^4
+(keymap-set custom-b-map "C-b" 'kill-buffer) ; C-b C-b kill "bad" buffer (bibi gun), tmux -> (C-b)^4
 
 ; terminal catch extras beyond C-c SIGINT -> simpler terminal requirement
-(define-key custom-b-map (kbd "\\") 'custom-escape-map) ; C mode line endings appears like only found C-\ use
+(keymap-set custom-b-map "\\" 'custom-escape-map) ; C mode line endings appears like only found C-\ use
+
+; C-i -> TAB
+; C-j -> LFD new line
+; C-l -> (global-form-feed-mode) section seperations
+; C-m -> RET enter implies a new line is entered
+
+;; kbdfn finds bound command
 ; another key macro
-(define-key ctl-x-map (kbd "\\") (kbd "C-x C-\\")) ; just to allow THE code through C-x C-\
+(keymap-set ctl-x-map "\\" (kbdfn "C-x C-\\")) ; just to allow THE code through C-x C-\
 
 ; use macro form as direct binds to actions would ont map on changing that which is bound to
 ; add any funny shell business here to retarget control key combinations
-(define-key custom-b-map (kbd "u") (kbd "C-u")) ; universal-argument
-(define-key custom-b-map (kbd "d") (kbd "C-d")) ; cursor delete right
-(define-key custom-b-map (kbd "q") (kbd "C-q")) ; quit
-(define-key custom-b-map (kbd "s") (kbd "C-s")) ; save
-(define-key custom-b-map (kbd "z") (kbd "C-z")) ; undo
-(define-key custom-b-map (kbd "r") (kbd "C-r")) ; recursive edit, exit by C-M-c -> C-y
-(define-key custom-b-map (kbd "w") (kbd "C-w")) ; REMAP of C-a beginning of line, copy? C-y is paste too
-(define-key custom-b-map (kbd "v") (kbd "C-v")) ; paste
-(define-key custom-b-map (kbd "o") (kbd "C-o")) ; open line
+(keymap-set custom-b-map "u" (kbdfn "C-u")) ; universal-argument
+(keymap-set custom-b-map "d" (kbdfn "C-d")) ; cursor delete right
+(keymap-set custom-b-map "q" (kbdfn "C-q")) ; quit
+(keymap-set custom-b-map "s" (kbdfn "C-s")) ; save
+(keymap-set custom-b-map "z" (kbdfn "C-z")) ; undo
+(keymap-set custom-b-map "r" (kbdfn "C-r")) ; recursive edit, exit by C-M-c -> C-y
+(keymap-set custom-b-map "w" (kbdfn "C-w")) ; REMAP of C-a beginning of line, copy? C-y is paste too
+(keymap-set custom-b-map "v" (kbdfn "C-v")) ; paste
+(keymap-set custom-b-map "o" (kbdfn "C-o")) ; open line
 ; no ijlm circling the K-ill to end of line
 ; I mean some might try binds for cursor movement, but I'm sure that needs a raw keyboard terminal map ^M = CR
-;; End of the B map
+;; End of the B map?
+; So
+; C-@ -> NUL
+; C-^ -> RS
+; C-\] -> GS
+; C-_ -> US
 
 ; ====================================================================
 ;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
@@ -117,33 +157,19 @@
 ; not to encourage an opposite of a taken by paste
 (load "v-map.el")
 
-; ===========================================
-;; Some other more logical keys for CUA users
-;; my remaps for ^f, ^s and ^q
-; find (f)orward -> (f)ind
-(global-set-key (kbd "C-f") 'isearch-forward)
-; special for use insode incremental active searches
-(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
-; save (s)earch -> (s)ave
-(global-set-key (kbd "C-s") 'save-buffer)
-; and a save as, as I find it useful for saving a new template with select all DEL
-(global-set-key (kbd "C-S-s") 'write-file)
-; quit insert code -> (q)uit
-(global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
-
 ; ================================
 ;; Buffer and window manipulations 
 ; buffer navigation sometimes intercepted
 ; left/right sometimes won't work (depends on buffer modes)
-(global-set-key (kbd "M-<up>") 'previous-buffer)
-(global-set-key (kbd "M-<down>") 'next-buffer)
+(keymap-global-set "M-<up>" 'previous-buffer)
+(keymap-global-set "M-<down>" 'next-buffer)
 
 ;; with shift <up> is like backspace, <left> is like tab (key pointing arrows)
 ; useful for managing window panes
-(global-set-key (kbd "M-S-<left>") 'other-window)
-(global-set-key (kbd "M-S-<right>") 'split-window-right)
-(global-set-key (kbd "M-S-<up>") 'delete-window)
-(global-set-key (kbd "M-S-<down>") 'split-window-below)
+(keymap-global-set "M-S-<left>" 'other-window)
+(keymap-global-set "M-S-<right>" 'split-window-right)
+(keymap-global-set "M-S-<up>" 'delete-window)
+(keymap-global-set "M-S-<down>" 'split-window-below)
 
 ; ===========================================================
 ;;; Externals related to other external not included packages
@@ -163,7 +189,7 @@
  '(custom-safe-themes
    '("72ed8b6bffe0bfa8d097810649fd57d2b598deef47c992920aef8b5d9599eefe" default))
  '(package-selected-packages
-   '(rainbow-mode autothemer gruvbox-theme helm-core ini-mode js2-mode lua-mode markdown-mode nix-mode org pdf-tools rust-mode which-key go-mode html-to-markdown json-mode python-mode yaml-mode rainbow-delimiters)))
+   '(form-feed rainbow-mode autothemer gruvbox-theme helm-core ini-mode js2-mode lua-mode markdown-mode nix-mode org pdf-tools rust-mode which-key go-mode html-to-markdown json-mode python-mode yaml-mode rainbow-delimiters)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
