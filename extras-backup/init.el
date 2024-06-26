@@ -34,7 +34,7 @@
 ;; Not sure if this might change or has a newer version
 (defun kbdfn (bind)
   "Find function bound to."
-  (key-binding bind))
+  (key-binding (kbd bind)))
 
 ;; Define C-/ to comment and uncomment regions and lines
 (defun comment-or-uncomment-line-or-region ()
