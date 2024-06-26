@@ -117,13 +117,7 @@ alias ....="cd ../../../"
 alias apt='sudo nala'
 alias update="apt upgrade -y; apt clean" # apt update; not req
 alias venv='python -m venv'
-alias mv='mv -i'
-alias rm='trash -v'
-alias mkdir='mkdir -p'
-alias ps='ps auxf'
-alias ping='ping -c 10'
-alias less='less -R'
-alias cls='clear'
+#alias emacs='emacs 2>/dev/null&'
 
 e() {
 	# emacs with files and no gtk error stream
