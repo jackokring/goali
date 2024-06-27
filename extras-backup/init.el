@@ -21,20 +21,24 @@
 ; PgUp and PgDn replace C-v or use C-<up> or C-<down>
 (cua-mode t)
 
-;; mapping functions as defined https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html
-(defun keymap-global-set (key bound)
-  "Do key bind."
-  (global-set-key (kbd key) bound))
-(defun keymap-set (map key bound)
-  "Do map key bind."
-  (define-key map (kbd key) bound))
-
-(keymap-global-set "C-S-v" nil) ; unset "shell paste" bad to encourage stuff not work in terminal
-
 ;; Not sure if this might change or has a newer version
 (defun kbdfn (bind)
   "Find function bound to."
   (key-binding (kbd bind)))
+
+;; mapping functions as defined https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html
+(defun keymap-global-set (key bound)
+  "Do key bind."
+  (global-set-key (kbd key) 
+    (if (stringp bound) (kbdfn bound) bound)
+  ))
+(defun keymap-set (map key bound)
+  "Do map key bind."
+  (define-key map (kbd key)
+    (if (stringp bound) (kbdfn bound) bound)
+  ))
+
+(keymap-global-set "C-S-v" nil) ; unset "shell paste" bad to encourage stuff not work in terminal
 
 ;; Define C-/ to comment and uncomment regions and lines
 (defun comment-or-uncomment-line-or-region ()
@@ -120,19 +124,19 @@
 
 ;; kbdfn finds bound command
 ; another key macro
-(keymap-set ctl-x-map "\\" (kbdfn "C-x C-\\")) ; just to allow THE code through C-x C-\
+(keymap-set ctl-x-map "\\" "C-x C-\\") ; just to allow THE code through C-x C-\
 
 ; use macro form as direct binds to actions would ont map on changing that which is bound to
 ; add any funny shell business here to retarget control key combinations
-(keymap-set custom-b-map "u" (kbdfn "C-u")) ; universal-argument
-(keymap-set custom-b-map "d" (kbdfn "C-d")) ; cursor delete right
-(keymap-set custom-b-map "q" (kbdfn "C-q")) ; quit
-(keymap-set custom-b-map "s" (kbdfn "C-s")) ; save
-(keymap-set custom-b-map "z" (kbdfn "C-z")) ; undo
-(keymap-set custom-b-map "r" (kbdfn "C-r")) ; recursive edit, exit by C-M-c -> C-y
-(keymap-set custom-b-map "w" (kbdfn "C-w")) ; REMAP of C-a beginning of line, copy? C-y is paste too
-(keymap-set custom-b-map "v" (kbdfn "C-v")) ; paste
-(keymap-set custom-b-map "o" (kbdfn "C-o")) ; open line
+(keymap-set custom-b-map "u" "C-u") ; universal-argument
+(keymap-set custom-b-map "d" "C-d") ; cursor delete right
+(keymap-set custom-b-map "q" "C-q") ; quit
+(keymap-set custom-b-map "s" "C-s") ; save
+(keymap-set custom-b-map "z" "C-z") ; undo
+(keymap-set custom-b-map "r" "C-r") ; recursive edit, exit by C-M-c -> C-y
+(keymap-set custom-b-map "w" "C-w") ; REMAP of C-a beginning of line, copy? C-y is paste too
+(keymap-set custom-b-map "v" "C-v") ; paste
+(keymap-set custom-b-map "o" "C-o") ; open line
 ; no ijlm circling the K-ill to end of line
 ; I mean some might try binds for cursor movement, but I'm sure that needs a raw keyboard terminal map ^M = CR
 ;; End of the B map?
