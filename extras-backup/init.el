@@ -87,6 +87,7 @@
 
 ; might as well have a new beginning of line as select all CUA on C-a
 (keymap-global-set "C-w" 'move-beginning-of-line) ; WE remap beginning/end of line
+(keymap-global-set "M-w" 'backward-sentence) ; sentence motion
 ; stop those pasty yanking fingers
 ; It's also the first macro style mapping. Beware recursive errors of calling oneself
 (keymap-global-set "C-y" 'exit-recursive-edit) ; Y combinator exit recursive edit remap Yλ upside down of a join for a longer end?
@@ -119,12 +120,9 @@
 
 ; C-i -> TAB
 ; C-j -> LFD new line
-; C-l -> (global-form-feed-mode) section seperations
+; C-l -> FF (global-form-feed-mode) section seperations
 ; C-m -> RET enter implies a new line is entered
-
-;; kbdfn finds bound command
-; another key macro
-(keymap-set ctl-x-map "\\" "C-x C-\\") ; just to allow THE code through C-x C-\
+; C-[ -> ESC also is a M- prefix
 
 ; use macro form as direct binds to actions would ont map on changing that which is bound to
 ; add any funny shell business here to retarget control key combinations
@@ -140,6 +138,7 @@
 ; no ijlm circling the K-ill to end of line
 ; I mean some might try binds for cursor movement, but I'm sure that needs a raw keyboard terminal map ^M = CR
 ;; End of the B map?
+
 ; So
 ; C-@ -> NUL
 ; C-^ -> RS
