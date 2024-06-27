@@ -237,6 +237,8 @@ fi
 
 # autojump
 . /usr/share/autojump/autojump.sh
+# last?
+j
 
 # Ctrl+S forward search to match Ctrl-R reverse search
 # so turn off xon/xoff flow control
