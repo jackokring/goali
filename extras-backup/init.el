@@ -167,6 +167,12 @@
 (keymap-global-set "M-<up>" 'previous-buffer)
 (keymap-global-set "M-<down>" 'next-buffer)
 
+; alreagy mapped?
+;(keymap-global-set "C-M-<up>" 'backward-list)
+;(keymap-global-set "C-M-<down>" 'forward-list)
+;(keymap-global-set "C-M-<left>" 'backward-sexp)
+;(keymap-global-set "C-M-<right>" 'forward-sexp)
+
 ;; with shift <up> is like backspace, <left> is like tab (key pointing arrows)
 ; useful for managing window panes
 (keymap-global-set "M-S-<left>" 'other-window)
