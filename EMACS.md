@@ -32,6 +32,9 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-x ?` Execute if text is selected
  * `\` Use special prefix `C-\`
  * Any difficult to enter terminal control codes `C-<key>` may map from `C-b <key>`
+## Notes on Some keyboards
+ * `AltGr` produces special characters on some national keymaps
+ * On Chromebooks the `Everything` key can produce `Super` sequences `S-s-`, `C-s-` and `M-s-`if the other modifier is pressed first
 
 ### I hope you find it makes Emacs better, not e`vi`l.
 Maybe I should add extra things to make terminal mode better, but ... and `tmux`.
