@@ -8,9 +8,19 @@
 
 ;; Emacs manual online and mepla packages stable
 ; https://www.gnu.org/software/emacs/manual/html_node/emacs/index.html
-; You will find this useless unless you have a very upto date Emacs version
+; This is the only require required for bootstrap of packages
+; custom-set-variables at the end of the file sets up autoload
+; for all the packages installed
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+
+; ===========================================================
+;;; Externals related to other external not included packages
+; keeps the basic init.el clean of code which is not default
+; due to early kbd-command-find binding, load externals first
+(load "externals.el")
+; for when it's available
+(load "tree-sitter.el")
 
 ; C- and ^ are used interchangably as the control key modifier throughout this file
 
@@ -22,21 +32,20 @@
 (cua-mode t)
 
 ;; Not sure if this might change or has a newer version
-(defun kbdfn (bind)
+(defun kbd-command-find (bind)
   "Find function bound to."
   (key-binding (kbd bind)))
 
 ;; mapping functions as defined https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html
-(defun keymap-global-set (key bound)
-  "Do key bind."
-  (global-set-key (kbd key) 
-    (if (stringp bound) (kbdfn bound) bound)
-  ))
 (defun keymap-set (map key bound)
   "Do map key bind."
   (define-key map (kbd key)
-    (if (stringp bound) (kbdfn bound) bound)
+    (if (stringp bound) (kbd-command-find bound) bound)
   ))
+
+(defun keymap-global-set (key bound)
+  "Do global key bind."
+  (keymap-set (current-global-map) key bound))
 
 (keymap-global-set "C-S-v" nil) ; unset "shell paste" bad to encourage stuff not work in terminal
 
@@ -73,6 +82,7 @@
 ; Seems escape is strange as a first character
 (define-prefix-command 'custom-escape-map)
 (define-prefix-command 'custom-v-map)
+
 ; C-x = system, C-c = user "letters only", C-\ = as a prefix, it's got previous backing
 ; M-v -> don't encourage an opposite now working as paste
 (keymap-global-set "C-\\" 'custom-escape-map)
@@ -88,6 +98,7 @@
 ; might as well have a new beginning of line as select all CUA on C-a
 (keymap-global-set "C-w" 'move-beginning-of-line) ; WE remap beginning/end of line
 (keymap-global-set "M-w" 'backward-sentence) ; sentence motion
+
 ; stop those pasty yanking fingers
 ; It's also the first macro style mapping. Beware recursive errors of calling oneself
 (keymap-global-set "C-y" 'exit-recursive-edit) ; Y combinator exit recursive edit remap Yλ upside down of a join for a longer end?
@@ -97,12 +108,15 @@
 ;; my remaps for ^f, ^s and ^q
 ; find (f)orward -> (f)ind
 (keymap-global-set "C-f" 'isearch-forward)
+
 ; special for use insode incremental active searches
 (keymap-set isearch-mode-map "C-f" 'isearch-repeat-forward)
+
 ; save (s)earch -> (s)ave
 (keymap-global-set "C-s" 'save-buffer)
 ; and a save as, as I find it useful for saving a new template with select all DEL
 (keymap-global-set "C-S-s" 'write-file)
+
 ; quit insert code -> (q)uit
 (keymap-global-set "C-q" 'save-buffers-kill-terminal)
 
@@ -114,7 +128,6 @@
 (keymap-set custom-b-map "C-x" ctl-x-map) ; execute as C-x is cut
 ; a few extra conveiniences
 (keymap-set custom-b-map "C-b" 'kill-buffer) ; C-b C-b kill "bad" buffer (bibi gun), tmux -> (C-b)^4
-
 ; terminal catch extras beyond C-c SIGINT -> simpler terminal requirement
 (keymap-set custom-b-map "\\" 'custom-escape-map) ; C mode line endings appears like only found C-\ use
 
@@ -126,6 +139,7 @@
 
 ; use macro form as direct binds to actions would ont map on changing that which is bound to
 ; add any funny shell business here to retarget control key combinations
+; use string implies early bind to command on key replacement
 (keymap-set custom-b-map "u" "C-u") ; universal-argument
 (keymap-set custom-b-map "d" "C-d") ; cursor delete right
 (keymap-set custom-b-map "q" "C-q") ; quit
@@ -139,7 +153,7 @@
 ; I mean some might try binds for cursor movement, but I'm sure that needs a raw keyboard terminal map ^M = CR
 ;; End of the B map?
 
-; So
+; So still possible binds without 
 ; C-@ -> NUL
 ; C-^ -> RS
 ; C-\] -> GS
@@ -180,15 +194,9 @@
 (keymap-global-set "M-S-<up>" 'delete-window)
 (keymap-global-set "M-S-<down>" 'split-window-below)
 
-; ===========================================================
-;;; Externals related to other external not included packages
-; keeps the basic init.el clean of code which is not default
-(load "externals.el")
-; for when it's available
-(load "tree-sitter.el")
-
 ; ========================================================================
 ;;; Custom addition by Emacs DON'T EDIT BELOW, IT'S AUTOMAGICALLY INSERTED
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
