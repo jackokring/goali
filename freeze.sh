@@ -4,6 +4,7 @@ pip freeze | tee requirements.txt
 pushd extras-backup
 cp ~/.bashrc .
 cp ~/.config/starship.toml .
+cp -r ~/.config/neofetch .
 cp ~/.emacs.d/*.el .
 cp -r ~/.tmux .
 cp ~/.tmux.conf .

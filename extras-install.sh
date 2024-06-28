@@ -12,6 +12,11 @@ then
     cp ~/.config/starship.toml ~/.mess
     cp starship.toml ~/.config
 fi
+if ../yes-no.sh "install neofetch config"
+then
+    cp -r ~/.config/neofetch ~/.mess
+    cp -r neofetch ~/.config
+fi
 if ../yes-no.sh "install tmux config" 
 then
     cp -r ~/.tmux ~/.mess
