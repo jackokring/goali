@@ -1,16 +1,21 @@
 #!/usr/bin/bash
-echo "Maybe:"
-echo "rustup target add aarch64-unknown-linux-gnu"
-echo "sudo apt install gcc-aarch64-linux-gnu"
+echo "Maybe to Add 'arm64' Architecture:"
+echo "  rustup target add aarch64-unknown-linux-gnu"
+echo "  sudo apt install gcc-aarch64-linux-gnu"
+echo "  sudo dpkg --add-architecture arm64"
+echo "  sudo apt install lib\${name}-dev:arm64 ..."
 # gnu_version crate_name
 # ./cargo-cross.sh 11 just
-PKG_CONFIG_SYSROOT_DIR=/.
-PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig/
-PKG_CONFIG_ALLOW_CROSS=1
-RUSTFLAGS="-Clinker=aarch64-linux-gnu-ld -L /usr/lib/gcc-cross/aarch64-linux-gnu/${1}/" cargo install $2 --root ~/bin-arm64/ --target aarch64-unknown-linux-gnu
+ARC=aarch64-linux-gnu
+export SYSROOT=/usr/${ARC}
+export PKG_CONFIG_ALLOW_CROSS=1
+export PKG_CONFIG_LIBDIR=/usr/lib/${ARC}/pkgconfig
+export PKG_CONFIG_SYSROOT_DIR=${SYSROOT}
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/lib/${SRC}
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${ARC}/include
+RUSTFLAGS="-Clinker=${ARC}-ld -L /usr/lib/gcc-cross/${ARC}/${1}/" cargo install $2 --root ~/bin-arm64/ --target aarch64-unknown-linux-gnu
 #Mint doesn't support arm64 arch files but ... debian does, maybe alt sources []
-#sudo dpkg --add-architecture arm64
-# TEST STILL NOT DOING ALSA -- FAIL
+# TEST OK DOING ALSA
 #sudo apt install libasound2-dev:arm64
 
 # avoid error on example list to source multiarch
