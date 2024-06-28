@@ -235,11 +235,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# autojump
-. /usr/share/autojump/autojump.sh
-# last?
-j
-
 # Ctrl+S forward search to match Ctrl-R reverse search
 # so turn off xon/xoff flow control
 stty -ixon
@@ -344,7 +339,12 @@ printf "# .profile for perhaps .NET\n"
 export GEM_HOME="$HOME/gems"
 export PATH="$HOME/gems/bin:$PATH"
 
-go env -w GOBIN=$HOME/bin
+# go env -w GOBIN=$HOME/bin
 
 # starship (arm build on google drive)
 eval "$(starship init bash)"
+
+# activate virtual env after all path stuff
+# autojump
+. /usr/share/autojump/autojump.sh
+# last, may include venv $PATH mash of added afterj
