@@ -30,6 +30,11 @@
 ; Can use C-S-x and C-S-c for execute and user keybinds
 ; PgUp and PgDn replace C-v or use C-<up> or C-<down>
 (cua-mode t)
+; Set up a default set of tabs for differing layouts
+; You can still change the buffer in each tab
+(tab-bar-mode)
+; A generic tab line in "the" buffer? Interactive?
+; (tab-line-mode)
 
 ;; Not sure if this might change or has a newer version
 (defun kbd-command-find (bind)
@@ -108,7 +113,6 @@
 ;; my remaps for ^f, ^s and ^q
 ; find (f)orward -> (f)ind
 (keymap-global-set "C-f" 'isearch-forward)
-
 ; special for use insode incremental active searches
 (keymap-set isearch-mode-map "C-f" 'isearch-repeat-forward)
 
@@ -137,7 +141,7 @@
 ; C-m -> RET enter implies a new line is entered
 ; C-[ -> ESC also is a M- prefix
 
-; use macro form as direct binds to actions would ont map on changing that which is bound to
+; use macro form as direct binds to actions wouldn't map on changing that "under" bound
 ; add any funny shell business here to retarget control key combinations
 ; use string implies early bind to command on key replacement
 (keymap-set custom-b-map "u" "C-u") ; universal-argument
