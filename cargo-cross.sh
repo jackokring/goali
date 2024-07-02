@@ -21,16 +21,16 @@ RUSTFLAGS="-Clinker=${ARC}-ld -L /usr/lib/gcc-cross/${ARC}/${1}/" cargo install 
 # avoid error on example list to source multiarch
 exit 0
 # a multi source list
-deb [arch=amd64,i386] https://www.mirrorservice.org/sites/packages.linuxmint.com/packages virginia main upstream import backport 
+deb [arch=amd64,i386] https://www.mirrorservice.org/sites/packages.linuxmint.com/packages wilma main upstream import backport 
 
-deb [arch=amd64,i386] http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse
-deb [arch=amd64,i386] http://archive.ubuntu.com/ubuntu jammy-updates main restricted universe multiverse
-deb [arch=amd64,i386] http://archive.ubuntu.com/ubuntu jammy-backports main restricted universe multiverse
+deb [arch=amd64,i386] http://archive.ubuntu.com/ubuntu noble main restricted universe multiverse
+deb [arch=amd64,i386] http://archive.ubuntu.com/ubuntu noble-updates main restricted universe multiverse
+deb [arch=amd64,i386] http://archive.ubuntu.com/ubuntu noble-backports main restricted universe multiverse
 
-deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse
+deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse
 
-deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse
-deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse
-deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse
-deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-security main restricted universe multiverse
-deb [arch=arm64] http://archive.canonical.com/ubuntu jammy partner
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports noble main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports noble-updates main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports noble-backports main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports noble-security main restricted universe multiverse
+
