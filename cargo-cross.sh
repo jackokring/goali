@@ -5,13 +5,14 @@ echo "  sudo apt install gcc-aarch64-linux-gnu"
 echo "  sudo dpkg --add-architecture arm64"
 echo "  sudo apt install lib\${name}-dev:arm64 ..."
 # gnu_version crate_name
-# ./cargo-cross.sh 11 just
+# ./cargo-cross.sh 13 just
+# The recent tool kit must not exceed the aarch platform libs
 ARC=aarch64-linux-gnu
 export SYSROOT=/usr/${ARC}
 export PKG_CONFIG_ALLOW_CROSS=1
 export PKG_CONFIG_LIBDIR=/usr/lib/${ARC}/pkgconfig
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT}
-export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/lib/${SRC}
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/lib/${ARC}
 export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${ARC}/include
 RUSTFLAGS="-Clinker=${ARC}-ld -L /usr/lib/gcc-cross/${ARC}/${1}/" cargo install $2 --root ~/bin-arm64/ --target aarch64-unknown-linux-gnu
 #Mint doesn't support arm64 arch files but ... debian does, maybe alt sources []
