@@ -19,3 +19,7 @@ module with C, or some go exporting C with a python wrapper?
 
 Well, `python` the binary is but a C program, and in a strange sort of `flex`/`bison` way `go`
 is a compiled translation client into C too.
+
+## Current Version Python 3.12 (2024-07-06)
+
+Tried build on Linux Mint 22. OK.
