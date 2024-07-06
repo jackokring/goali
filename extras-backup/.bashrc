@@ -124,6 +124,7 @@ alias ps='ps auxf'
 alias ping='ping -c 10'
 alias less='less -R'
 alias cls='clear'
+alias tmux='tmux attach || tmux'
 
 e() {
 	# emacs with files and no gtk error stream
