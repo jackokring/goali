@@ -35,8 +35,8 @@
 (tab-bar-mode)
 ; A generic tab line in "the" buffer? Interactive?
 ; (tab-line-mode)
-(setq shell-file-name "bash")
-(setq shell-command-switch "-ic")
+; (setq shell-file-name "bash")
+; (setq shell-command-switch "-ic")
 ; nice bash
 
 ;; Not sure if this might change or has a newer version
@@ -127,6 +127,9 @@
 
 ; quit insert code -> (q)uit
 (keymap-global-set "C-q" 'save-buffers-kill-terminal)
+
+; terminal app -> (t)erm
+(keymap-global-set "C-t" 'term)
 
 ;; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o
