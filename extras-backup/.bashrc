@@ -319,10 +319,14 @@ echo
 # vscode seems to have tmux restart issue
 printf "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down>$NONE ...\n"
 printf "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050\n"
-# virtual venv
-#pushd ~/goali
-pgadmin4 2>&1 >/dev/null&
-#popd
+single() {
+# self and process?
+	if test $(ps|grep $1|wc -l) != 2; then
+		"$@" 2>&1 >/dev/null&
+	fi
+}
+single pgadmin4
+
 printf "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050\n"
 printf "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)\n"
 printf "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)\n"
