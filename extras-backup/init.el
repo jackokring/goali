@@ -35,8 +35,8 @@
 (tab-bar-mode)
 ; A generic tab line in "the" buffer? Interactive?
 ; (tab-line-mode)
-; (setq shell-file-name "bash")
-; (setq shell-command-switch "-ic")
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
 ; nice bash
 
 ;; Not sure if this might change or has a newer version
