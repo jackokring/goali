@@ -4,4 +4,4 @@ I'm not sure if it will actually do anything for me, or if it's a way of introdu
 
 ## Adding in the Config
 
-Seems the config doesn't error out if there hasn't been installed a `*-ts-mode` so that's good. Well this versionm of Emacs is pre-tree-sitter.
+Seems the config doesn't error out if there hasn't been installed a `*-ts-mode` so that's good. Well this versionm of Emacs is pre-tree-sitter. ... And this version isn't, but doesn't seem to like the `markdown-ts-mode` not being available.
