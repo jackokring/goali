@@ -79,6 +79,7 @@
 
 ; ^p map (p)revious -> (p)ackages
 (keymap-global-set "C-p" 'list-packages) ; easier than the manual
+(keymap-global-set "C-S-p" 'treesit-install-language-grammar) ; get grammar
 
 ;; Custom maps used
 ; My ^b map (b)ack -> (b)old -> (b)e

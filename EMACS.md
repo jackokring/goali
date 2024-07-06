@@ -11,6 +11,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-f` Find. Also forward find again. `C-r` recusive edit in find. See `C-y`
  * `C-n` New/Open. `C-o` does blank line inserts
  * `C-p` List packages
+ * `C-S-p` Install language grammar
  * `C-q` Quit
  * `C-s` Save
  * `C-v` Paste
