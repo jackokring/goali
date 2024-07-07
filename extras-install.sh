@@ -7,6 +7,11 @@ then
     cp ~/.bashrc ~/.mess
     cp .bashrc ~
 fi
+if ../yes-no.sh "install nano config"
+then
+    cp -r ~/.config/nano ~/.mess
+    cp -r nano ~/.config
+fi
 if ../yes-no.sh "install starship config"
 then
     cp ~/.config/starship.toml ~/.mess
