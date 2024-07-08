@@ -8,3 +8,4 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 # Import all XDG set by xdg-config-update autorun
 # THey're not exporting by default
 . $XDG_CONFIG_HOME/user-dirs.dirs
+echo $XDG_CONFIG_HOME set.
