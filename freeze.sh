@@ -1,13 +1,13 @@
 #!/usr/bin/bash
 pip freeze | tee requirements.txt
 # copy some user file backups
-pushd extras-backup .
+pushd extras-backup
 # $XDG
 cp -r ~/.config/nano .
 cp -r ~/.config/rofi .
 cp -r ~/.config/neofetch .
 # irregular
-cp ~/.bashrc
+cp ~/.bashrc .
 cp ~/.config/starship.toml .
 cp ~/.emacs.d/*.el .
 cp -r ~/.tmux .
