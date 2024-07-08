@@ -1,9 +1,9 @@
 #!/usr/bin/bash
+. xdg.sh
 pip freeze | tee requirements.txt
 # copy some user file backups
 pushd extras-backup
 # $XDG
-. xdg.sh
 cp -r $XDG_CONFIG_HOME/nano .
 cp -r $XDG_CONFIG_HOME/rofi .
 cp -r $XDG_CONFIG_HOME/neofetch .
