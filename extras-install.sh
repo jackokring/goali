@@ -1,10 +1,11 @@
 #!/usr/bin/bash
+. xdg.sh
 install() {
 if ../yes-no.sh "install ${1} config"
 then
-    mkdir -p ~/.config/${1}
-    cp -r ~/.config/${1} ~/.mess
-    cp -r ${1} ~/.config
+    mkdir -p $XDG_CONFIG_HOME/${1}
+    cp -r $XDG_CONFIG_HOME/${1} ~/.mess
+    cp -r ${1} $XDG_CONFIG_HOME
 fi
 }
 # install some user file backups
@@ -21,8 +22,8 @@ then
 fi
 if ../yes-no.sh "install starship config"
 then
-    cp ~/.config/starship.toml ~/.mess
-    cp starship.toml ~/.config
+    cp $XDG_CONFIG_HOME/starship.toml ~/.mess
+    cp starship.toml $XDG_CONFIG_HOME
 fi
 if ../yes-no.sh "install tmux config" 
 then

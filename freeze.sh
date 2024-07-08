@@ -3,12 +3,13 @@ pip freeze | tee requirements.txt
 # copy some user file backups
 pushd extras-backup
 # $XDG
-cp -r ~/.config/nano .
-cp -r ~/.config/rofi .
-cp -r ~/.config/neofetch .
+. xdg.sh
+cp -r $XDG_CONFIG_HOME/nano .
+cp -r $XDG_CONFIG_HOME/rofi .
+cp -r $XDG_CONFIG_HOME/neofetch .
 # irregular
 cp ~/.bashrc .
-cp ~/.config/starship.toml .
+cp $XDG_CONFIG_HOME/starship.toml .
 cp ~/.emacs.d/*.el .
 cp -r ~/.tmux .
 cp ~/.tmux.conf .
