@@ -12,6 +12,11 @@ then
     cp -r ~/.config/nano ~/.mess
     cp -r nano ~/.config
 fi
+if ../yes-no.sh "install rofi config"
+then
+    cp -r ~/.config/rofi ~/.mess
+    cp -r rofi ~/.config
+fi
 if ../yes-no.sh "install starship config"
 then
     cp ~/.config/starship.toml ~/.mess

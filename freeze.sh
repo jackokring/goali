@@ -4,6 +4,7 @@ pip freeze | tee requirements.txt
 pushd extras-backup
 cp ~/.bashrc .
 cp -r ~/.config/nano .
+cp -r ~/.config/rofi .
 cp ~/.config/starship.toml .
 cp -r ~/.config/neofetch .
 cp ~/.emacs.d/*.el .
