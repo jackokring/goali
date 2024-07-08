@@ -80,8 +80,10 @@
 ;; C-a marks the whole buffer (a)ll
 (keymap-global-set "C-a" 'mark-whole-buffer)
 
-; M- done for qwesdzxcvpjm
-; not checked yet for rftgbyhnuikol/\\[]
+; M- done for qwesdzxcvpjmkr
+; not checked yet for ftgbyhnuiol/\\[]
+; As M is Alt, but also ESC- then M- are "C1 control codes"
+; But can also send all ASCII post ESC-
 
 ;; From CUA mode
 ; M-z Zap to char ... C-u ... upto and including delete
@@ -137,6 +139,9 @@
 
 ; (r)eplace
 (keymap-global-set "C-r" 'query-replace)
+; rofi applications BLOCKING FOR BUFFER KILL
+(setq async-shell-command-display-buffer nil)
+(keymap-global-set "M-r" (lambda () (interactive) (shell-command "rofi -show drun -normal-window" nil) (kill-buffer "*Shell Command Output*")))
 
 ; ===========================================
 ;; Some other more logical keys for CUA users
@@ -174,6 +179,7 @@
 (keymap-set custom-b-map "C-b" 'kill-buffer) ; C-b C-b kill "bad" buffer (bibi gun), tmux -> (C-b)^4
 ; terminal catch extras beyond C-c SIGINT -> simpler terminal requirement
 (keymap-set custom-b-map "\\" 'custom-escape-map) ; C mode line endings appears like only found C-\ use
+(keymap-set custom-b-map "/" "C-/") ; impossible control code?
 
 ;; At the circle K
 ; >> KEEP: C-i -> TAB
