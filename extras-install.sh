@@ -1,31 +1,28 @@
 #!/usr/bin/bash
+install() {
+if ../yes-no.sh "install ${1} config"
+then
+    mkdir -p ~/.config/${1}
+    cp -r ~/.config/${1} ~/.mess
+    cp -r ${1} ~/.config
+fi
+}
 # install some user file backups
 pushd extras-backup
+#$XDG
 mkdir -p ~/.mess
+install "nano"
+install "rofi"
+install "neofetch"
 if ../yes-no.sh "install bash config"
 then
     cp ~/.bashrc ~/.mess
     cp .bashrc ~
 fi
-if ../yes-no.sh "install nano config"
-then
-    cp -r ~/.config/nano ~/.mess
-    cp -r nano ~/.config
-fi
-if ../yes-no.sh "install rofi config"
-then
-    cp -r ~/.config/rofi ~/.mess
-    cp -r rofi ~/.config
-fi
 if ../yes-no.sh "install starship config"
 then
     cp ~/.config/starship.toml ~/.mess
     cp starship.toml ~/.config
-fi
-if ../yes-no.sh "install neofetch config"
-then
-    cp -r ~/.config/neofetch ~/.mess
-    cp -r neofetch ~/.config
 fi
 if ../yes-no.sh "install tmux config" 
 then
