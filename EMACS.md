@@ -11,7 +11,6 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-f` Find. Also forward find again. `C-r` recusive edit in find. See `C-y`
  * `C-n` New/Open. `C-o` does blank line inserts
  * `C-p` List packages
- * `C-S-p` Install language grammar
  * `C-t` Start terminal application
  * `C-q` Quit
  * `C-r` Replace
@@ -22,9 +21,13 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-S-x ?` Execute `?`. Or `C-x ?` if there is no text selection. See `C-b C-x ?`
    * After execute `\` behaves as though `C-b C-x C-\` was entered
  * `C-y` Exit recursive edit
+ * `C-z` Undo
  * `C-\` Another special prefix `custom-escape-map`. See file `packages/escape-map.el`
 ## Alt Codes
  * `M-c` Capitalize letter and advance to next word
+ * `M-p` Install language grammar
+ * `M-q` Like "control Z" background job close
+ * `M-s` Save as
  * `M-v` Another special prefix `custom-v-map`. See file `packages/v-map.el`
  * `M-x` It's still an *Emacs* classic. Ever needed to evaluate a *LISP* symbol? The fun starts here.
  * `M-<Up/Down>` Buffers *Up*: Previous, *Down*: Next

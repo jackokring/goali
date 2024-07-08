@@ -80,8 +80,8 @@
 ;; C-a marks the whole buffer (a)ll
 (keymap-global-set "C-a" 'mark-whole-buffer)
 
-; M- done for qweasdzxcv
-; not checked yet for rftgbyhnujmikolp
+; M- done for qwesdzxcvpjm
+; not checked yet for rftgbyhnuikol/\\[]
 
 ;; From CUA mode
 ; M-z Zap to char ... C-u ... upto and including delete
@@ -89,8 +89,13 @@
 ; M-c Capiltalize word
 ; M-v delete-selection-repeat-replace-region
 
+;; Other defaults
+; M-j Comment auto return
+; M-m Back to indentation
+
+
 ;; cursor remaps (b)ack, (f)orward, (p)revious, (n)ext reusable cursors?
-; This is an obvious improvement as the cursor keys and mouse work fine
+; this is an obvious improvement as the cursor keys and mouse work fine
 ; muscle memory just makes for a good experience
 
 ; ^n map (n)ext -> (n)ew
