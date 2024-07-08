@@ -27,7 +27,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `M-c` Capitalize letter and advance to next word
  * `M-p` Install language grammar
  * `M-q` Like "control Z" background job close
- * `M-r` Run application through `rofi` (synchronous)
+ * `M-r` Run application using `rofi` as an emacs child process
  * `M-s` Save as
  * `M-v` Another special prefix `custom-v-map`. See file `packages/v-map.el`
  * `M-x` It's still an *Emacs* classic. Ever needed to evaluate a *LISP* symbol? The fun starts here.

@@ -139,9 +139,14 @@
 
 ; (r)eplace
 (keymap-global-set "C-r" 'query-replace)
-; rofi applications BLOCKING FOR BUFFER KILL
-(setq async-shell-command-display-buffer nil)
-(keymap-global-set "M-r" (lambda () (interactive) (shell-command "rofi -show drun -normal-window" nil) (kill-buffer "*Shell Command Output*")))
+; rofi application
+(defun rofi-run () "Quiet (Process Buffer Command Args)"
+  (interactive)
+  (start-process "rofi" "*Rofi Buffer*" "rofi" "-show" "drun" "-normal-window"))
+(add-to-list
+ 'display-buffer-alist ; regex buffer name
+ '("\\*Rofi Buffer\\*" (display-buffer-no-window)))
+(keymap-global-set "M-r" (lambda () (interactive) (rofi-run)))
 
 ; ===========================================
 ;; Some other more logical keys for CUA users
