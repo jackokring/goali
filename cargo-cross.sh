@@ -14,7 +14,10 @@ export PKG_CONFIG_LIBDIR=/usr/lib/${ARC}/pkgconfig
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT}
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/lib/${ARC}
 export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${ARC}/include
-RUSTFLAGS="-Clinker=${ARC}-ld -L /usr/lib/gcc-cross/${ARC}/${1}/" cargo install $2 --root ~/bin-arm64/ --target aarch64-unknown-linux-gnu
+# make a rust unknown kind target
+TARGET=$(echo ${ARC} | sed -e 's/-/-unknown-/')
+mkdir -p ~/bin/${ARC}
+RUSTFLAGS="-Clinker=${ARC}-ld -L /usr/lib/gcc-cross/${ARC}/${1}/" cargo install $2 --root ~/bin/${ARC}/ --target ${TARGET}
 #Mint doesn't support arm64 arch files but ... debian does, maybe alt sources []
 # TEST OK DOING ALSA
 #sudo apt install libasound2-dev:arm64
