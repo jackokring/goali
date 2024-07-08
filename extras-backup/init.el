@@ -35,9 +35,11 @@
 (tab-bar-mode)
 ; A generic tab line in "the" buffer? Interactive?
 ; (tab-line-mode)
+; nice bash
 (setq shell-file-name "bash")
 (setq shell-command-switch "-ic")
-; nice bash
+; and terminal mouse
+(xterm-mouse-mode 1)
 
 ;; Not sure if this might change or has a newer version
 (defun kbd-command-find (bind)
@@ -56,9 +58,9 @@
   (keymap-set (current-global-map) key bound))
 
 ; ================================================
-; So define primary control keys
-; secondary similar control shifts?
-; alt keys maybe a few?
+; So define primary control keys OK
+; secondary similar alts?
+; only use shifts if there be a need
 
 (keymap-global-set "C-S-v" nil) ; unset "shell paste" bad to encourage stuff not work in terminal
 
@@ -73,9 +75,19 @@
     (comment-or-uncomment-region beg end)
     (next-line)))
 (keymap-global-set "C-/" 'comment-or-uncomment-line-or-region)
+; M-/
 
 ;; C-a marks the whole buffer (a)ll
 (keymap-global-set "C-a" 'mark-whole-buffer)
+
+; M- done for qweasdzxcv
+; not checked yet for rftgbyhnujmikolp
+
+;; From CUA mode
+; M-z Zap to char ... C-u ... upto and including delete
+; M-x Execute command
+; M-c Capiltalize word
+; M-v delete-selection-repeat-replace-region
 
 ;; cursor remaps (b)ack, (f)orward, (p)revious, (n)ext reusable cursors?
 ; This is an obvious improvement as the cursor keys and mouse work fine
@@ -87,7 +99,7 @@
 
 ; ^p map (p)revious -> (p)ackages
 (keymap-global-set "C-p" 'list-packages) ; easier than the manual
-(keymap-global-set "C-S-p" 'treesit-install-language-grammar) ; get grammar
+(keymap-global-set "M-p" 'treesit-install-language-grammar) ; get grammar
 
 ;; Custom maps used
 ; My ^b map (b)ack -> (b)old -> (b)e
@@ -112,6 +124,7 @@
 ; might as well have a new beginning of line as select all CUA on C-a
 (keymap-global-set "C-w" 'move-beginning-of-line) ; WE remap beginning/end of line
 (keymap-global-set "M-w" 'backward-sentence) ; sentence motion
+; this then becomes an opposite of C-e and M-e
 
 ; stop those pasty yanking fingers
 ; It's also the first macro style mapping. Beware recursive errors of calling oneself
@@ -131,13 +144,15 @@
 ; save (s)earch -> (s)ave
 (keymap-global-set "C-s" 'save-buffer)
 ; and a save as, as I find it useful for saving a new template with select all DEL
-(keymap-global-set "C-S-s" 'write-file)
+(keymap-global-set "M-s" 'write-file)
 
 ; make a form feed (l)ine seperator
 (keymap-global-set "C-l" (lambda () (interactive) (insert "\f")))
 
 ; quit insert code -> (q)uit
 (keymap-global-set "C-q" 'save-buffers-kill-terminal)
+; suspend terminal mode - not chromebook sign out C-S-q
+(keymap-global-set "M-q" 'suspend-frame)
 
 ; terminal app -> (t)erm
 (keymap-global-set "C-t" 'term)
@@ -156,13 +171,13 @@
 (keymap-set custom-b-map "\\" 'custom-escape-map) ; C mode line endings appears like only found C-\ use
 
 ;; At the circle K
-; C-i -> TAB
-; C-j -> LFD new line (execution and print insert ELISP)
+; >> KEEP: C-i -> TAB
+; >> KEEP: C-j -> LFD new line (execution and print insert ELISP)
 ; >> DONE: C-l -> FF (global-form-feed-mode) section seperations
-; C-m -> RET enter implies a new line is entered
+; >> KEEP: C-m -> RET enter implies a new line is entered
 
 ;; escape ASCII literal
-; C-[ -> ESC also is a M- prefix
+; >> KEEP: C-[ -> ESC also is a M- prefix
 
 ; use macro form as direct binds to actions wouldn't map on changing that "under" bound
 ; add any funny shell business here to retarget control key combinations
@@ -178,11 +193,11 @@
 (keymap-set custom-b-map "o" "C-o") ; open line
 ;; End of the B map?
 
-; So still possible binds without 
-; C-@ -> NUL mark set
-; C-^ -> RS undefined
-; C-] -> GS abort-recursive-edit
-; C-_ -> US undo
+; So control codes left
+; C-@ -> NUL mark set (shifted OK)
+; C-^ -> RS undefined (shifted OK)
+; C-] -> GS abort-recursive-edit OK
+; C-_ -> US undo (shifted OK)
 
 ; ====================================================================
 ;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
