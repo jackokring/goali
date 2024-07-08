@@ -14,6 +14,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-S-p` Install language grammar
  * `C-t` Start terminal application
  * `C-q` Quit
+ * `C-r` Replace
  * `C-s` Save
  * `C-v` Paste
  * `C-w` Beginning of line

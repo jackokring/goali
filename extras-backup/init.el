@@ -55,6 +55,11 @@
   "Do global key bind."
   (keymap-set (current-global-map) key bound))
 
+; ================================================
+; So define primary control keys
+; secondary similar control shifts?
+; alt keys maybe a few?
+
 (keymap-global-set "C-S-v" nil) ; unset "shell paste" bad to encourage stuff not work in terminal
 
 ;; Define C-/ to comment and uncomment regions and lines
@@ -112,6 +117,9 @@
 ; It's also the first macro style mapping. Beware recursive errors of calling oneself
 (keymap-global-set "C-y" 'exit-recursive-edit) ; Y combinator exit recursive edit remap Yλ upside down of a join for a longer end?
 
+; (r)eplace
+(keymap-global-set "C-r" 'query-replace)
+
 ; ===========================================
 ;; Some other more logical keys for CUA users
 ;; my remaps for ^f, ^s and ^q
@@ -125,11 +133,16 @@
 ; and a save as, as I find it useful for saving a new template with select all DEL
 (keymap-global-set "C-S-s" 'write-file)
 
+; make a form feed (l)ine seperator
+(keymap-global-set "C-l" (lambda () (interactive) (insert "\f")))
+
 ; quit insert code -> (q)uit
 (keymap-global-set "C-q" 'save-buffers-kill-terminal)
 
 ; terminal app -> (t)erm
 (keymap-global-set "C-t" 'term)
+
+; maybe C-o?
 
 ;; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o
@@ -142,10 +155,13 @@
 ; terminal catch extras beyond C-c SIGINT -> simpler terminal requirement
 (keymap-set custom-b-map "\\" 'custom-escape-map) ; C mode line endings appears like only found C-\ use
 
+;; At the circle K
 ; C-i -> TAB
-; C-j -> LFD new line
-; C-l -> FF (global-form-feed-mode) section seperations
+; C-j -> LFD new line (execution and print insert ELISP)
+; >> DONE: C-l -> FF (global-form-feed-mode) section seperations
 ; C-m -> RET enter implies a new line is entered
+
+;; escape ASCII literal
 ; C-[ -> ESC also is a M- prefix
 
 ; use macro form as direct binds to actions wouldn't map on changing that "under" bound
@@ -160,15 +176,13 @@
 (keymap-set custom-b-map "w" "C-w") ; REMAP of C-a beginning of line, copy? C-y is paste too
 (keymap-set custom-b-map "v" "C-v") ; paste
 (keymap-set custom-b-map "o" "C-o") ; open line
-; no ijlm circling the K-ill to end of line
-; I mean some might try binds for cursor movement, but I'm sure that needs a raw keyboard terminal map ^M = CR
 ;; End of the B map?
 
 ; So still possible binds without 
-; C-@ -> NUL
-; C-^ -> RS
-; C-\] -> GS
-; C-_ -> US
+; C-@ -> NUL mark set
+; C-^ -> RS undefined
+; C-] -> GS abort-recursive-edit
+; C-_ -> US undo
 
 ; ====================================================================
 ;; User custom-c-map ^C usually but adapted for "user" commands (^B c)
