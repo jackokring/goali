@@ -1,6 +1,6 @@
 configuration {
-	modes: "drun";
-/*	font: "mono 12";*/
+	modes: "combi";
+	font: "mono 12";
 /*	fixed-num-lines: true;*/
 	show-icons: true;
 /*	terminal: "rofi-sensible-terminal";*/
@@ -29,7 +29,7 @@ configuration {
 /*	auto-select: false;*/
 /*	parse-hosts: false;*/
 /*	parse-known-hosts: true;*/
-	combi-modes: "window,run,drun,ssh";
+	combi-modes: "drun";
 /*	matching: "normal";*/
 /*	tokenize: true;*/
 /*	m: "-5";*/
@@ -40,7 +40,7 @@ configuration {
 /*	window-format: "{w}    {c}   {t}";*/
 /*	click-to-exit: true;*/
 /*	max-history-size: 25;*/
-/*	combi-hide-mode-prefix: false;*/
+	combi-hide-mode-prefix: true;
 /*	combi-display-format: "{mode} {text}";*/
 /*	matching-negate-char: '-' /* unsupported */;*/
 /*	cache-dir: ;*/
@@ -146,3 +146,4 @@ configuration {
       sorting-method:    "name";
   }
 }
+@theme "gruvbox-dark-soft"

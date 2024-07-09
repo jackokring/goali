@@ -81,7 +81,7 @@
 (keymap-global-set "C-a" 'mark-whole-buffer)
 
 ; M- done for qwesdzxcvpjmkr
-; not checked yet for ftgbyhnuiol/\\[]
+; TODO: not checked yet for ftgbyhnuiol/\\[]
 ; As M is Alt, but also ESC- then M- are "C1 control codes"
 ; But can also send all ASCII post ESC-
 
@@ -140,9 +140,10 @@
 ; (r)eplace
 (keymap-global-set "C-r" 'query-replace)
 ; rofi application
+; use combi mode by default to allow rofi config to set modi-combi option
 (defun rofi-run () "Quiet (Process Buffer Command Args)"
   (interactive)
-  (start-process "rofi" "*Rofi Buffer*" "rofi" "-show" "drun" "-normal-window"))
+  (start-process "rofi" "*Rofi Buffer*" "rofi" "-show" "combi" "-normal-window"))
 (add-to-list
  'display-buffer-alist ; regex buffer name
  '("\\*Rofi Buffer\\*" (display-buffer-no-window)))
@@ -172,7 +173,11 @@
 ; terminal app -> (t)erm
 (keymap-global-set "C-t" 'term)
 
-; maybe C-o?
+; (o)pen file
+(keymap-global-set "C-o"
+		   (lambda () (interactive)
+		     (let (last-nonmenu-event) ; GUI trick open hack
+		       (menu-find-file-existing))))
 
 ;; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o

@@ -9,7 +9,8 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `C-S-c ?` User command `?`. Or `C-c ?` if there is no text selection. Prefix `mode-specific-map`. See `C-b C-c ?` and file `packages/c-map.el`
    * Only upper and lower case letters are allowed for "user" customizations
  * `C-f` Find. Also forward find again. `C-r` recusive edit in find. See `C-y`
- * `C-n` New/Open. `C-o` does blank line inserts
+ * `C-n` New or open file by name
+ * `C-o` Open file dialog
  * `C-p` List packages
  * `C-t` Start terminal application
  * `C-q` Quit

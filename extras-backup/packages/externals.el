@@ -17,5 +17,5 @@
 ; enable which key help browsing
 (which-key-mode)
 
-; form feed separation
+; form feed separation ^L
 (global-form-feed-mode)
