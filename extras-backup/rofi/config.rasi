@@ -29,7 +29,7 @@ configuration {
 /*	auto-select: false;*/
 /*	parse-hosts: false;*/
 /*	parse-known-hosts: true;*/
-	combi-modes: "drun,a.out:~/.config/rofi/scripts/a.out";
+	combi-modes: "drun,a";
 /*	matching: "normal";*/
 /*	tokenize: true;*/
 /*	m: "-5";*/
