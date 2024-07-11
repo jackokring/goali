@@ -2,8 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
+// N.B. Don't use plain " as escape \^(1, 3, 7, 15 ...) ... blah, blah ...
+#define apos "\'"
+// inside back usage >> from C stdio proxy
+#define quot "\\\\\\\""
+// inside back usage >> from C stdio proxy
+
 char* names[] = { // command descriptions
-	"Compile Mode 'a' Using 'a'",//0
+	// doesn't really need the escape here, but ...
+	"Compile Mode " apos "a" apos " Using " apos "a" apos,//0
 	"Help"//1
 };
 
@@ -17,7 +25,10 @@ int back_to(char sys[], char* argv) { // allow argv passing
 	// allocate about a page
 	static char bash[4000] = "bash -c \"coproc (sleep 1 && rofi -e \\\"$(";
 	strcat(bash, sys);
-	if(argv) strcat(bash, argv); // name
+	if(argv) {
+		strcat(bash, argv); // name
+		strcat(bash, "'"); 
+	}
 	strcat(bash, ")\\\")\"");
 	return system(bash);
 }
@@ -26,7 +37,6 @@ int back(char sys[]) { // no argv call bash
 	return back_to(sys, NULL);
 }
 
-// N.B. Don't use " as escape \\ .. blah, blah ..
 int compile(int argc, char** argv) { // remake a.out
 	return back("cd ~/.config/rofi/scripts && gcc main.c && echo ok");
 }
@@ -62,7 +72,8 @@ int main(int argc, char** argv) {
 			if(strcmp(argv[1], names[i])) break;
 			// it's how th IO gets sent to the right place instead of messing up rofi
 			// allows easy C stdio
-			if(wrapio[i]) return back_to("cd ~/.config/rofi/scripts && ./a.out -- ", names[i]);// proxy call self
+			// don't emit ' or "
+			if(wrapio[i]) return back_to("cd ~/.config/rofi/scripts && ./a.out -- '", names[i]);// proxy call self
 			return fn[i](argc - 1, argv + 1);// do it
 			//ok done
 		default:// process proxy (2 args)
