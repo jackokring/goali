@@ -1,17 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-char* names[] = {
+#include <stdbool.h>
+char* names[] = { // command descriptions
 	"Compile Mode 'a' Using 'a'",//0
 	"Help"//1
 };
 
-int back(char sys[]) {
+bool wrapio[] = { // decides if stdio is wrapped by a self proxy call
+	false,//0
+	false//1
+};
+
+int back_to(char sys[], char* argv) { // allow argv passing
 	// must be static to prevent stack smashing
-	static char bash[256] = "bash -c \"coproc (sleep 1 && rofi -e \\\"$(";
+	// allocate about a page
+	static char bash[4000] = "bash -c \"coproc (sleep 1 && rofi -e \\\"$(";
 	strcat(bash, sys);
+	if(argv) strcat(bash, argv); // name
 	strcat(bash, ")\\\")\"");
 	return system(bash);
+}
+
+int back(char sys[]) { // no argv call bash
+	return back_to(sys, NULL);
 }
 
 // N.B. Don't use " as escape \\ .. blah, blah ..
@@ -28,12 +40,12 @@ int (*(fn[]))(int, char**) = {
 	help//1
 };
 
-char* icon_names[] = {
+char* icon_names[] = { // indexed icon names used in icons[]
 	"terminal",//0
 	"help"//1
 };
 
-int icons[] = {
+int icons[] = { // icon numbers for commands
 	0,//0
 	1//1
 };
@@ -46,10 +58,17 @@ int main(int argc, char** argv) {
 			putc(0, stdout);
 			printf("icon\x1f%s\n", icon_names[icons[i]]);
 			break;
-		default:// process
+		case 1:// process 
 			if(strcmp(argv[1], names[i])) break;
+			// it's how th IO gets sent to the right place instead of messing up rofi
+			// allows easy C stdio
+			if(wrapio[i]) return back_to("cd ~/.config/rofi/scripts && ./a.out -- ", names[i]);// proxy call self
 			return fn[i](argc - 1, argv + 1);// do it
 			//ok done
+		default:// process proxy (2 args)
+			if(strcmp(argv[2], names[i])) break;
+			return fn[i](argc - 2, argv + 2);// do it
+                        //ok done
 		}
 	}
 	return argc - 1; //ok or not
