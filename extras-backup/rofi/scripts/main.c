@@ -1,29 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// FILE* popen("...","w");//?
 char* names[] = {
-	"Compile a.out via a Bootstrap",//0
+	"Compile Mode 'a' Using 'a'",//0
 	"Help"//1
 };
 
-void back(char sys[]) {
+int back(char sys[]) {
 	// must be static to prevent stack smashing
-	static char bash[256] = "bash -c \"";
+	static char bash[256] = "bash -c \"coproc (sleep 1 && rofi -e \\\"$(";
 	strcat(bash, sys);
-	strcat(bash, "\" >/dev/null");
-	system(bash);
+	strcat(bash, ")\\\")\"");
+	return system(bash);
 }
 
-void compile(int argc, char** argv) {
-	back("pushd ~/.config/rofi/scripts && gcc main.c && popd");// remake a.out
+// N.B. Don't use " as escape \\ .. blah, blah ..
+int compile(int argc, char** argv) { // remake a.out
+	return back("cd ~/.config/rofi/scripts && gcc main.c && echo ok");
 }
 
-void help(int argc, char** argv) { // help function
-	back("rofi -e 'Ah, and a Hello Galaxy from the help function.'");
+int help(int argc, char** argv) { // help function
+	return back("echo 'Ah, and a Hello Galaxy from the help function.'");
 }
 
-void (*(fn[]))(int, char**) = {
+int (*(fn[]))(int, char**) = {
 	compile,//0
 	help//1
 };
@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
 			break;
 		default:// process
 			if(strcmp(argv[1], names[i])) break;
-			fn[i](argc - 1, argv + 1);// do it
-			return 0; //ok done
+			return fn[i](argc - 1, argv + 1);// do it
+			//ok done
 		}
 	}
 	return argc - 1; //ok or not
