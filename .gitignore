@@ -19,3 +19,5 @@ pyvenv.cfg
 *.eln
 *.so
 *.dll
+# c out
+a.out
