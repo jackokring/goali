@@ -57,9 +57,11 @@ int icons[] = { // icon numbers for commands
 	1//1
 };
 
-void item(char* name, int icon) { // just in case you want to make items
+void item(char* name, int icon, bool data) { // just in case you want to make items
 	printf("%s", name);
 	putc(0, stdout);
+	// maybe some feedback information items
+	if(data) printf("nonselectable\x1ftrue\x1fpermanent\x1ftrue\x1f");
 	printf("icon\x1f%s\n", icon_names[icon]);
 }
 
@@ -105,7 +107,7 @@ int main(int argc, char** argv) {
 	for(int i = 0; i < (sizeof(names)/sizeof(char*)); i++) {
 		switch(argc - 1) {
 		case 0:// list
-			item(names[i], icons[i]);
+			item(names[i], icons[i], false);// not an information item
 			break;
 		case 1:// process 
 			if(strcmp(argv[1], names[i])) break;
@@ -116,7 +118,7 @@ int main(int argc, char** argv) {
 			// spaces maybe contained inbetween apostrophies
 			if(wrapio[i]) return back_to(config "./a.out -- '", names[i]);// proxy call self
 			int j = fn[i](argc - 1, argv + 1);// do it
-			// possibly add items by item in fn
+			// possibly add items by item in fn data=true
 			if(reload[i]) main(argc - 1, argv);// make a nested listing call
 			return j;
 			//ok done
