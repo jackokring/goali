@@ -3,17 +3,25 @@
 #include <string.h>
 #include <stdbool.h>
 
+// Maybe XDG factor, but depends on system
+#define config "cd ~/.config/rofi/scripts&&"
+
 // N.B. Don't use plain " as escape \^(1, 3, 7, 15 ...) ... blah, blah ...
 #define apos "\'"
-// inside back usage >> from C stdio proxy
+// inside names usage maybe for proxy '...'
 #define quot "\\\\\\\""
-// inside back usage >> from C stdio proxy
+// inside back or back_to usage as literal
+
+// luckily, any proxy C stdout is not literal
+// and so is inserted in the "$(...)"
+// without needing replacement in context
+
 // useful for feedback in bash
 #define okfail "&&echo ok||echo failed"
 
 char* names[] = { // command names
 	// doesn't really need the escape here, but ...
-	// if it were a proxy stdio C routine it would be passed
+	// if it were a proxy stdout C routine it would be passed
 	// it's really just the printing which removes the escape
 	// sequences, the match works ...
 	"Compile Mode " apos "a" apos " Using " apos "a" apos,//0
@@ -30,6 +38,30 @@ bool wrapio[] = { // decides if stdio is wrapped by a self proxy call
 	false,//0
 	false//1
 };
+
+bool reload[] = { // reload rofi after command by showing list again
+	// this can't be used with proxy commands
+	false,//0
+	false//1
+};
+
+char* icon_names[] = { // indexed icon names used in icons[]
+	// these do not need trailing MIME or file type
+	"terminal",//0
+	"help"//1
+};
+
+int icons[] = { // icon numbers for commands
+	// slightly more efficient when large numbers of commands share icons
+	0,//0
+	1//1
+};
+
+void item(char* name, int icon) { // just in case you want to make items
+	printf("%s", name);
+	putc(0, stdout);
+	printf("icon\x1f%s\n", icon_names[icon]);
+}
 
 int back_to(char sys[], char* argv) { // allow argv passing
 	// must be static to prevent stack smashing
@@ -54,7 +86,7 @@ int back(char sys[]) { // no argv call bash
 int compile(int argc, char** argv) { // remake a.out
 	// stderr for C errors does not go to rofi message error box
 	// nice okfail macro does inline string combine of exit state to error box
-	return back("cd ~/.config/rofi/scripts && gcc main.c" okfail);
+	return back(config "gcc main.c" okfail);
 }
 
 int help(int argc, char** argv) { // help function
@@ -68,26 +100,12 @@ int (*(fn[]))(int, char**) = { // command function pointers
 	help//1
 };
 
-char* icon_names[] = { // indexed icon names used in icons[]
-	// these do not need trailing MIME or file type
-	"terminal",//0
-	"help"//1
-};
-
-int icons[] = { // icon numbers for commands
-	// slightly more efficient when large numbers of commands share icons
-	0,//0
-	1//1
-};
-
 int main(int argc, char** argv) {
 	// loop over possible commands
 	for(int i = 0; i < (sizeof(names)/sizeof(char*)); i++) {
 		switch(argc - 1) {
 		case 0:// list
-			printf("%s", names[i]);
-			putc(0, stdout);
-			printf("icon\x1f%s\n", icon_names[icons[i]]);
+			item(names[i], icons[i]);
 			break;
 		case 1:// process 
 			if(strcmp(argv[1], names[i])) break;
@@ -96,8 +114,11 @@ int main(int argc, char** argv) {
 			// stderr is fine, but might no appear anywhere
 			// don't emit ' or " to stdout, use apos and quot macros
 			// spaces maybe contained inbetween apostrophies
-			if(wrapio[i]) return back_to("cd ~/.config/rofi/scripts && ./a.out -- '", names[i]);// proxy call self
-			return fn[i](argc - 1, argv + 1);// do it
+			if(wrapio[i]) return back_to(config "./a.out -- '", names[i]);// proxy call self
+			int j = fn[i](argc - 1, argv + 1);// do it
+			// possibly add items by item in fn
+			if(reload[i]) main(argc - 1, argv);// make a nested listing call
+			return j;
 			//ok done
 		default:// process proxy (2 args)
 			if(strcmp(argv[2], names[i])) break;
