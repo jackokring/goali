@@ -20,6 +20,7 @@ then
     cp ~/bin/dwm ~/.mess
     cp ~/bin/dwm.sh ~/.mess
     cp ~/bin/dmenu ~/.mess
+    cp ~/bin/st ~/.mess
     pushd dwm
 	make install
 	cp dwm.sh ~/bin/
@@ -27,7 +28,10 @@ then
 	then
 		sudo cp dwm.desktop /usr/share/xsessions/
 	fi
+	# dmenu and st terminal also to ~/bin
 	cd ../dmenu
+	make install
+	cd ../st
 	make install
     popd
 fi

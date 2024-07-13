@@ -34,3 +34,6 @@
 [submodule "extras-backup/dmenu"]
 	path = extras-backup/dmenu
 	url = git@github.com:jackokring/dmenu.git
+[submodule "extras-backup/st"]
+	path = extras-backup/st
+	url = git@github.com:jackokring/st.git
