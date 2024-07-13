@@ -15,6 +15,19 @@ mkdir -p ~/.mess
 install "nano"
 install "rofi"
 install "neofetch"
+if ../yes-no.sh "install dwm window manager"
+then
+    cp ~/bin/dwm ~/.mess
+    cp ~/bin/dwm.sh ~/.mess
+    pushd dwm
+	make install
+	cp dwm.sh ~/bin/
+	if ../../yes-no.sh "use sudo to copy the lightdm launch file"
+	then
+		sudo cp dwm.desktop /usr/share/xsessions/
+	fi
+    popd
+fi
 if ../yes-no.sh "install bash config"
 then
     cp ~/.bashrc ~/.mess

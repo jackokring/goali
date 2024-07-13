@@ -28,3 +28,6 @@
 [submodule "tpm"]
 	path = extras-backup/.tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
+[submodule "extras-backup/dwm"]
+	path = extras-backup/dwm
+	url = git@github.com:jackokring/dwm.git
