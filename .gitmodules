@@ -31,3 +31,6 @@
 [submodule "extras-backup/dwm"]
 	path = extras-backup/dwm
 	url = git@github.com:jackokring/dwm.git
+[submodule "extras-backup/dmenu"]
+	path = extras-backup/dmenu
+	url = git@github.com:jackokring/dmenu.git

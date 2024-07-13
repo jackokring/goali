@@ -19,6 +19,7 @@ if ../yes-no.sh "install dwm window manager"
 then
     cp ~/bin/dwm ~/.mess
     cp ~/bin/dwm.sh ~/.mess
+    cp ~/bin/dmenu ~/.mess
     pushd dwm
 	make install
 	cp dwm.sh ~/bin/
@@ -26,6 +27,8 @@ then
 	then
 		sudo cp dwm.desktop /usr/share/xsessions/
 	fi
+	cd ../dmenu
+	make install
     popd
 fi
 if ../yes-no.sh "install bash config"
