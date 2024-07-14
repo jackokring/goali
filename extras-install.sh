@@ -18,16 +18,10 @@ install "neofetch"
 if ../yes-no.sh "install dwm window manager"
 then
     cp ~/bin/dwm ~/.mess
-    cp ~/bin/dwm.sh ~/.mess
     cp ~/bin/dmenu ~/.mess
     cp ~/bin/st ~/.mess
     pushd dwm
 	make install
-	cp dwm.sh ~/bin/
-	if ../../yes-no.sh "use sudo to copy the lightdm launch file"
-	then
-		sudo cp dwm.desktop /usr/share/xsessions/
-	fi
 	# dmenu and st terminal also to ~/bin
 	cd ../dmenu
 	make install
