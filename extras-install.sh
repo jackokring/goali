@@ -20,6 +20,7 @@ then
     cp ~/bin/dwm ~/.mess
     cp ~/bin/dmenu ~/.mess
     cp ~/bin/st ~/.mess
+    cp ~/.xsession ~/.mess
     pushd dwm
 	make install
 	# best launch method
