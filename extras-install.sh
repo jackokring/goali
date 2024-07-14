@@ -19,6 +19,7 @@ if ../yes-no.sh "install dwm window manager"
 then
     cp ~/bin/dwm ~/.mess
     cp ~/bin/dmenu ~/.mess
+    cp ~/bin/stest ~/.mess
     cp ~/bin/st ~/.mess
     cp ~/.xsession ~/.mess
     pushd dwm
