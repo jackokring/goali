@@ -34,6 +34,9 @@ then
 	cd ../st
 	make install
     popd
+    # install nerd font used
+    cp -r JetBrainsMono ~/.local/share/fonts
+    fc-cache -rv >/dev/null
 fi
 if ../yes-no.sh "install bash config"
 then

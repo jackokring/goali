@@ -8,6 +8,7 @@ cp -r $XDG_CONFIG_HOME/nano .
 cp -r $XDG_CONFIG_HOME/rofi .
 cp -r $XDG_CONFIG_HOME/neofetch .
 # irregular
+cp -r ~/.local/share/fonts/JetBrainsMono .
 cp ~/.bashrc .
 cp $XDG_CONFIG_HOME/starship.toml .
 cp ~/.emacs.d/*.el .
