@@ -14,10 +14,12 @@ if test -r ~/.profile; then
 	. ~/.profile
 fi
 
+export PATH="$HOME/bin:$PATH"
+
 # runs dwm instead of system default
 # $PATH is ??? as indicated by system dmenu not user's
-~/bin/slstatus&
-exec ~/bin/dwm
+slstatus&
+exec dwm
 
 test -x /etc/X11/Xsession && exec /etc/X11/Xsession
 exec /bin/sh /etc/X11/Xsession
