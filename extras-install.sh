@@ -22,8 +22,8 @@ then
     cp ~/bin/stest ~/.mess
     cp ~/bin/st ~/.mess
     cp ~/bin/sl ~/.mess
-    cp ~/.xsession ~/.mess
-    cp .xsession ~
+    cp ~/startwm.sh ~/.mess
+    cp startwm.sh ~
     pushd dwm
 	make install
 	# best launch method
