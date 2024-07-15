@@ -37,3 +37,6 @@
 [submodule "extras-backup/st"]
 	path = extras-backup/st
 	url = git@github.com:jackokring/st.git
+[submodule "extras-backup/slstatus"]
+	path = extras-backup/slstatus
+	url = git@github.com:jackokring/slstatus.git
