@@ -21,17 +21,20 @@ then
     cp ~/bin/dmenu ~/.mess
     cp ~/bin/stest ~/.mess
     cp ~/bin/st ~/.mess
+    cp ~/bin/sl ~/.mess
     cp ~/.xsession ~/.mess
+    cp .xsession ~
     pushd dwm
 	make install
 	# best launch method
 	echo "Delete ~/.xsession to go back to old window manager."
 	echo "Edit it to add in more dwm features or auto-starts."
-	cp .xsession ~
 	# dmenu and st terminal also to ~/bin
 	cd ../dmenu
 	make install
 	cd ../st
+	make install
+	cd ../slstatus
 	make install
     popd
     # install nerd font used
