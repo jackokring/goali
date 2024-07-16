@@ -18,6 +18,9 @@ export PATH="$HOME/bin:$PATH"
 
 # runs dwm instead of system default
 # $PATH is ??? as indicated by system dmenu not user's
+if which dunst ; then
+	dunst&
+fi
 slstatus&
 exec dwm
 

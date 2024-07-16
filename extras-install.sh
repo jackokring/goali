@@ -27,8 +27,9 @@ then
     pushd dwm
 	make install
 	# best launch method
-	echo "Delete ~/.xsession to go back to old window manager."
-	echo "Edit it to add in more dwm features or auto-starts."
+	echo "Delete ~/startwm.sh to go back to old window manager."
+	echo "Edit it to add in more dwm auto-starts."
+	echo "This does not affect the local login, just XRDP sessions."
 	# dmenu and st terminal also to ~/bin
 	cd ../dmenu
 	make install
