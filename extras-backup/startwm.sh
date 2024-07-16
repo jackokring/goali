@@ -21,6 +21,13 @@ export PATH="$HOME/bin:$PATH"
 if which dunst ; then
 	dunst&
 fi
+if which feh ; then
+	if test -r ~/.fehbg; then
+		~/.fehbg&
+	else
+		feh --bg-scale --randomize --recursive ~/Pictures
+	fi
+fi
 slstatus&
 exec dwm
 
