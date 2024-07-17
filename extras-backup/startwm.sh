@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 # edited for bash, as sh link to dash maybe looses some env
 
 # xrdp X session start script (c) 2015, 2017, 2021 mirabilos
@@ -13,13 +13,14 @@ if test -r /etc/profile; then
 	. /etc/profile
 fi
 
-if test -r ~/.profile; then
-	. ~/.profile
-fi
+# well it might work, but doesn't
+#. ~/.bashrc
 
 # maybe $BASH_VERSION is not set right for .profile
 # N.B.  >>>> sh -c "echo \$BASH_VERSION" <<<<
-#export PATH="$HOME/bin:$PATH"
+# NO. for some reason it does not set $HOME/bin on the path
+# which clearly my .bashrc does place it on the path
+export PATH="$HOME/bin:$PATH"
 
 # run ~/bin/dwm instead of /usr/bin/dwm
 
