@@ -324,7 +324,7 @@ printf "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050\n"
 single() {
 # self and process?
 	if test $(ps|grep $1|wc -l) != 2; then
-		"$@" 2>&1 >/dev/null&
+		"$@" >/dev/null 2>&1&
 	fi
 }
 single pgadmin4
