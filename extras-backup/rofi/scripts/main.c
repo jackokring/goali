@@ -7,7 +7,6 @@
 #define config "cd ~/.config/rofi/scripts&&"
 
 // N.B. Don't use plain " as escape \^(1, 3, 7, 15 ...) ... blah, blah ...
-#define apos "\'"
 // inside names usage maybe for proxy '...'
 #define quot "\\\\\\\""
 // inside back or back_to usage as literal
@@ -20,11 +19,11 @@
 #define okfail "&&echo ok||echo failed"
 
 char* names[] = { // command names
-	// doesn't really need the escape here, but ...
+	// doesn't really need the ' escape here, but ...
 	// if it were a proxy stdout C routine it would be passed
 	// it's really just the printing which removes the escape
 	// sequences, the match works ...
-	"Compile Mode " apos "a" apos " Using " apos "a" apos,//0
+	"Compile Mode 'a' Using 'a'",//0
 	"Help"//1
 };
 
@@ -74,7 +73,7 @@ int back_to(char sys[], char* argv) { // allow argv passing
 	strcat(bash, sys);
 	if(argv) {
 		strcat(bash, argv); // name
-		strcat(bash, "'"); // yep, it's a proxy name needing a close
+		strcat(bash, "\""); // yep, it's a proxy name needing a close
 	}
 	strcat(bash, ")\\\")\"");
 	return system(bash);
@@ -116,7 +115,7 @@ int main(int argc, char** argv) {
 			// stderr is fine, but might no appear anywhere
 			// don't emit ' or " to stdout, use apos and quot macros
 			// spaces maybe contained inbetween apostrophies
-			if(wrapio[i]) return back_to(config "./a.out -- '", names[i]);// proxy call self
+			if(wrapio[i]) return back_to(config "./a.out -- \"", names[i]);// proxy call self
 			int j = fn[i](argc - 1, argv + 1);// do it
 			// possibly add items by item in fn data=true
 			if(reload[i]) main(argc - 1, argv);// make a nested listing call
