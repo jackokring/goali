@@ -73,7 +73,7 @@ int back_to(char sys[], char* argv) { // allow argv passing
 	strcat(bash, sys);
 	if(argv) {
 		strcat(bash, argv); // name
-		strcat(bash, "\""); // yep, it's a proxy name needing a close
+		strcat(bash, quot); // yep, it's a proxy name needing a close
 	}
 	strcat(bash, ")\\\")\"");
 	return system(bash);
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
 			// stderr is fine, but might no appear anywhere
 			// don't emit ' or " to stdout, use apos and quot macros
 			// spaces maybe contained inbetween apostrophies
-			if(wrapio[i]) return back_to(config "./a.out -- \"", names[i]);// proxy call self
+			if(wrapio[i]) return back_to(config "./a.out -- " quot, names[i]);// proxy call self
 			int j = fn[i](argc - 1, argv + 1);// do it
 			// possibly add items by item in fn data=true
 			if(reload[i]) main(argc - 1, argv);// make a nested listing call
