@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 . xdg.sh
+# yes it does better here
+git submodule update --init --recursive
 install() {
 if ../yes-no.sh "install ${1} config"
 then
@@ -56,7 +58,6 @@ if ../yes-no.sh "install tmux config"
 then
     cp -r ~/.tmux ~/.mess
     cp -r .tmux ~
-    git submodule update --init --recursive
     cp ~/.tmux.conf ~/.mess
     cp .tmux.conf ~
 fi
