@@ -10,7 +10,9 @@
 // inside names usage maybe for proxy '...'
 #define quot "\\\\\\\""
 // inside back or back_to usage as literal
-
+// so here's 66 and 99
+#define lquot "“"
+#define rquot "”"
 // luckily, any proxy C stdout is not literal
 // and so is inserted in the "$(...)"
 // without needing replacement in context
