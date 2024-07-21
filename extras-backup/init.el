@@ -81,7 +81,7 @@
 (keymap-global-set "C-a" 'mark-whole-buffer)
 
 ; M- done for qwesdzxcvpjmkr
-; TODO: not checked yet for ftgbyhnuiol/\\[]
+; TODO: not checked yet for ftgbyhniol/\\[]
 ; As M is Alt, but also ESC- then M- are "C1 control codes"
 ; But can also send all ASCII post ESC-
 
@@ -173,11 +173,9 @@
 ; terminal app -> (t)erm
 (keymap-global-set "C-t" 'term)
 
-; (o)pen file
-(keymap-global-set "C-o"
-		   (lambda () (interactive)
-		     (let (last-nonmenu-event) ; GUI trick open hack
-		       (menu-find-file-existing))))
+; (o)hm-mega (u)icro SI units
+(keymap-global-set "C-o" (lambda () (interactive) (insert "Ω")))
+(keymap-global-set "M-u" (lambda () (interactive) (insert "μ")))
 
 ;; Extend my custom-b-map ... tmux shortcut key too
 ; ^ terminals via stty -a => c \ u d q s z r w v o
@@ -234,6 +232,11 @@
 ;; Open custom-v-map M-v seems open for use too
 ; not to encourage an opposite of a taken by paste
 (load "v-map.el")
+
+;; ===============================
+; Using M- for dwm implies some keys not free
+; ESC prefix would work but, ... slower
+; but cursor not used by dwm
 
 ; ================================
 ;; Buffer and window manipulations 
