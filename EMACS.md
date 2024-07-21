@@ -10,7 +10,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
    * Only upper and lower case letters are allowed for "user" customizations
  * `C-f` Find. Also forward find again. `C-r` recusive edit in find. See `C-y`
  * `C-n` New or open file by name
- * `C-o` Open file dialog
+ * `C-o` Ohm-mega SI units
  * `C-p` List packages
  * `C-t` Start terminal application
  * `C-q` Quit
@@ -30,6 +30,7 @@ It's in the `extras-backup` folder linked on the `README.md`. Try `./extras-inst
  * `M-q` Like "control Z" background job close
  * `M-r` Run application using `rofi` as an emacs child process
  * `M-s` Save as
+ * `M-u` Mu SI units
  * `M-v` Another special prefix `custom-v-map`. See file `packages/v-map.el`
  * `M-x` It's still an *Emacs* classic. Ever needed to evaluate a *LISP* symbol? The fun starts here.
  * `M-<Up/Down>` Buffers *Up*: Previous, *Down*: Next
