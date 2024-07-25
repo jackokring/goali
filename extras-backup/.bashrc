@@ -355,4 +355,4 @@ eval "$(starship init bash)"
 . /usr/share/autojump/autojump.sh
 # last, may include venv $PATH mash of added afterj
 
-espeak-ng "What are you doing Dave? They're all dead Dave."
+coproc espeak-ng "What are you doing Dave? They're all dead Dave."
