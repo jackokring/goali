@@ -136,6 +136,7 @@ e() {
 alias tor='sudo systemctl restart tor'
 alias n='nano'
 #alias e='emacs'
+alias did='history|grep'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
