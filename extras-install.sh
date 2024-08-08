@@ -43,6 +43,7 @@ then
 	make install
     popd
     # install nerd font used
+    echo "Installing nerd font."
     cp -r JetBrainsMono ~/.local/share/fonts
     fc-cache -rv >/dev/null
 fi
@@ -58,9 +59,9 @@ then
 fi
 if ../yes-no.sh "install tmux config" 
 then
-    rm -r ~/.mess/.tmux
+    rm -rf ~/.mess/.tmux
     cp -r ~/.tmux ~/.mess
-    rm -r ~/.tmux
+    rm -rf ~/.tmux
     cp -r .tmux ~
     cp ~/.tmux.conf ~/.mess
     cp .tmux.conf ~
