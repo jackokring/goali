@@ -27,6 +27,8 @@ then
     cp ~/startwm.sh ~/.mess
     cp startwm.sh ~
     pushd dwm
+	rm config.h
+	# now it won't keep old without patches
 	make install
 	# best launch method
 	echo "Delete ~/startwm.sh to go back to old window manager."
