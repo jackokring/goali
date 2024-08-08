@@ -58,7 +58,9 @@ then
 fi
 if ../yes-no.sh "install tmux config" 
 then
+    rm -r ~/.mess/.tmux
     cp -r ~/.tmux ~/.mess
+    rm -r ~/.tmux
     cp -r .tmux ~
     cp ~/.tmux.conf ~/.mess
     cp .tmux.conf ~
