@@ -23,7 +23,7 @@ then
     cp ~/bin/dmenu ~/.mess
     cp ~/bin/stest ~/.mess
     cp ~/bin/st ~/.mess
-    cp ~/bin/sl ~/.mess
+    cp ~/bin/slstatus ~/.mess
     cp ~/startwm.sh ~/.mess
     cp startwm.sh ~
     pushd dwm
