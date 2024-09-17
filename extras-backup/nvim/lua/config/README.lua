@@ -1,0 +1,15 @@
+-- Notes on the configuration layout
+-- Plugins are placed in ../plugins/ and return { spec }
+-- See ../plugins/example.lua for some details
+--
+-- Configuration files:
+--
+-- autocmds.lua for event hooks (also user commands via vim.api.nvim_create_user_command)
+-- keymaps.lua for assigning keyboard hooks (allocation of letters in comments, technically user commands also)
+-- lazy.lua the main lazy vim loader (don't edit)
+-- options.lua see https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua for defaults
+--
+-- Quite a few terminal emulators send ALT keys as "<esc><key>" so for example "Alt+Shift+:"" escapes for
+-- a command such as save. As you'd be having the shift held then anyway ...
+--
+-- 

@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 . xdg.sh
 pip freeze | tee requirements.txt
+# remove *~ files
+rm -rf *~
+rm -rf \#*\#
 # copy some user file backups
 pushd extras-backup
 # $XDG
