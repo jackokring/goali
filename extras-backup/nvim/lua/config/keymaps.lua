@@ -2,20 +2,24 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
--- Lowercase
--- abcdefghijklmnopqrstuvwxyz
+-- <cmd> or : is command mode in an action
+-- Some various shifts possibly free
+-- Alt sends an escape prefix
 
--- Uppercase
+-- Bare Sparse Escape (Not in use)
 -- abcdefghijklmnopqrstuvwxyz
+-- ABCDEFGHIJKLMNOPQRSTUVWXYZ
+vim.keymap.set('n', '\\a', '')
 
--- Leader
--- abcdefghijklmnopqrstuvwxyz
+-- Leader Space (Many used, see use pressing <space> in normal mode)
+-- adhijkmnoprtvyz
+-- ABCFGHIJMNOPQRSTUVWXYZ
+vim.keymap.set('n', '<Leader>a', '')
 
--- Control
--- abcdefghijklmnopqrstuvwxyz
-
--- ControlUpper
--- abcdefghijklmnopqrstuvwxyz
-
--- Strange as in :
--- abcdefghijklmnopqrstuvwxyz
+-- Control (Lowercase RESERVED for plugins)
+-- ABCDEFHIJKLMOPQRSTUVWXYZ
+vim.keymap.set('n', '<C-_>', '')
+-- NOT <C-N> or <C-G> but rest of controls and not lowercase
+vim.keymap.set('n', '<C-\\><C-A>', '')
+-- Control+space <C-@>
+vim.keymap.set('n', '<C-@>', '')
