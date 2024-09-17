@@ -17,6 +17,7 @@ mkdir -p ~/.mess
 install "nano"
 install "rofi"
 install "neofetch"
+install "nvim"
 if ../yes-no.sh "install dwm window manager"
 then
     cp ~/bin/dwm ~/.mess

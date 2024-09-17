@@ -7,6 +7,7 @@ pushd extras-backup
 cp -r $XDG_CONFIG_HOME/nano .
 cp -r $XDG_CONFIG_HOME/rofi .
 cp -r $XDG_CONFIG_HOME/neofetch .
+cp -r $XDG_CONFIG_HOME/nvim .
 # irregular
 cp -r ~/.local/share/fonts/JetBrainsMono .
 cp ~/.bashrc .
