@@ -16,8 +16,9 @@ vim.keymap.set('n', '\\a', '')
 -- ABCFGHIJMNOPQRSTUVWXYZ
 vim.keymap.set('n', '<Leader>a', '')
 
--- Control (Lowercase RESERVED for plugins)
--- ABCDEFHIJKLMOPQRSTUVWXYZ
+-- Control (Lowercase RESERVED for plugins with no control, uppercasw free with no control but shifted)
+-- ABCDEFHIJKLMOPQRSTUVWXYZ (with control as easiest to finger)
+-- Perculiar shift combination needed
 vim.keymap.set('n', '<C-_>', '')
 -- NOT <C-N> or <C-G> but rest of controls and not lowercase
 vim.keymap.set('n', '<C-\\><C-A>', '')
