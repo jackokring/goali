@@ -162,8 +162,10 @@ func SetMsg(s string) {
 }
 
 // The IO channel file lock (prevents TUI IO)
-var cond sync.Cond = *sync.NewCond(&lock)
-var lock sync.Mutex
+var (
+	cond sync.Cond = *sync.NewCond(&lock)
+	lock sync.Mutex
+)
 
 func wait() {
 	cond.L.Lock() // has the IO been unlocked?
