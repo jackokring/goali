@@ -323,7 +323,7 @@ func stdin(size int) []byte {
 	if size == -1 {
 		r := make([]byte, 0)
 		// all the file as one buffer
-		for !files.FilterReader.EOF() {
+		for !files.EOF() {
 			if len(r) > math.MaxInt-1024 {
 				// -d option panic stack go > C > go
 				fe.Fatal(fmt.Errorf("python: fatal concept of read size of -1"), consts.ERR_MINUS_ONE) // :D
@@ -335,7 +335,7 @@ func stdin(size int) []byte {
 		return r
 	} else {
 		r := make([]byte, size)
-		i := files.FilterReader.Read(r)
+		i := files.Read(r)
 		stdinLen = i
 		return r[:i] // python EOF style
 	}
