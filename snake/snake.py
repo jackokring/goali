@@ -41,8 +41,8 @@ class ByteOut(BytesIO):
 class StdOut(StringIO):
     """Standard output replacement stream."""
     def write(self, string: str) -> int:
-        return WriteProxy(self.buffer, string)
-    buffer = ByteOut()
+        return WriteProxy(self.bufferP, string)
+    bufferP = ByteOut()
 
 class ByteErr(BytesIO):
     """Internal adapter."""
@@ -52,8 +52,8 @@ class ByteErr(BytesIO):
 class StdErr(StringIO):
     """Standard error replacement stream."""
     def write(self, string: str) -> int:
-        return WriteProxy(self.buffer, string)
-    buffer = ByteErr()
+        return WriteProxy(self.bufferP, string)
+    bufferP = ByteErr()
 
 class ByteIn(BytesIO):
     """Internal adapter."""
@@ -63,7 +63,7 @@ class ByteIn(BytesIO):
 class StdIn(StringIO):
     """Standard input replacement stream."""
     def read(self, size: Optional[int] = -1) -> str:
-        inBytes = self.buffer.read(size)
+        inBytes = self.bufferP.read(size)
         # surrogateescape chosen to mark all errors yet load
         # CESU-8 is treated as an error to escape
         # as it would not restore given hard line on surrogate writing
@@ -80,13 +80,13 @@ class StdIn(StringIO):
                     inBytes += (ord(string[-1]) & 0xFF).to_bytes(1, "little")  # mask error char
                     chop = len(string) - 1
                     string = string[0:chop]
-                inBytes += self.buffer.read(1)
+                inBytes += self.bufferP.read(1)
                 extra = inBytes.decode("utf-8", "surrogateescape")
                 if not (SurrogateEscaped(extra) and not HighSurrogate(extra)):
                     string += extra
                     inBytes = b""   # re-loop
         return string
-    buffer = ByteIn()
+    bufferP = ByteIn()
 
 # things to migrate into goali from python
 
@@ -112,7 +112,7 @@ def FixSurrogatePairs(string: str) -> str:
         text = string[i:i + PairLength].encode("utf-8", "surrogateescape")
         try:
             pair = text.decode("utf-8", "surrogatepass")[0:2]
-        except:
+        except Exception:
             i += 1
             continue
         if HighSurrogate(pair) and LowSurrogate(pair):
