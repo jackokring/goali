@@ -132,6 +132,11 @@ e() {
 	emacs "$@" 2>/dev/null&
 }
 
+v() {
+	# nvim via the st terminal (nerd font)
+	st nvim "$@" 2>/dev/null&
+}
+
 #alias pgadmin='pgadmin4&'
 alias tor='sudo systemctl restart tor'
 alias n='nano'
