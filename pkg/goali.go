@@ -158,7 +158,7 @@ func Goali() {
 	// did you see any TUI IO?
 	gin.Tea(gin.QuitMsg{}) // send quit
 	var finalModel gin.Model
-	var okToExit bool = false
+	var okToExit = false
 	for !okToExit {
 		finalModel, okToExit = gin.TuiGetModel()
 	}

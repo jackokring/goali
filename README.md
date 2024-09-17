@@ -4,6 +4,7 @@ Not to be confused with the non-existent marsh-soup-eal the Koali. :D
 My `init.el` file for [Emacs][emacs] is growing to replace VSCode.
 
 ## Install
+
 ```
 $ # you could use godeb instead of default golang
 $ sudo apt install postgres
@@ -19,6 +20,7 @@ $ ./require.sh
 ```
 
 ## Fork
+
 ```
 $ # go to repository directory
 $ cd goali
@@ -74,7 +76,7 @@ Much faster code compile too.
 * [kong][kong] - CLI parse
 * [fyne][fyne] - GUI toolkit
 * [chi][chi] - A kind of node.js express router in go
-* [cpy3][cpy3] - Python 3.11 wrapper `git submodule update --init --recursive` ([CPY3.md][CPY3])
+* [cpy3][cpy3] - Python 3.11 wrapper `git submodule update --init --recursive` ([CPY3.md][CPY3me])
 * [bubbletea][bubbletea] - TUI toolkit
 * [lipgloss][lipgloss] - ANSI sequences
 * [bubbles][bubbles] - TUI extended controls
@@ -118,7 +120,7 @@ inbuilt type extension.
 * Ah, `chan` of Occam. Or should that've been Ockham or Oakham? Nice `select` for
 `ALT` too.
 * The `error` strategy. Sure I've hacked it (see `filerr/filerr.go`).
-* Although the idea of tacit tuple receivers excites me, they're not needed. 
+* Although the idea of tacit tuple receivers excites me, they're not needed.
 
 ### Dislikes
 
@@ -202,7 +204,7 @@ ear lawn?
 [todo]: todo.jasonet.co
 
 [Awesome]: github.com/amanbolat/awesome-go-with-stars
-[CPY3]: CPY3.md
+[CPY3me]: CPY3.md
 [David]: en.wikipedia.org/wiki/David_Seaman
 
 [the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
