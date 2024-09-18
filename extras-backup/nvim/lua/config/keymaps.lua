@@ -6,20 +6,23 @@
 -- Some various shifts possibly free
 -- Alt sends an escape prefix
 
+-- N.B. Builtins use vim.fn prefix
+-- lua_ls LSP is slightly late binding on warning of unsed function name in dict
+
 local function iwrap(action)
   -- stop insert mode for a bit
   -- umm, stopinsert() is a normal mode thing ...
   -- not sure if there's a reason for needing <esc>
-  local cur = vim.getcurpos()
-  local mode = vim.mode(0)
+  local cur = vim.fn.getcurpos()
+  local mode = vim.fn.mode(0)
   -- kind of like the oddball insert mode : command
-  vim.cmd.topinsert()
-  vim.call(action, { mode, cur })
+  vim.cmd("stopinsert")
+  vim.fn.call(action, { mode, cur })
   -- restore, ah yes, the end of line by desired column?
   if mode == "i" then
-    vim.cmd.startinsert()
+    vim.cmd("startinsert")
   end
-  vim.setpos(".", cur)
+  vim.fn.setpos(".", cur)
 end
 
 -- action is function or key string (maybe recursive, careful)
@@ -40,9 +43,9 @@ end
 nkey("\\a", "", "")
 
 -- Leader Space (Many used, see use pressing <space> in normal mode)
--- adhijkmnoprtvyz
+-- adhijkmnoptvyz
 -- ABCFGHIJMNOPQRSTUVWXYZ
-nkey("<Leader>a", "", "")
+nkey("<Leader>r", "Open Rofi Combi", "<cmd>!rofi -show combi<cr>")
 
 -- Control (Lowercase RESERVED for plugins with no control)
 -- (uppercase free with no control but shifted)
