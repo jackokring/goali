@@ -6,21 +6,23 @@
 -- Some various shifts possibly free
 -- Alt sends an escape prefix
 
-local function iwrap(func)
-  if vim.mode(0) ~= "i" then
-    vim.call(func, nil)
-    return
-  else
-    -- stop insert mode for a bit
-    local cur = vim.getcurpos()
-    vim.cmd.stopinsert()
-    vim.call(func, nil)
-    vim.setpos(".", cur)
-    -- restore, ah yes, the end of line
+local function iwrap(action)
+  -- stop insert mode for a bit
+  -- umm, stopinsert() is a normal mode thing ...
+  -- not sure if there's a reason for needing <esc>
+  local cur = vim.getcurpos()
+  local mode = vim.mode(0)
+  -- kind of like the oddball insert mode : command
+  vim.cmd.topinsert()
+  vim.call(action, { mode, cur })
+  -- restore, ah yes, the end of line by desired column?
+  if mode == "i" then
     vim.cmd.startinsert()
   end
+  vim.setpos(".", cur)
 end
 
+-- action is function or key string (maybe recursive, careful)
 local function nkey(seq, desc, action)
   vim.keymap.set({ "n", "v" }, seq, action, { desc = desc })
 end
@@ -42,16 +44,17 @@ nkey("\\a", "", "")
 -- ABCFGHIJMNOPQRSTUVWXYZ
 nkey("<Leader>a", "", "")
 
--- Control (Lowercase RESERVED for plugins with no control, uppercase free with no control but shifted)
+-- Control (Lowercase RESERVED for plugins with no control)
+-- (uppercase free with no control but shifted)
 -- Can be in insert mode sometimes as control and not <c-v> literal prefixed
 -- ABCDEFHIJKLMOPQRSTUVWXYZ (with control as easiest to finger)
--- Perculiar shift combination needed
-nikey("<C-_>", "", function()
+-- Perculiar shift combination needed singleton
+nikey("<C-_>", "", function(mode, cur)
   -- nil
 end)
 -- NOT <C-N> or <C-G> but rest of controls and not lowercase
-nikey("<C-\\><C-A>", "", function()
+nikey("<C-\\><C-A>", "", function(mode, cur)
   -- nil
 end)
--- Uppercase with shift
+-- Uppercase and symbols with shift unused
 nkey("<C-\\><S-A>", "", "")
