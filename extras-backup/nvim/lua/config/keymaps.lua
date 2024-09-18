@@ -12,10 +12,10 @@ local function iwrap(func)
     return
   else
     -- stop insert mode for a bit
-    local cur = vim.getcursorcharpos()
+    local cur = vim.getcurpos()
     vim.cmd.stopinsert()
     vim.call(func, nil)
-    vim.setpos(cur)
+    vim.setpos(".", cur)
     -- restore, ah yes, the end of line
     vim.cmd.startinsert()
   end
