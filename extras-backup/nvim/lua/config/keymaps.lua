@@ -6,21 +6,30 @@
 -- Some various shifts possibly free
 -- Alt sends an escape prefix
 
+local function nkey(seq, action)
+  vim.keymap.set({ "n", "v" }, seq, action)
+end
+
+local function nikey(seq, action)
+  vim.keymap.set({ "n", "v", "i" }, seq, action)
+end
+
 -- Bare Sparse Escape (Not in use)
 -- abcdefghijklmnopqrstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
-vim.keymap.set('n', '\\a', '')
+nkey("\\a", "")
 
 -- Leader Space (Many used, see use pressing <space> in normal mode)
 -- adhijkmnoprtvyz
 -- ABCFGHIJMNOPQRSTUVWXYZ
-vim.keymap.set('n', '<Leader>a', '')
+nkey("<Leader>a", "")
 
--- Control (Lowercase RESERVED for plugins with no control, uppercasw free with no control but shifted)
+-- Control (Lowercase RESERVED for plugins with no control, uppercase free with no control but shifted)
+-- Can be in insert mode sometimes as control and not <c-v> literal prefixed
 -- ABCDEFHIJKLMOPQRSTUVWXYZ (with control as easiest to finger)
 -- Perculiar shift combination needed
-vim.keymap.set('n', '<C-_>', '')
+nikey("<C-_>", "")
 -- NOT <C-N> or <C-G> but rest of controls and not lowercase
-vim.keymap.set('n', '<C-\\><C-A>', '')
--- Control+space <C-@>
-vim.keymap.set('n', '<C-@>', '')
+nikey("<C-\\><C-A>", "")
+-- Uppercase with shift
+nkey("<C-\\><S-A>", "")

@@ -12,4 +12,9 @@
 -- Quite a few terminal emulators send ALT keys as "<esc><key>" so for example "Alt+Shift+:"" escapes for
 -- a command such as save. As you'd be having the shift held then anyway ...
 --
--- 
+-- Plugin files:
+--
+-- Each plugin file can be organized by plugin or purpose
+-- By plugin grouping for common intent seems best, as this makes for easy selection
+--
+--
