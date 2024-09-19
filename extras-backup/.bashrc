@@ -325,7 +325,7 @@ printf "# $RED~/.local/bin$NONE for ${GREEN}pipx$NONE. You may need to allow\
 ls ~/.local/bin
 echo
 # vscode seems to have tmux restart issue
-printf "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down>$NONE ...\n"
+printf "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down> c <new win> & <kill win> number <select win>$NONE\n"
 printf "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050\n"
 single() {
 # self and process?

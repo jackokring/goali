@@ -16,7 +16,9 @@ local function iwrap(action)
   local cur = vim.fn.getcurpos()
   local mode = vim.fn.mode(0)
   -- kind of like the oddball insert mode : command
-  vim.cmd("stopinsert")
+  if mode == "i" then
+    vim.cmd("stopinsert")
+  end
   vim.fn.call(action, { mode, cur })
   -- restore, ah yes, the end of line by desired column?
   if mode == "i" then
@@ -42,10 +44,11 @@ end
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 nkey("\\a", "", "")
 
--- Leader Space (Many used, see use pressing <space> in normal mode)
--- adhijkmnoptvyz
--- ABCFGHIJMNOPQRSTUVWXYZ
+-- Leader Space (Many used, see use by pressing <space> in normal mode)
+-- adijkmnopvyz
+-- ABCFGIJMNOPQRSTUVWXYZ
 nkey("<Leader>r", "Open Rofi Combi", "<cmd>!rofi -show combi<cr>")
+nkey("<Leader>t", "Terminal", "<cmd>term<cr>i")
 
 -- Control (Lowercase RESERVED for plugins with no control)
 -- (uppercase free with no control but shifted)
