@@ -1,43 +1,47 @@
 # Goali
 
 Not to be confused with the non-existent marsh-soup-eal the Koali. :D
-My `init.el` file for [Emacs][emacs] is growing to replace VSCode.
+My `init.el` file for [Emacs][emacs] grew to replace VSCode.
+I then moved to [Neovim][nvim] with LazyVim so that's a thing, and I can feel a
+plugin forming as Doris and VIM go together.
 
 ## Install
 
-```
-$ # you could use godeb instead of default golang
-$ sudo apt install postgres
-$ sudo apt install git python-is-python3 golang python3-pip python3-dev libxxf86vm-dev
-$ git clone git@github.com:jackokring/goali.git
-$ cd goali
-$ # create and restore db
-$ ./restore.sh
-$ # you may find the sudo for package dependencies in require.sh in a comment
-$ # the cpy3 submodule for embedding python
-$ # pull and satisfy requirements then go build
-$ ./require.sh
+```bash
+# you could use godeb instead of default golang
+sudo apt install postgres
+sudo apt install git python-is-python3 golang python3-pip python3-dev libxxf86vm-dev
+git clone git@github.com:jackokring/goali.git
+cd goali
+# create and restore db
+./restore.sh
+# you may find the sudo for package dependencies in require.sh in a comment
+# the cpy3 submodule for embedding python
+# pull and satisfy requirements then go build
+./require.sh
 ```
 
 ## Fork
 
+```bash
+# go to repository directory
+cd goali
+# use your fork URL
+git remote set-url origin git@github.com:<username>/goali.git
+git push origin master
+# perhaps dump the database
+./dump.sh
+# check requirements and git add commit push
+./freeze.sh
 ```
-$ # go to repository directory
-$ cd goali
-$ # use your fork URL
-$ git remote set-url origin git@github.com:<username>/goali.git
-$ git push origin master
-$ # perhaps dump the database
-$ ./dump.sh
-$ # check requirements and git add commit push
-$ ./freeze.sh
-```
+
 And then create pull requests if you feel like it.
 
 ## Links
 
 * [Goali Blog][blog] A github pages site. Keeps the speculation off this readme.
-* [TODO bot][todo] A github bot using commented `@todo`/`@body` to raise automatic issues.
+* [TODO bot][todo] A github bot using commented `@todo`/`@body` to raise
+automatic issues.
 * [A Goali][David] This repository has nothing to do with footie or crisps.
 
 ## `goali` Main Commands
@@ -87,7 +91,7 @@ Much faster code compile too.
 * [godeb][godeb] - A go version automatic `.deb` maker (`godeb`) to install go versions (`go install gopkg.in/niemeyer/godeb.v1/cmd/godeb`)
 * [expr][expr] - An expression language
 * [govalidator][govalidator] A data format validator
-* [sqlc][sqlc] An SQL automatic code generation wrapper 
+* [sqlc][sqlc] An SQL automatic code generation wrapper
 
 ## Modules to Find
 
@@ -98,7 +102,7 @@ This place is kind of a brain storming section, stuff in the decision matrix.
 ## Python `venv`
 
 A python virtual environment was added to the project. Its major directories
-`lib`, and `bin` were added to `.gitignore`. This may be altered later 
+`lib`, and `bin` were added to `.gitignore`. This may be altered later
 depending on functional use. A `snake_test.ipynb` test Jupyter notebook is included.
 
 ---
@@ -133,7 +137,7 @@ Modula-2 / Oberon before.
 along with a `module github.com/jackokring/cpy3/v2` just to allow a
 `go get github.com/jackokring/cpy3/v2@v2.0.0` after a following
 `GOPROXY=proxy.golang.org go list -m github.com/jackokring/cpy3/v2@v2.0.0` but
-only after a `git tag v2.0.0` itself after a push followed by a `git push origin v2.0.0`.
+only after a `git tag v2.0.0` itself after a push and `git push origin v2.0.0`.
 * Of course the above is made more irritating by node.js inside VSCode spamming
 the `-jMAX` option and behaving in its docs like the other processes on the
 system are the problem. Apparently, the terminal failure to initialize on first go
@@ -210,3 +214,4 @@ ear lawn?
 [the_word]: docs.google.com/document/d/1rsPyq3c7uVzxpUb9JXtq0b603HSuju7NWeZ_aYfVkzs/edit?usp=sharing
 [6602]: docs.google.com/spreadsheets/d/1ejnimh5PPYHhPX-k93yTYFoXf0_bTxylGQEbKL1TbAw/edit?usp=sharing
 [emacs]: github.com/jackokring/goali/blob/master/extras-backup/init.el
+[nvim]: github.com/jackokring/doris.nvim/blob/master
