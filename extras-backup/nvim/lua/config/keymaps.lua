@@ -17,9 +17,14 @@ local function iwrap(action)
   local mode = vim.fn.mode(0)
   -- kind of like the oddball insert mode : command
   if mode == "i" then
+    -- allow for normal mode adjusting of function init state
     vim.cmd("stopinsert")
   end
-  vim.fn.call(action, { mode, cur })
+  if type(action) == "string" then
+    vim.api.nvim_feedkeys(action, "n", true)
+  else
+    vim.fn.call(action, { cur })
+  end
   -- restore, ah yes, the end of line by desired column?
   if mode == "i" then
     vim.cmd("startinsert")
@@ -29,12 +34,12 @@ end
 
 -- action is function or key string (maybe recursive, careful)
 local function nkey(seq, desc, action)
-  vim.keymap.set({ "n", "v" }, seq, action, { desc = desc })
+  vim.keymap.set("n", seq, action, { desc = desc })
 end
 
 -- action must be a function for this one
 local function nikey(seq, desc, action)
-  vim.keymap.set({ "n", "v", "i" }, seq, function()
+  vim.keymap.set({ "n", "i" }, seq, function()
     iwrap(action)
   end, { desc = desc })
 end
@@ -53,14 +58,16 @@ nkey("<Leader>t", "Terminal", "<cmd>term<cr>i")
 -- Control (Lowercase RESERVED for plugins with no control)
 -- (uppercase free with no control but shifted)
 -- Can be in insert mode sometimes as control and not <c-v> literal prefixed
--- ABCDEFHIJKLMOPQRSTUVWXYZ (with control as easiest to finger)
 -- Perculiar shift combination needed singleton
-nikey("<C-_>", "", function(mode, cur)
+nikey("<C-_>", "", function(cur)
   -- nil
 end)
+
+-- ABCDEFHIJKLMOPQRSTUVXYZ (with control as easiest to finger)
 -- NOT <C-N> or <C-G> but rest of controls and not lowercase
-nikey("<C-\\><C-A>", "", function(mode, cur)
-  -- nil
-end)
+nikey("<C-\\><C-W>", "Write Quick", "<cmd>w<cr>")
+-- function(cur) nil end)
+
+-- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- Uppercase and symbols with shift unused
 nkey("<C-\\><S-A>", "", "")
