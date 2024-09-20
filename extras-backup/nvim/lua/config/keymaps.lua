@@ -8,17 +8,35 @@
 -- :map xxx<cr> looks up mapping of a binding to xxx
 
 -- N.B. Builtins use vim.fn prefix
+local f = vim.fn
+local a = vim.api
+local k = vim.keymap.set
+
 -- lua_ls LSP is slightly late binding on warning of unsed function name in dict
+
+-- first letter of name must be UPPERCASE
+-- this then allows ":Com args<cr>"
+-- this was considered better than allowing functions in nikey and ninkey
+-- as it also allow manual execution of such functions
+local function com(name, desc, func)
+  a.nvim_create_user_command(name, func, { desc = desc })
+end
+
+-- for the func in the command registration com to get args
+local function args(opts)
+  -- return table of arg strings from opts argument
+  return opts.fargs
+end
 
 -- action is function or key string (maybe recursive, careful)
 local function nkey(seq, desc, action)
-  vim.keymap.set("n", seq, action, { desc = desc })
+  k("n", seq, action, { desc = desc })
 end
 
--- also defines for i but ends with n mode
+-- also defines for i but ends with n mode (no func use com)
 local function ninkey(seq, desc, action)
   nkey(seq, desc, action)
-  vim.keymap.set("i", seq, "<esc>" .. action, { desc = desc })
+  k("i", seq, "<esc>" .. action, { desc = desc })
 end
 
 -- remains in mode i if in i
@@ -26,7 +44,7 @@ local function nikey(seq, desc, action)
   -- can't rely on control codes below being nothing in n mode
   nkey(seq, desc, action)
   -- escape for one action step to normal mode
-  vim.keymap.set("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
+  k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
 end
 
 -- Bare Sparse Escape (Not in use)
@@ -44,5 +62,5 @@ nkey("<Leader>t", "Terminal", ":term<cr>i")
 -- Can be in insert mode as wrapped <esc> .. i by <C-\><C-O> or just <esc>
 -- Perculiar shift combination needed singleton
 ninkey("<C-_>", "Revert Buffer to Baseline", ":e!<cr>")
--- ABCDEFGIMNOPQRSTUVXYZ
+-- ABCDEFGIMOPQRSTUVXYZ
 nikey("<C-W>", "Write Quick All", ":wall<cr>")
