@@ -5,3 +5,4 @@
 -- column line of 81 to set limit line
 vim.api.nvim_set_option_value("colorcolumn", "81", {})
 -- vim.opt.colorcolumn = 80
+vim.opt.timeoutlen = 500
