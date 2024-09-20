@@ -43,6 +43,6 @@ nkey("<Leader>t", "Terminal", ":term<cr>i")
 -- Control
 -- Can be in insert mode as wrapped <esc> .. i by <C-\><C-O> or just <esc>
 -- Perculiar shift combination needed singleton
-ninkey("<C-_>", "", "")
--- ABCDEFGHIJKLMNOPQRSTUVXYZ
+ninkey("<C-_>", "Revert Buffer to Baseline", ":e!<cr>")
+-- ABCDEFGIMNOPQRSTUVXYZ
 nikey("<C-W>", "Write Quick All", ":wall<cr>")
