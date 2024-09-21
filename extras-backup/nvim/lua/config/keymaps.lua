@@ -50,24 +50,23 @@ end
 
 --==============================================================================
 -- Bare Sparse Escape (Not in use)
--- abcdefghijklmnopqrstuvwxyz
+-- abcdefghijklmnopqstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
-nkey("\\a", "", "")
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
 nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
--- adijkmnopvyz
+-- adijkmnoprvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
 
 --==============================================================================
--- Control
+-- Control (Exceedingly rare GNO keys, "normal" escape no ^G)
 -- Can be in insert mode as wrapped <esc> .. i by <C-\><C-O> or just <esc>
--- Perculiar shift combination needed singleton
-ninkey("<C-\\><C-\\>", "Revert Buffer to Baseline", ":e!<cr>")
--- apparently treminal built in does not do terminal <C-/> works
--- this maybe to do with Chromebook passthrough but it becomes <C-_>
--- ABCDEFGIMOPQTUVXYZ
--- like a fast save all <C-S> is just save one file
-nikey("<C-W>", "Write Quick All", ":wall<cr>")
+-- apparently terminal built in does not do terminal <C-/> works as <C-_>
+-- GNO are used N for normal, O for temp normal, G for backward compatibility
+-- after a <C-\> and it appears to be hard wired
+-- save all <C-S> not just save one file and remain in mode
+nikey("<C-S>", "Save All", ":wall<cr>")
+-- reload and place in n mode
+ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
