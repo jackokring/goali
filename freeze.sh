@@ -31,5 +31,5 @@ gacp () {
   message="${1:-$date}"
   git add . ; git commit -m "$message" ; git push
 }
-gacp $1
+gacp "$1"
 

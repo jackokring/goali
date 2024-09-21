@@ -53,6 +53,8 @@ end
 -- abcdefghijklmnopqrstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 nkey("\\a", "", "")
+-- normal launch rofi, as <C-R> register recall in i mode, redo n mode
+nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
@@ -67,7 +69,5 @@ ninkey("<C-\\><C-\\>", "Revert Buffer to Baseline", ":e!<cr>")
 -- apparently treminal built in does not do terminal <C-/> works
 -- this maybe to do with Chromebook passthrough but it becomes <C-_>
 -- ABCDEFGIMOPQTUVXYZ
--- normal mode free to launch rofi, as register recall in i mode
-nkey("<C-R>", "Open Rofi Combi", ":!rofi -show combi<cr>")
 -- like a fast save all <C-S> is just save one file
 nikey("<C-W>", "Write Quick All", ":wall<cr>")
