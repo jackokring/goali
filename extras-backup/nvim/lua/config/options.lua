@@ -10,4 +10,4 @@ o.timeoutlen = 500
 -- for key sequence determinacy
 o.scrolloff = 16
 -- kept screen cursor in centre when scrolling
--- that really help when expanding the which key help
+-- that really helps when expanding the which key help

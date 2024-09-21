@@ -1,5 +1,6 @@
 -- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
+-- Default keymaps that are always set:
+-- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
 -- <cmd> or : is command mode in an action
@@ -47,20 +48,26 @@ local function nikey(seq, desc, action)
   k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
 end
 
+--==============================================================================
 -- Bare Sparse Escape (Not in use)
 -- abcdefghijklmnopqrstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 nkey("\\a", "", "")
 
+--==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
 -- adijkmnopvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
-nkey("<Leader>r", "Open Rofi Combi", ":!rofi -show combi<cr>")
-nkey("<Leader>t", "Terminal", ":term<cr>i")
 
+--==============================================================================
 -- Control
 -- Can be in insert mode as wrapped <esc> .. i by <C-\><C-O> or just <esc>
 -- Perculiar shift combination needed singleton
-ninkey("<C-_>", "Revert Buffer to Baseline", ":e!<cr>")
--- ABCDEFGIMOPQRSTUVXYZ
+ninkey("<C-\\><C-\\>", "Revert Buffer to Baseline", ":e!<cr>")
+-- apparently treminal built in does not do terminal <C-/> works
+-- this maybe to do with Chromebook passthrough but it becomes <C-_>
+-- ABCDEFGIMOPQTUVXYZ
+-- normal mode free to launch rofi, as register recall in i mode
+nkey("<C-R>", "Open Rofi Combi", ":!rofi -show combi<cr>")
+-- like a fast save all <C-S> is just save one file
 nikey("<C-W>", "Write Quick All", ":wall<cr>")
