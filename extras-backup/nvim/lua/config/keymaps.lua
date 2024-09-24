@@ -12,6 +12,7 @@
 local f = vim.fn
 local a = vim.api
 local k = vim.keymap.set
+local wk = require("which-key").add
 
 -- lua_ls LSP is slightly late binding on warning of unsed function name in dict
 
@@ -53,12 +54,14 @@ end
 -- abcdefghijklmnopqstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
+wk({ "\\", group = "user escape" })
 nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
 -- adijkmnoprvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
+wk({ "<Leader>", group = "quick access leader" })
 
 --==============================================================================
 -- Control (Exceedingly rare GNO keys, "normal" escape no ^G)
