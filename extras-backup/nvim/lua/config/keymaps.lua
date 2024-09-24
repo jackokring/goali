@@ -12,7 +12,11 @@
 local f = vim.fn
 local a = vim.api
 local k = vim.keymap.set
-local wk = require("which-key").add
+
+-- for adding in groups for key prefixes
+local function wk(name, desc)
+  require("which-key").add({ name, group = desc })
+end
 
 -- lua_ls LSP is slightly late binding on warning of unsed function name in dict
 
@@ -49,19 +53,24 @@ local function nikey(seq, desc, action)
   k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
 end
 
+local function vkey(seq, desc, action)
+  -- keep visual mode
+  k("v", seq, action, { desc = desc })
+end
+
 --==============================================================================
 -- Bare Sparse Escape (Not in use)
 -- abcdefghijklmnopqstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
-wk({ "\\", group = "user escape" })
+wk("\\", "user escape")
 nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
 -- adijkmnoprvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
-wk({ "<Leader>", group = "quick access leader" })
+wk("<Leader>", "quick access leader")
 
 --==============================================================================
 -- Control (Exceedingly rare GNO keys, "normal" escape no ^G)
@@ -73,3 +82,14 @@ wk({ "<Leader>", group = "quick access leader" })
 nikey("<C-S>", "Save All", ":wall<cr>")
 -- reload and place in n mode
 ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
+
+--==============================================================================
+-- Alt (Very rare, only JKNP seem bound by default)
+-- Use <M-?> for key ? input string, becomes <esc><?> combination
+-- can be both insert and normal mode ni/ninkey depending on mode on exit
+
+--==============================================================================
+-- Perculiar mode keys
+-- for things like visual mode or visual line mode additions
+vkey("<", "<gv", "Indent left visual mode")
+vkey(">", ">gv", "Indent right visual mode")
