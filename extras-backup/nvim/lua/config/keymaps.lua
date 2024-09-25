@@ -53,9 +53,10 @@ local function nikey(seq, desc, action)
   k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
 end
 
+-- visual mode leave in visual mode
 local function vkey(seq, desc, action)
   -- keep visual mode
-  k("v", seq, action, { desc = desc })
+  k("v", seq, action .. "gv", { desc = desc })
 end
 
 --==============================================================================
@@ -91,5 +92,5 @@ ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
 --==============================================================================
 -- Perculiar mode keys
 -- for things like visual mode or visual line mode additions
-vkey("<", "Indent left", "<gv")
-vkey(">", "Indent right", ">gv")
+vkey("<", "Indent left", "<")
+vkey(">", "Indent right", ">")
