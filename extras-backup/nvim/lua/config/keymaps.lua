@@ -91,5 +91,5 @@ ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
 --==============================================================================
 -- Perculiar mode keys
 -- for things like visual mode or visual line mode additions
-vkey("<", "<gv", "Indent left visual mode")
-vkey(">", ">gv", "Indent right visual mode")
+vkey("<", "Indent left", "<gv")
+vkey(">", "Indent right", ">gv")
