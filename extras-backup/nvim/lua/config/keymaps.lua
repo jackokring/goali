@@ -80,9 +80,12 @@ wk("<Leader>", "quick access leader")
 -- GNO are used N for normal, O for temp normal, G for backward compatibility
 -- after a <C-\> and it appears to be hard wired
 -- save all <C-S> not just save one file and remain in mode
+-- ACT (3 left)
 nikey("<C-S>", "Save All", ":wall<cr>")
 -- reload and place in n mode
 ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
+-- CAN see ASCII joke about what olde one eye said
+nikey("<C-X>", "Message History", ":Noice<cr>")
 
 --==============================================================================
 -- Alt (Very rare, only JKNP seem bound by default)
