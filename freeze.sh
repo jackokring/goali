@@ -1,9 +1,6 @@
 #!/usr/bin/bash
 . xdg.sh
 pip freeze | tee requirements.txt
-# remove *~ files
-rm -rf *~
-rm -rf \#*\#
 # copy some user file backups
 pushd extras-backup
 # $XDG
@@ -25,6 +22,9 @@ popd
 mkdir -p elpa
 cp -r ~/.emacs.d/elpa .
 popd
+# remove *~ files
+rm -rf *~
+rm -rf \#*\#
 # add commit push
 gacp () {
 	date=$(date +"%A %Y-%m-%d %H:%M:%S")

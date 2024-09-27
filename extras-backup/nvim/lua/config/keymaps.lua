@@ -53,12 +53,6 @@ local function nikey(seq, desc, action)
   k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
 end
 
--- visual mode leave in visual mode
-local function vkey(seq, desc, action)
-  -- keep visual mode
-  k("v", seq, action .. "gv", { desc = desc })
-end
-
 --==============================================================================
 -- Bare Sparse Escape (Not in use)
 -- abcdefghijklmnopqstuvwxyz
@@ -69,31 +63,30 @@ nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
--- adijkmnoprvyz
+-- aijknoprvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
-wk("<Leader>", "quick access leader")
+wk("<leader>", "quick access leader")
+-- what olde one eye said
+nkey("<leader>m", "Message History", ":Noice<cr>")
 
 --==============================================================================
--- Control (Exceedingly rare GNO keys, "normal" escape no ^G)
+-- Control (All used in some way, but just a few remaps)
 -- Can be in insert mode as wrapped <esc> .. i by <C-\><C-O> or just <esc>
 -- apparently terminal built in does not do terminal <C-/> works as <C-_>
 -- GNO are used N for normal, O for temp normal, G for backward compatibility
 -- after a <C-\> and it appears to be hard wired
 -- save all <C-S> not just save one file and remain in mode
--- ACT (3 left)
 nikey("<C-S>", "Save All", ":wall<cr>")
 -- reload and place in n mode
 ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
--- CAN see ASCII joke about what olde one eye said
-nikey("<C-X>", "Message History", ":Noice<cr>")
 
 --==============================================================================
 -- Alt (Very rare, only JKNP seem bound by default)
--- Use <M-?> for key ? input string, becomes <esc><?> combination
+-- Use <M-?> for key ? input string, becomes <esc><?> CSI combination
 -- can be both insert and normal mode ni/ninkey depending on mode on exit
 
 --==============================================================================
 -- Perculiar mode keys
 -- for things like visual mode or visual line mode additions
-vkey("<", "Indent left", "<")
-vkey(">", "Indent right", ">")
+-- see:
+-- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
