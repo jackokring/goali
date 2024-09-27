@@ -57,23 +57,39 @@ local function nikey(seq, desc, action)
 end
 
 --==============================================================================
--- passes string to function named "lua_name" depending on type
+-- passes string to _G.function named "lua_name" depending on type
 -- The function is called with one String argument:
 -- "line"	{motion} was linewise
 -- "char"	{motion} was charwise
 -- "block"	{motion} was blockwise-visual
--- normal mode only, and function of lua type, no ":Cmd args"
+-- normal mode only, and _G.function of lua type, no ":Cmd args"
 ---@param lua_name string
 local function opkey(seq, desc, lua_name)
   k("n", seq, ":set opfunc=v:lua." .. lua_name .. "<cr>g@", { desc = desc })
 end
 
 -- get operator range selection within a lua_name function
+---@return table
 local function opval()
   return {
     start = a.nvim_buf_get_mark(0, "["),
     finish = a.nvim_buf_get_mark(0, "]"),
   }
+end
+
+-- and for registers
+-- return a command string for delyed execution from lua_func
+---@param lua_func function
+local function regkey(seq, desc, lua_func)
+  k("n", seq, lua_func, { expr = true, desc = desc })
+end
+
+-- return a register string to concat into a command string
+---@return string
+local function regval()
+  local key = f.getchar()
+  local charstr = f.nr2char(key)
+  return charstr
 end
 
 --==============================================================================
