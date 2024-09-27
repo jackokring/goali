@@ -69,22 +69,24 @@ local function opkey(seq, desc, lua_name)
 end
 
 -- get operator range selection within a lua_name function
----@return table
+---@return { r1: integer, c1: integer, r2: integer, c2: integer}
 local function opval()
-  return {
-    start = a.nvim_buf_get_mark(0, "["),
-    finish = a.nvim_buf_get_mark(0, "]"),
-  }
+  -- (1, 0) indexed tuple pair (row, col)
+  local r1, c1 = a.nvim_buf_get_mark(0, "[")
+  local r2, c2 = a.nvim_buf_get_mark(0, "]")
+  return { r1 = r1, c1 = c1, r2 = r2, c2 = c2 }
 end
 
 -- and for registers
 -- return a command string for delyed execution from lua_func
+-- also for any indirect function delayed key binding
 ---@param lua_func function
 local function regkey(seq, desc, lua_func)
   k("n", seq, lua_func, { expr = true, desc = desc })
 end
 
 -- return a register string to concat into a command string
+-- also works for marks as well
 ---@return string
 local function regval()
   local key = f.getchar()
