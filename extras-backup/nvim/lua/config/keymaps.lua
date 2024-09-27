@@ -8,6 +8,7 @@
 -- Alt sends an escape prefix but also seems to check modifier state
 -- :map xxx<cr> looks up mapping of a binding to xxx
 
+--==============================================================================
 -- N.B. Builtins use vim.fn prefix
 local f = vim.fn
 local a = vim.api
@@ -20,6 +21,7 @@ end
 
 -- lua_ls LSP is slightly late binding on warning of unsed function name in dict
 
+--==============================================================================
 -- first letter of name must be UPPERCASE
 -- this then allows ":Com args<cr>"
 -- this was considered better than allowing functions in nikey and ninkey
@@ -34,6 +36,7 @@ local function args(opts)
   return opts.fargs
 end
 
+--==============================================================================
 -- action is function or key string (maybe recursive, careful)
 local function nkey(seq, desc, action)
   k("n", seq, action, { desc = desc })
@@ -51,6 +54,26 @@ local function nikey(seq, desc, action)
   nkey(seq, desc, action)
   -- escape for one action step to normal mode
   k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
+end
+
+--==============================================================================
+-- passes string to function named "lua_name" depending on type
+-- The function is called with one String argument:
+-- "line"	{motion} was linewise
+-- "char"	{motion} was charwise
+-- "block"	{motion} was blockwise-visual
+-- normal mode only, and function of lua type, no ":Cmd args"
+---@param lua_name string
+local function opkey(seq, desc, lua_name)
+  k("n", seq, ":set opfunc=v:lua." .. lua_name .. "<cr>g@", { desc = desc })
+end
+
+-- get operator range selection within a lua_name function
+local function opval()
+  return {
+    start = a.nvim_buf_get_mark(0, "["),
+    finish = a.nvim_buf_get_mark(0, "]"),
+  }
 end
 
 --==============================================================================
