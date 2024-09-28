@@ -12,6 +12,7 @@
 -- N.B. Builtins use vim.fn prefix
 local f = vim.fn
 local a = vim.api
+local v = vim.v
 local k = vim.keymap.set
 
 -- for adding in groups for key prefixes
@@ -80,19 +81,19 @@ end
 -- and for registers
 -- return a command string for delyed execution from lua_func
 -- also for any indirect function delayed key binding
----@param lua_func function
+---@param lua_func function(): string
 local function regkey(seq, desc, lua_func)
   k("n", seq, lua_func, { expr = true, desc = desc })
 end
 
--- return a register string to concat into a command string
--- also works for marks as well
----@return string
-local function regval()
-  local key = f.getchar()
-  local charstr = f.nr2char(key)
-  return charstr
-end
+-- obtain the active register name
+local regref = v.register
+local regval = f.getreg
+local regset = f.setreg
+
+-- marks are just for moving about
+-- quite difficult to get a "seamless dynamic mark"" letter in functions
+-- and there's the lower case a-z local file, A-Z global marks and ...
 
 --==============================================================================
 -- Bare Sparse Escape (Not in use)
