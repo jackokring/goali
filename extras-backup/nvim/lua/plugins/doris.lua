@@ -1,6 +1,13 @@
 -- doris plugin loader for nvim
 return {
   "jackokring/doris.nvim",
+  -- **local build**
+  name = "doris.nvim",
+  dev = {
+    path = "~/projects",
+    patterns = { "jackokring" },
+    fallback = true,
+  },
   -- **dependancies**
   dependencies = {
     "nvim-lua/plenary.nvim",

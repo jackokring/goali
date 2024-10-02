@@ -105,11 +105,11 @@ nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
--- aijknoprvyz
+-- aijkmnoprvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
 wk("<leader>", "quick access leader")
 -- what olde one eye said
-nkey("<leader>m", "Message History", ":Noice<cr>")
+-- snh nkey("<leader>m", "Message History", ":Noice<cr>")
 
 --==============================================================================
 -- Control (All used in some way, but just a few remaps)
