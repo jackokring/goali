@@ -31,7 +31,8 @@ The module `doris.nvim` is added to the config to show how local development
 needs `return` values for `dev`. This doesn't enable local testing but the
 github action does run, and version tagging by `git tag v*` and pushing
 by `git push origin --tags` to run the luarocks submit if the API key is
-configured.
+configured. Running `make test` from the plugin directory does run the tests
+though.
 
 ### LuaSnips Looks Interesting
 
