@@ -1,5 +1,5 @@
 -- lua snips default initialization
-
+--[[
 local ls = require("luasnip")
 local s = ls.snippet
 local sn = ls.snippet_node
@@ -27,9 +27,11 @@ local types = require("luasnip.util.types")
 local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
 local k = require("luasnip.nodes.key_indexer").new_key
-
+]]
+--
 -- lua snips main entries for user expansion
 -- See:
 -- https://github.com/L3MON4D3/LuaSnip/blob/master/lua/luasnip/config.lua
 
---
+require("luasnip").config.setup({ enable_autosnippets = true })
+require("luasnip.loaders.from_lua").lazy_load({ paths = { "~/.config/nvim/snips" } })
