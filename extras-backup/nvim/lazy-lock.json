@@ -1,6 +1,6 @@
 {
   "LazyVim": { "branch": "main", "commit": "7c7c196a78e936a1bc4cf28e7908e9bd96d75607" },
-  "LuaSnip": { "branch": "master", "commit": "2c08f32a570c07b8130144813266e21393da80d3" },
+  "LuaSnip": { "branch": "master", "commit": "8d7aa7a7b7c0875e4878d1d2590924bc1c229305" },
   "SchemaStore.nvim": { "branch": "main", "commit": "ed65feb5b8026d7c6b1981cfe9d97402342d344d" },
   "bufferline.nvim": { "branch": "main", "commit": "5cc447cb2b463cb499c82eaeabbed4f5fa6a0a44" },
   "catppuccin": { "branch": "main", "commit": "65bf0b16f57a3db70d6a93ac68882dd9a31d0565" },
@@ -11,7 +11,7 @@
   "conform.nvim": { "branch": "master", "commit": "6a28c90082a67f62a323ab90d988e000a718a8c7" },
   "crates.nvim": { "branch": "main", "commit": "8bf8358ee326d5d8c11dcd7ac0bcc9ff97dbc785" },
   "dashboard-nvim": { "branch": "master", "commit": "d2c5a4d1341f5ca1ed2ecb4ecfcff2bc8ea18b14" },
-  "doris.nvim": { "branch": "main", "commit": "537955c1f1114fd0ffcc55fcad78fae28d754281" },
+  "doris.nvim": { "branch": "main", "commit": "9a4a75985423a052ada06d790daf961fa73b6519" },
   "dressing.nvim": { "branch": "master", "commit": "1b7921eecc65af1baf8ac1dc06f0794934cbcfb2" },
   "flash.nvim": { "branch": "main", "commit": "34c7be146a91fec3555c33fe89c7d643f6ef5cf1" },
   "friendly-snippets": { "branch": "main", "commit": "de8fce94985873666bd9712ea3e49ee17aadb1ed" },
