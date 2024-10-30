@@ -204,20 +204,33 @@ auto_activate_venv() {
     if [ -e "./bin/activate" ]; then
         source ./bin/activate
     fi
+    local HIST
+    HIST="$(basename $(pwd))"
+    if [ -e "~/.hist_mux/$HIST" ]; then
+        cp ~/.hist_mux/$HIST ~/.bash_history
+    fi
+}
+
+# basename based bash history multiplex
+save_hist() {
+    mkdir -p ~/.hist_mux
+    local HIST
+    HIST="$(basename $(pwd))"
+    cp ~/.bash_history ~/.hist_mux/$HIST
 }
 
 # Override the 'cd' command to call our function
 cd() {
-    builtin cd "$@" && auto_activate_venv
+    save_hist && builtin cd "$@" && auto_activate_venv
 }
 
 # If you use pushd/popd, you can override them too.
 pushd() {
-    builtin pushd "$@" && auto_activate_venv
+    save_hist && builtin pushd "$@" && auto_activate_venv
 }
 
 popd() {
-    builtin popd "$@" && auto_activate_venv
+    save_hist && builtin popd "$@" && auto_activate_venv
 }
 
 # fast GPT 3.5
