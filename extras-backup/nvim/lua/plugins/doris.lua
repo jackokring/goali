@@ -2,10 +2,8 @@
 return {
   "jackokring/doris.nvim",
   -- **local build**
-  name = "doris.nvim",
   dev = {
-    path = "~/projects",
-    patterns = { "jackokring" },
+    path = "~/projects/doris.nvim",
     fallback = true,
   },
   -- **dependancies**

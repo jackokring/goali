@@ -49,12 +49,18 @@ local function ninkey(seq, desc, action)
   k("i", seq, "<esc>" .. action, { desc = desc })
 end
 
+-- normal mode action then back to insert
+local function ikey(seq, desc, action)
+  -- cursor immutable possiblities by append not insert
+  k("i", seq, "<esc>" .. action .. "a", { desc = desc })
+end
+
 -- remains in mode i if in i
 local function nikey(seq, desc, action)
   -- can't rely on control codes below being nothing in n mode
   nkey(seq, desc, action)
   -- escape for one action step to normal mode
-  k("i", seq, "<C-\\><C-O>" .. action, { desc = desc })
+  ikey(seq, desc, action)
 end
 
 --==============================================================================
@@ -121,6 +127,11 @@ wk("<leader>", "quick access leader")
 nikey("<C-S>", "Save All", ":wall<cr>")
 -- reload and place in n mode
 ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
+-- kill the LSP reach for effect (see y?)
+-- just a consequence entering normal mode
+-- I tend never to use obscure <C-\> combinations but get annoyed by
+-- an open cmp dialog interfering with the cursor in insert mode
+ikey("<C-\\>", "Close LSP completions", "")
 
 --==============================================================================
 -- Alt (Very rare, only JKNP seem bound by default)
