@@ -107,11 +107,14 @@ local regset = f.setreg
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
 wk("\\", "user escape")
-nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
--- a nice complement to <leader>xx
-nkey("\\n", "Notify messages in telescope", ":Noice telescope<cr>")
-nkey("\\x", "Diagnostic window", "<leader>xx")
-nkey("\\z", "Lazy reload ...", ":Lazy reload ")
+nkey("\\c", "Commands", ":Telescope commands<cr>")
+nkey("\\d", "Diagnostics", ":Telescope diagnostics<cr>")
+nkey("\\f", "Find in buffer", ":Telescope current_buffer_fuzzy_find<cr>")
+nkey("\\h", "History of commands", ":Telescope command_history<cr>")
+nkey("\\l", "Launch by Rofi-combi", ":!rofi -show combi<cr>")
+nkey("\\n", "Notify messages", ":Noice telescope<cr>")
+nkey("\\t", "Treesitter symbols", ":Telescope treesitter<cr>")
+nkey("\\r", "Reload package", ":Telescope reloader<cr>")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
