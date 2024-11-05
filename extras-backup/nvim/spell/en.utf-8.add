@@ -57,3 +57,13 @@ novaride
 virtualization
 config
 upto
+lua
+NeoTree
+desc
+cr
+Neotree
+cmd
+filetype
+BufEnter
+doris
+chr

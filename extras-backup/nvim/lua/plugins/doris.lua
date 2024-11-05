@@ -2,18 +2,15 @@
 return {
   "jackokring/doris.nvim",
   -- **local build**
-  dev = {
-    path = "~/projects/doris.nvim",
-    fallback = true,
-  },
-  -- **dependancies**
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
-  -- **option overrides, implies calling .setup(opts)**
+  dev = true,
+  dir = "~/projects/doris.nvim",
+  fallback = true,
+  -- **build command**
+  build = "./build.sh",
+  -- **setup options**
   opts = {},
-  -- **on load build command**
-  -- build = "",
+  -- **lazy load info**
+  lazy = true,
   -- **on event**
   -- event = { "BufEnter", "BufEnter *.lua" },
   -- **on command use**

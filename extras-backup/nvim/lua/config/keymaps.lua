@@ -87,7 +87,7 @@ end
 -- and for registers
 -- return a command string for delyed execution from lua_func
 -- also for any indirect function delayed key binding
----@param lua_func function(): string
+---@param lua_func fun(any): string
 local function regkey(seq, desc, lua_func)
   k("n", seq, lua_func, { expr = true, desc = desc })
 end
@@ -108,6 +108,10 @@ local regset = f.setreg
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
 wk("\\", "user escape")
 nkey("\\r", "Open Rofi Combi", ":!rofi -show combi<cr>")
+-- a nice complement to <leader>xx
+nkey("\\n", "Notify messages in telescope", ":Noice telescope<cr>")
+nkey("\\x", "Diagnostic window", "<leader>xx")
+nkey("\\z", "Lazy reload ...", ":Lazy reload ")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
@@ -131,7 +135,7 @@ ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
 -- just a consequence entering normal mode
 -- I tend never to use obscure <C-\> combinations but get annoyed by
 -- an open cmp dialog interfering with the cursor in insert mode
-ikey("<C-\\>", "Close LSP completions", "")
+ikey("<C-\\>", "Close LSP completions, etc. :Close", ":Close")
 
 --==============================================================================
 -- Alt (Very rare, only JKNP seem bound by default)
