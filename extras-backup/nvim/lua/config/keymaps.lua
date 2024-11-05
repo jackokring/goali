@@ -16,6 +16,8 @@ local v = vim.v
 local k = vim.keymap.set
 
 -- for adding in groups for key prefixes
+---@param name string
+---@param desc string
 local function wk(name, desc)
   require("which-key").add({ name, group = desc })
 end
@@ -27,11 +29,17 @@ end
 -- this then allows ":Com args<cr>"
 -- this was considered better than allowing functions in nikey and ninkey
 -- as it also allow manual execution of such functions
+---@param name string first letter UPPERCASE
+---@param desc string
+---@param func string | function
 local function com(name, desc, func)
   a.nvim_create_user_command(name, func, { desc = desc })
 end
 
 -- for the func in the command registration com to get args
+---from the command line
+---@param opts { fargs?: string[] }
+---@return string[]
 local function args(opts)
   -- return table of arg strings from opts argument
   return opts.fargs
@@ -39,23 +47,35 @@ end
 
 --==============================================================================
 -- action is function or key string (maybe recursive, careful)
+---@param seq string
+---@param desc string
+---@param action string | function
 local function nkey(seq, desc, action)
   k("n", seq, action, { desc = desc })
 end
 
 -- also defines for i but ends with n mode (no func use com)
+---@param seq string
+---@param desc string
+---@param action string
 local function ninkey(seq, desc, action)
   nkey(seq, desc, action)
   k("i", seq, "<esc>" .. action, { desc = desc })
 end
 
 -- normal mode action then back to insert
+---@param seq string
+---@param desc string
+---@param action string
 local function ikey(seq, desc, action)
   -- cursor immutable possiblities by append not insert
   k("i", seq, "<esc>" .. action .. "a", { desc = desc })
 end
 
 -- remains in mode i if in i
+---@param seq string
+---@param desc string
+---@param action string
 local function nikey(seq, desc, action)
   -- can't rely on control codes below being nothing in n mode
   nkey(seq, desc, action)
@@ -64,18 +84,20 @@ local function nikey(seq, desc, action)
 end
 
 --==============================================================================
--- passes string to _G.function named "lua_name" depending on type
--- The function is called with one String argument:
--- "line"	{motion} was linewise
--- "char"	{motion} was charwise
--- "block"	{motion} was blockwise-visual
--- normal mode only, and _G.function of lua type, no ":Cmd args"
+---passes string to _G.function named "lua_name" depending on type
+---The function is called with one String argument:
+---"line"	{motion} was linewise
+---"char"	{motion} was charwise
+---"block"	{motion} was blockwise-visual
+---normal mode only, and _G.function of lua type, no ":Cmd args"
+---@param seq string
+---@param desc string
 ---@param lua_name string
 local function opkey(seq, desc, lua_name)
   k("n", seq, ":set opfunc=v:lua." .. lua_name .. "<cr>g@", { desc = desc })
 end
 
--- get operator range selection within a lua_name function
+---get operator range selection within a lua_name function
 ---@return { r1: integer, c1: integer, r2: integer, c2: integer}
 local function opval()
   -- (1, 0) indexed tuple pair (row, col)
@@ -85,9 +107,11 @@ local function opval()
 end
 
 -- and for registers
--- return a command string for delyed execution from lua_func
--- also for any indirect function delayed key binding
----@param lua_func fun(any): string
+---return a command string for delyed execution from lua_func
+---also for any indirect function delayed key binding
+---@param seq string
+---@param desc string
+---@param lua_func fun(): string
 local function regkey(seq, desc, lua_func)
   k("n", seq, lua_func, { expr = true, desc = desc })
 end
@@ -96,6 +120,21 @@ end
 local regref = v.register
 local regval = f.getreg
 local regset = f.setreg
+
+-- some factor assits for ease
+---make a normal mode command by :<cr> surround
+---@param str string
+---@return string
+local function ncom(str)
+  return ":" .. str .. "<cr>"
+end
+
+---make a short telescope command for  a sub-command
+---@param str string
+---@return string
+local function tele(str)
+  return ncom("Telescope " .. str)
+end
 
 -- marks are just for moving about
 -- quite difficult to get a "seamless dynamic mark"" letter in functions
@@ -106,21 +145,21 @@ local regset = f.setreg
 -- abcdefghijklmnopqstuvwxyz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
-wk("\\", "user escape")
-nkey("\\c", "Commands", ":Telescope commands<cr>")
-nkey("\\d", "Diagnostics", ":Telescope diagnostics<cr>")
-nkey("\\f", "Find in buffer", ":Telescope current_buffer_fuzzy_find<cr>")
-nkey("\\h", "History of commands", ":Telescope command_history<cr>")
-nkey("\\l", "Launch by Rofi-combi", ":!rofi -show combi<cr>")
-nkey("\\n", "Notify messages", ":Noice telescope<cr>")
-nkey("\\t", "Treesitter symbols", ":Telescope treesitter<cr>")
-nkey("\\r", "Reload package", ":Telescope reloader<cr>")
+wk("\\", "user key")
+nkey("\\c", "Commands", tele("commands"))
+nkey("\\d", "Diagnostics", tele("diagnostics"))
+nkey("\\f", "Find in buffer", tele("current_buffer_fuzzy_find"))
+nkey("\\h", "History of commands", tele("command_history"))
+nkey("\\l", "Launch by Rofi-combi", ncom("!rofi -show combi"))
+nkey("\\n", "Notify messages", ncom("Noice telescope"))
+nkey("\\t", "Treesitter symbols", tele("treesitter"))
+nkey("\\r", "Reload package", tele("reloader"))
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
 -- aijkmnoprvyz
 -- ABCFGIJMNOPQRSTUVWXYZ
-wk("<leader>", "quick access leader")
+wk("<leader>", "leader key")
 -- what olde one eye said
 -- snh nkey("<leader>m", "Message History", ":Noice<cr>")
 
@@ -131,14 +170,14 @@ wk("<leader>", "quick access leader")
 -- GNO are used N for normal, O for temp normal, G for backward compatibility
 -- after a <C-\> and it appears to be hard wired
 -- save all <C-S> not just save one file and remain in mode
-nikey("<C-S>", "Save All", ":wall<cr>")
+nikey("<C-S>", "Save all", ncom("wall"))
 -- reload and place in n mode
-ninkey("<C-Z>", "Revert to Saved", ":e!<cr>")
+ninkey("<C-Z>", "Revert to saved", ncom("e!"))
 -- kill the LSP reach for effect (see y?)
 -- just a consequence entering normal mode
 -- I tend never to use obscure <C-\> combinations but get annoyed by
 -- an open cmp dialog interfering with the cursor in insert mode
-ikey("<C-\\>", "Close LSP completions, etc. :Close", ":Close")
+ikey("<C-\\>", "Close LSP cmp, etc. :Close", ncom("Close"))
 
 --==============================================================================
 -- Alt (Very rare, only JKNP seem bound by default)
