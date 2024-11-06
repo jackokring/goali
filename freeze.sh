@@ -22,14 +22,13 @@ popd
 mkdir -p elpa
 cp -r ~/.emacs.d/elpa .
 popd
-# remove *~ files
-rm -rf *~
-rm -rf \#*\#
+rm -rf "$(find extras-backup -type d -name .git)"
 # add commit push
-gacp () {
-	date=$(date +"%A %Y-%m-%d %H:%M:%S")
-  message="${1:-$date}"
-  git add . ; git commit -m "$message" ; git push
+gacp() {
+    date=$(date +"%A %Y-%m-%d %H:%M:%S")
+    message="${1:-$date}"
+    git add .
+    git commit -m "$message"
+    git push
 }
 gacp "$1"
-
