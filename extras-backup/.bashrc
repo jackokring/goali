@@ -124,7 +124,7 @@ alias ping='ping -c 10'
 alias less='less -R'
 alias cls='clear'
 alias tmux='tmux attach || tmux'
-alias dmenu='rofi -dmenu'
+alias dmenu='rofi -dmenu -normal-window'
 
 e() {
 	# emacs with files and no gtk error stream
@@ -229,6 +229,10 @@ popd() {
 # quick almost shortcut
 p() {
 	rofi -show combi -normal-window &
+}
+
+k() {
+	cd "$(awk '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)" || return
 }
 
 # fast GPT 3.5
