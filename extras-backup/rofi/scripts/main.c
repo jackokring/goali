@@ -71,7 +71,7 @@ int back_to(char sys[], char* argv) { // allow argv passing
 	// allocate about a page
 	// technically best in one combining buffer so all strcat in one place
 	// so wait a bit for rofi close, and open error message box of rofi
-	static char bash[4000] = "bash -c \"coproc (sleep 1 && rofi -e \\\"$(";
+	static char bash[4000] = "bash -c \"coproc (sleep 1 && rofi -normal-window -e \\\"$(";
 	strcat(bash, sys);
 	if(argv) {
 		strcat(bash, argv); // name

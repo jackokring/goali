@@ -212,26 +212,23 @@ auto_activate_venv() {
 	fi
 }
 
-# basename based bash history multiplex
-save_hist() {
-	mkdir -p ~/.hist_mux
-	local HIST
-	HIST="$(basename $(pwd))"
-	cp ~/.bash_history "$HOME/.hist_mux/$HIST"
-}
-
 # Override the 'cd' command to call our function
 cd() {
-	save_hist && builtin cd "$@" && auto_activate_venv
+	builtin cd "$@" && auto_activate_venv
 }
 
 # If you use pushd/popd, you can override them too.
 pushd() {
-	save_hist && builtin pushd "$@" && auto_activate_venv
+	builtin pushd "$@" && auto_activate_venv
 }
 
 popd() {
-	save_hist && builtin popd "$@" && auto_activate_venv
+	builtin popd "$@" && auto_activate_venv
+}
+
+# quick almost shortcut
+p() {
+	rofi -show combi -normal-window &
 }
 
 # fast GPT 3.5

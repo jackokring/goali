@@ -150,10 +150,10 @@ nkey("\\c", "Commands", tele("commands"))
 nkey("\\d", "Diagnostics", tele("diagnostics"))
 nkey("\\f", "Find in buffer", tele("current_buffer_fuzzy_find"))
 nkey("\\h", "History of commands", tele("command_history"))
-nkey("\\l", "Launch by Rofi-combi", ncom("!rofi -show combi"))
 nkey("\\n", "Notify messages", ncom("Noice telescope"))
-nkey("\\t", "Treesitter symbols", tele("treesitter"))
+nkey("\\p", "Launch by Rofi-combi", ncom("!rofi -show combi"))
 nkey("\\r", "Reload package", tele("reloader"))
+nkey("\\t", "Treesitter symbols", tele("treesitter"))
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
@@ -177,7 +177,10 @@ ninkey("<C-Z>", "Revert to saved", ncom("e!"))
 -- just a consequence entering normal mode
 -- I tend never to use obscure <C-\> combinations but get annoyed by
 -- an open cmp dialog interfering with the cursor in insert mode
-ikey("<C-\\>", "Close LSP cmp, etc. :Close", ncom("Close"))
+-- also a minor error 444 but sometimes close crashed pop-up good
+-- i'm not a multi-window man, more tab based
+ikey("<C-\\>", "Close LSP cmp, etc.", "") -- basic insert norm insert effect
+nkey("<C-\\>", "Close pop-up", ncom("close"))
 
 --==============================================================================
 -- Alt (Very rare, only JKNP seem bound by default)
