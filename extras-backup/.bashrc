@@ -200,6 +200,19 @@ extract() {
 	done
 }
 
+# a whiptail alias set
+export WHIP="whiptail"
+# whiptail tail
+export TAIL="0 0 3>&2 2>&1 1>&3"
+
+# launch a process singleton
+single() {
+	# self and process?
+	if test "$(ps | grep $1 | wc -l)" != 2; then
+		"$@" >/dev/null 2>&1 &
+	fi
+}
+
 # Automatically activate Python venv if it exists
 auto_activate_venv() {
 	if [ -e "./bin/activate" ]; then
@@ -327,17 +340,14 @@ echo
 # vscode seems to have tmux restart issue
 echo "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down> c <new win> & <kill win> number <select win>$NONE"
 echo "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050"
-single() {
-	# self and process?
-	if test "$(ps | grep $1 | wc -l)" != 2; then
-		"$@" >/dev/null 2>&1 &
-	fi
-}
 single pgadmin4
 
 echo "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050"
 echo "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)"
 echo "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)"
+echo "# ${GREEN}p$NONE process launcher (rofi tool)"
+echo "# ${GREEN}k$NONE cd to commonly used (rofi tool)"
+echo "# ${GREEN}v$NONE neovim in st session"
 echo
 if [ -d "$HOME/.cargo/bin" ]; then
 	echo "# $RED~/.cargo/bin$NONE for rust binaries."
