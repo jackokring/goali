@@ -140,6 +140,7 @@ v() {
 alias tor='sudo systemctl restart tor'
 alias n='nano'
 alias did='history|grep'
+alias ok='test $? == 0 &&'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
@@ -265,9 +266,6 @@ fi
 # Ctrl+S forward search to match Ctrl-R reverse search
 # so turn off xon/xoff flow control
 stty -ixon
-function cp() {
-	[ $# == 1 ] && cp -i "$1" . || cp "$@"
-}
 
 export TZ="UTC"
 # add commit push
@@ -320,9 +318,6 @@ stop and ${GREEN}fg$NONE (and ${GREEN}bg$NONE) job control numbers.\
  ${GREEN}extract$NONE archive type detection and extract.\
  ${GREEN}dragon$NONE CLI drag and drop manager.\
  ${CYAN}Shft+^V$NONE is paste in console context.\n"
-echo "# modified behaviour\n\
-Copy ${GREEN}cp$NONE has a single argument only automatic target of the\
- ${GREEN}pwd$NONE.\n"
 echo "# code and data management\n\
 ${GREEN}gacp$NONE for git add/commit/push with optional message.\
  ${GREEN}fzf$NONE for fuzzy find.\
