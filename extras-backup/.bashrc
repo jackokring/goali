@@ -140,7 +140,7 @@ v() {
 alias tor='sudo systemctl restart tor'
 alias n='nano'
 alias did='history|grep'
-alias ok='test $? == 0 &&'
+alias ok='test $? == 0'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
