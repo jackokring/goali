@@ -4,3 +4,5 @@ require("config.lazy")
 -- defines directory for <ft>.lua and <ft>/*.lua files
 -- decides enable of autosnippet expanding
 require("config.snips")
+-- custom completions
+require("config.complete")
