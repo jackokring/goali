@@ -142,18 +142,28 @@ end
 
 --==============================================================================
 -- Bare Sparse Escape (Not in use)
--- abcdefghijklmnopqstuvwxyz
+-- begimouwz
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
 wk("\\", "user key")
+nkey("\\\\", "Launch by Rofi-combi", ncom("!rofi -show combi"))
+nkey("\\a", "Select all", "ggVG")
 nkey("\\c", "Commands", tele("commands"))
 nkey("\\d", "Diagnostics", tele("diagnostics"))
 nkey("\\f", "Find in buffer", tele("current_buffer_fuzzy_find"))
 nkey("\\h", "History of commands", tele("command_history"))
+nkey("\\j", "Line down", ":m .+1<cr>==")
+nkey("\\k", "Line up", ":m .-2<cr>==")
+nkey("\\l", "Run lua", ":lua ")
 nkey("\\n", "Notify messages", ncom("Noice telescope"))
-nkey("\\p", "Launch by Rofi-combi", ncom("!rofi -show combi"))
+nkey("\\p", "Paste", tele("registers"))
+nkey("\\q", "Quit save all", ncom("wall") .. ncom("q!"))
 nkey("\\r", "Reload package", tele("reloader"))
+nkey("\\s", "Search replace line", ":s/\\v")
 nkey("\\t", "Treesitter symbols", tele("treesitter"))
+nkey("\\v", "Visual line", "V")
+nkey("\\x", "Make executable", ncom("!chmod +x %"))
+nkey("\\y", "Yank line", "Vy")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)

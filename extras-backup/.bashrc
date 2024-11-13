@@ -219,11 +219,6 @@ auto_activate_venv() {
 	if [ -e "./bin/activate" ]; then
 		source ./bin/activate
 	fi
-	local HIST
-	HIST="$(basename $(pwd))"
-	if [ -e "$HOME/.hist_mux/$HIST" ]; then
-		cp "$HOME/.hist_mux/$HIST" ~/.bash_history
-	fi
 }
 
 # Override the 'cd' command to call our function
@@ -241,11 +236,12 @@ popd() {
 }
 
 # quick almost shortcut
-p() {
+# root rofi
+//() {
 	rofi -show combi -normal-window &
 }
 
-k() {
+/() {
 	cd "$(awk '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)" || return
 }
 
