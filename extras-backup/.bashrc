@@ -241,8 +241,9 @@ popd() {
 	rofi -show combi -normal-window &
 }
 
+# tab delimited autojump database directories
 /() {
-	cd "$(awk '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)" || return
+	cd "$(awk -F '\t' '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)" || return
 }
 
 # fast GPT 3.5
