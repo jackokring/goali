@@ -246,6 +246,11 @@ popd() {
 	cd "$(awk -F '\t' '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)" || return
 }
 
+# cd -
+-() {
+	cd - || return
+}
+
 # fast GPT 3.5
 #export OPENAI_API_KEY=
 
@@ -330,15 +335,15 @@ echo "# $RED~/.local/bin$NONE for ${GREEN}pipx$NONE. You may need to allow\
 ls ~/.local/bin
 echo
 # vscode seems to have tmux restart issue
-echo "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down> c <new win> & <kill win> number <select win>$NONE"
+echo "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down>, c <new win>, & <kill win>, number <select win>, <space> <menu>$NONE"
 echo "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050"
 single pgadmin4
 
 echo "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050"
 echo "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)"
 echo "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)"
-echo "# ${GREEN}p$NONE process launcher (rofi tool)"
-echo "# ${GREEN}k$NONE cd to commonly used (rofi tool)"
+echo "# ${GREEN}//$NONE process launcher (rofi tool)"
+echo "# ${GREEN}/$NONE cd to commonly used (rofi tool)"
 echo "# ${GREEN}v$NONE neovim in st session"
 echo
 if [ -d "$HOME/.cargo/bin" ]; then

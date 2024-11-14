@@ -50,8 +50,10 @@ end
 ---@param seq string
 ---@param desc string
 ---@param action string | function
-local function nkey(seq, desc, action)
-  k("n", seq, action, { desc = desc })
+---@param remap? boolean
+local function nkey(seq, desc, action, remap)
+  remap = remap or false -- nil -> false
+  k("n", seq, action, { desc = desc, remap = remap })
 end
 
 -- also defines for i but ends with n mode (no func use com)
@@ -142,28 +144,37 @@ end
 
 --==============================================================================
 -- Bare Sparse Escape (Not in use)
--- begimouwz
+-- benou
 -- ABCDEFGHIJKLMNOPQRSTUVWXYZ
 -- normal launch rofi, as <C-R> register recall in i mode, redo n mode
 wk("\\", "user key")
 nkey("\\\\", "Launch by Rofi-combi", ncom("!rofi -show combi"))
 nkey("\\a", "Select all", "ggVG")
+nkey("\\b", "Begin of line", "^")
 nkey("\\c", "Commands", tele("commands"))
 nkey("\\d", "Diagnostics", tele("diagnostics"))
+nkey("\\e", "End of line", "$")
 nkey("\\f", "Find in buffer", tele("current_buffer_fuzzy_find"))
+nkey("\\g", "Search replace file", ":%s/\\v")
 nkey("\\h", "History of commands", tele("command_history"))
+nkey("\\i", "Insert ASCII art", ":r !figlet ")
 nkey("\\j", "Line down", ":m .+1<cr>==")
 nkey("\\k", "Line up", ":m .-2<cr>==")
 nkey("\\l", "Run lua", ":lua ")
-nkey("\\n", "Notify messages", ncom("Noice telescope"))
+nkey("\\m", "Messages", ncom("Noice telescope"))
+nkey("\\n", "Next warning", "]w")
+nkey("\\o", "Pure function", "vaf")
 nkey("\\p", "Paste", tele("registers"))
-nkey("\\q", "Quit save all", ncom("wall") .. ncom("q!"))
+nkey("\\q", "Quit save all", ncom("xa"))
 nkey("\\r", "Reload package", tele("reloader"))
 nkey("\\s", "Search replace line", ":s/\\v")
 nkey("\\t", "Treesitter symbols", tele("treesitter"))
+nkey("\\u", "Upper/lower case word", "viw~")
 nkey("\\v", "Visual line", "V")
+nkey("\\w", "Window cycle", "<C-w><C-w>")
 nkey("\\x", "Make executable", ncom("!chmod +x %"))
 nkey("\\y", "Yank line", "Vy")
+nkey("\\z", "Undo/Redo Paragraph Comment", "vipgc")
 
 --==============================================================================
 -- Leader Space (Many used, see used by pressing <space> in normal mode)
@@ -180,7 +191,7 @@ wk("<leader>", "leader key")
 -- GNO are used N for normal, O for temp normal, G for backward compatibility
 -- after a <C-\> and it appears to be hard wired
 -- save all <C-S> not just save one file and remain in mode
-nikey("<C-S>", "Save all", ncom("wall"))
+nikey("<C-S>", "Save all", ncom("wa"))
 -- reload and place in n mode
 ninkey("<C-Z>", "Revert to saved", ncom("e!"))
 -- kill the LSP reach for effect (see y?)
