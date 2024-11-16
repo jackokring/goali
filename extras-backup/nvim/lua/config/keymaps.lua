@@ -162,7 +162,7 @@ nkey("\\j", "Line down", ":m .+1<cr>==")
 nkey("\\k", "Line up", ":m .-2<cr>==")
 nkey("\\l", "Run lua", ":lua ")
 nkey("\\m", "Messages", ncom("Noice telescope"))
-nkey("\\n", "Next warning", "]w")
+nkey("\\n", "Next warning", "]w", true) -- remap?
 nkey("\\o", "Pure function", "vaf")
 nkey("\\p", "Paste", tele("registers"))
 nkey("\\q", "Quit save all", ncom("xa"))

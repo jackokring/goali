@@ -10,7 +10,7 @@ return {
   -- **setup options**
   opts = {},
   -- **lazy load info**
-  lazy = true,
+  -- lazy = true,
   -- **on event**
   -- event = { "BufEnter", "BufEnter *.lua" },
   -- **on command use**
