@@ -219,6 +219,9 @@ auto_activate_venv() {
 	if [ -e "./bin/activate" ]; then
 		source ./bin/activate
 	fi
+	if [ -e ".tmuxp.yaml" ]; then
+		tmuxp load .
+	fi
 }
 
 # Override the 'cd' command to call our function

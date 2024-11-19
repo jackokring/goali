@@ -1,0 +1,18 @@
+session_name: goali
+windows:
+    - layout: b244,193x41,0,0,7
+      options:
+          "@tmux_window_name_enabled": 0
+      panes:
+          - focus: "true"
+            shell_command: htop
+      start_directory: /home/jacko
+      window_name: htop
+    - focus: "true"
+      layout: adc5,192x40,0,0,8
+      options:
+          "@tmux_window_name_enabled": 1
+      panes:
+          - pane
+      start_directory: /home/jacko/goali
+      window_name: espeak-ng What are y
