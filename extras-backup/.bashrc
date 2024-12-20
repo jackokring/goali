@@ -136,11 +136,46 @@ v() {
 	st nvim "$@" 2>/dev/null &
 }
 
+export ARCH=$(gcc -dumpmachine)
+export LV2_PATH=/usr/local/lib/$ARCH/lv2/
+ardour() {
+	# use pipwire-jack alsa midi
+	pw-jack ardour9 2>/dev/null &
+}
+
+carla() {
+	# use pipewire-jack alsa midi
+	pw-jack carla 2>/dev/null &
+}
+
+graph() {
+	# to launch background and tray it
+	qpwgraph 2>/dev/null &
+}
+
+crash() {
+	# show module loading in nvim or other
+	# to aid crash black screen of death
+	# loading library?
+	lsof -p $(pgrep "$@")
+}
+
+p() {
+	# pet search -- command snippets
+	pet search "$@"
+}
+
+pn() {
+	# pet new -- command snippet
+	pet new "$@"
+}
+
 #alias pgadmin='pgadmin4&'
 alias tor='sudo systemctl restart tor'
 alias n='nano'
 alias did='history|grep'
 alias ok='test $? == 0'
+alias freeze='tmuxp freeze'
 
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
@@ -219,9 +254,6 @@ auto_activate_venv() {
 	if [ -e "./bin/activate" ]; then
 		source ./bin/activate
 	fi
-	if [ -e ".tmuxp.yaml" ]; then
-		tmuxp load .
-	fi
 }
 
 # Override the 'cd' command to call our function
@@ -235,7 +267,7 @@ pushd() {
 }
 
 popd() {
-	builtin popd "$@" && auto_activate_venv
+	builtin popd && auto_activate_venv
 }
 
 # quick almost shortcut
@@ -246,7 +278,13 @@ popd() {
 
 # tab delimited autojump database directories
 /() {
-	cd "$(awk -F '\t' '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)" || return
+	DIR="$(awk -F '\t' '{print $2}' ~/.local/share/autojump/autojump.txt | rofi -dmenu -normal-window)"
+	# if tmux session then jump not cd
+	if [ -e "$DIR/.tmuxp.yaml" ]; then
+		tmuxp load "$DIR"
+	else
+		cd "$DIR" || return
+	fi
 }
 
 # cd -
@@ -294,6 +332,11 @@ fi
 
 # Arm kit
 #PATH="/usr/local/gcc-arm-none-eabi-8-2018-q4-major/bin:$PATH"
+
+# z88dk Z80 dev kit
+export PATH=${PATH}:${HOME}/z88dk/bin
+export ZCCCFG=${HOME}/z88dk/lib/config
+eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
 # color vars
 export NONE='\e[0m'
@@ -348,6 +391,9 @@ echo "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)"
 echo "# ${GREEN}//$NONE process launcher (rofi tool)"
 echo "# ${GREEN}/$NONE cd to commonly used (rofi tool)"
 echo "# ${GREEN}v$NONE neovim in st session"
+echo "# ${GREEN}p$NONE, ${GREEN}pn$NONE pet search and pet new (command snippets)"
+echo "# ${GREEN}freeze$NONE freeze tmux seesion for /"
+echo "# ${GREEN}carla$NONE, ${GREEN}ardour$NONE and ${GREEN}graph$NONE for audio makers"
 echo
 if [ -d "$HOME/.cargo/bin" ]; then
 	echo "# $RED~/.cargo/bin$NONE for rust binaries."
@@ -368,5 +414,8 @@ eval "$(starship init bash)"
 # autojump
 . /usr/share/autojump/autojump.sh
 # last, may include venv $PATH mash of added afterj
+
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --bash)"
 
 coproc espeak-ng "What are you doing Dave? They're all dead Dave."

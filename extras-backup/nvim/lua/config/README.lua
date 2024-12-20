@@ -8,6 +8,7 @@
 -- keymaps.lua for assigning keyboard hooks (allocation of letters in comments, technically user commands also)
 -- lazy.lua the main lazy vim loader (don't edit)
 -- options.lua see https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua for defaults
+-- complete.lua for adding in completion generation e.g. autojump directories on "/" key
 --
 -- Quite a few terminal emulators send ALT keys as "<esc><key>" so for example "Alt+Shift+:"" escapes for
 -- a command such as save. As you'd be having the shift held then anyway ...
@@ -16,5 +17,9 @@
 --
 -- Each plugin file can be organized by plugin or purpose
 -- By plugin grouping for common intent seems best, as this makes for easy selection
---
---
+-- Note the "installed" plugins via extras/mason are in ~/.local/share/nvim
+-- the configuration of then can be done by requiring them in a config file
+-- and adding setup, or using a plugin file and returning a spec, but it is
+-- unclear if the plugin then has to be removed from the "installed by other"
+-- set to prevent conflicts, but a guess says it just runs your setup after
+-- the default setup, fixing the "opts" by a copy in the loaded module
