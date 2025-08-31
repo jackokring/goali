@@ -78,13 +78,6 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-	#alias ls='ls --color=auto'
-	#alias dir='dir --color=auto'
-	#alias vdir='vdir --color=auto'
-
-	#alias grep='grep --color=auto'
-	#alias fgrep='fgrep --color=auto'
-	#alias egrep='egrep --color=auto'
 fi
 
 # colored GCC warnings and errors
@@ -98,13 +91,21 @@ else
 	alias eza='exa'
 fi
 
+witch() {
+	which "$@" >/dev/null 2>/dev/null
+}
+
 # some more ls aliases
 alias ls='eza'
 alias ll='eza -alh --git'
 alias top='htop'
 alias la='eza -a'
 alias tree='eza -al --tree --level=3'
-alias cat='batcat'
+if witch bat; then
+	alias cat='bat'
+else
+	alias cat='batcat'
+fi
 alias h='history'
 
 # easy cd
@@ -112,12 +113,17 @@ alias ..="cd .."
 alias ...="cd ../../"
 alias ....="cd ../../../"
 
+if ! witch sudo; then
+	alias sudo=''
+fi
 # further alias
 alias apt='sudo nala'
 alias update="apt upgrade -y; apt clean" # apt update; not req
 alias venv='python -m venv'
 alias mv='mv -i'
-alias rm='trash -v'
+if witch trash; then
+	alias rm='trash -v'
+fi
 alias mkdir='mkdir -p'
 alias ps='ps auxf'
 alias ping='ping -c 10'
@@ -126,19 +132,14 @@ alias cls='clear'
 alias tmux='tmux attach || tmux'
 alias dmenu='rofi -dmenu -normal-window'
 
-e() {
-	# emacs with files and no gtk error stream
-	emacs "$@" 2>/dev/null &
-}
-
 v() {
 	# nvim via the st terminal (nerd font)
+	# termux don't use st but ~/.termux/font.ttf
 	st nvim "$@" 2>/dev/null &
 }
 
-export ARCH=$(gcc -dumpmachine)
 export LV2_PATH=/usr/local/lib/$ARCH/lv2/
-ardour() {
+ard() {
 	# use pipwire-jack alsa midi
 	pw-jack ardour9 2>/dev/null &
 }
@@ -176,7 +177,17 @@ alias n='nano'
 alias did='history|grep'
 alias ok='test $? == 0'
 alias freeze='tmuxp freeze'
+alias arch='distrobox enter --root arch'
+alias sudoarch='arch -- sudo '
+alias dbl='distrobox list'
 
+# docker via podman
+lazypod() {
+	systemctl --user enable --now podman.socket
+	lazydocker
+}
+alias docker=podman
+export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
 	if [[ $# == 0 ]]; then
@@ -330,92 +341,115 @@ if [ -d "$HOME/.local/bin" ]; then
 	PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Arm kit
-#PATH="/usr/local/gcc-arm-none-eabi-8-2018-q4-major/bin:$PATH"
-
-# z88dk Z80 dev kit
-export PATH=${PATH}:${HOME}/z88dk/bin
-export ZCCCFG=${HOME}/z88dk/lib/config
-eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
-
-# color vars
-export NONE='\e[0m'
-export RED='\e[1;31m'
-export GREEN='\e[1;32m'
-export YELLOW='\e[1;33m'
-export BLUE='\e[1;34m'
-export MAGENTA='\e[1;35m'
-export CYAN='\e[1;36m'
-export WHITE='\e[1;37m'
 #ensure escape processing
 alias echo='echo -e'
 
-# notes (denoise echo vs. remove action => grouping)
-echo "# command and location history search\n\
+# N.B. DETECT ARCH
+if ls /etc/arch-release 2>/dev/null; then
+	# in arch so do the .archrc and exit
+	. ~/.archrc
+#	exit 0
+else
+	# MINT OR TERMUX
+	export ARCH=$(gcc -dumpmachine)
+
+	# Arm kit
+	#PATH="/usr/local/gcc-arm-none-eabi-8-2018-q4-major/bin:$PATH"
+
+	# z88dk Z80 dev kit
+	if [ -d ${HOME}/z88dk ]; then
+		export PATH=${PATH}:${HOME}/z88dk/bin
+		export ZCCCFG=${HOME}/z88dk/lib/config
+		eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+	fi
+
+	# color vars
+	export NONE='\e[0m'
+	export RED='\e[1;31m'
+	export GREEN='\e[1;32m'
+	export YELLOW='\e[1;33m'
+	export BLUE='\e[1;34m'
+	export MAGENTA='\e[1;35m'
+	export CYAN='\e[1;36m'
+	export WHITE='\e[1;37m'
+
+	# notes (denoise echo vs. remove action => grouping)
+	echo "# command and location history search\n\
 $CYAN^R$NONE is reverse command search. $CYAN^S$NONE is forward command\
  search (No XON/XOFF). Directory autojump ${GREEN}j$NONE (and ${GREEN}jc$NONE)\
- are installed. First parameter for match. ${GREEN}tldr$NONE for command help.\
- ${GREEN}fuck$NONE command corrector. Also ${GREEN}s$NONE last command sudo.\
+ are installed. First parameter for match. Also ${GREEN}s$NONE last command sudo.\
  ${GREEN}h$NONE is for command history, also ${GREEN}did$NONE $RED!$NONE\n"
-echo "# useful knowledge and additions\n\
+	echo "# useful knowledge and additions\n\
 $CYAN^D$NONE is end of stream terminate process. $CYAN^Z$NONE is process \
 stop and ${GREEN}fg$NONE (and ${GREEN}bg$NONE) job control numbers.\
  ${GREEN}ll$NONE and ${GREEN}la$NONE do modified ${GREEN}ls$NONE types.\
  ${GREEN}espeak-ng$NONE for robot voice.\
  ${GREEN}entr$NONE file watcher command execute.\
- ${GREEN}extract$NONE archive type detection and extract.\
- ${GREEN}dragon$NONE CLI drag and drop manager.\
- ${CYAN}Shft+^V$NONE is paste in console context.\n"
-echo "# code and data management\n\
+ ${GREEN}extract$NONE archive type detection and extract.\n"
+	echo "# code and data management\n\
 ${GREEN}gacp$NONE for git add/commit/push with optional message.\
  ${GREEN}fzf$NONE for fuzzy find.\
- ${GREEN}rg$NONE for ripgrep file word finder. ${GREEN}trash$NONE for trash\
- can management. ${GREEN}update$NONE does all the software updating in one\
+ ${GREEN}rg$NONE for ripgrep file word finder. ${GREEN}update$NONE does all the software updating in one\
  command. ${GREEN}ncdu$NONE is a disk usage analyzer.\n"
-echo "# $RED~/bin$NONE general user binaries."
-ls ~/bin
-echo
-echo "# $RED~/.local/bin$NONE for ${GREEN}pipx$NONE. You may need to allow\
+	echo "# $RED~/bin$NONE general user binaries. Go binaries."
+	ls ~/bin
+	echo
+	echo "# $RED~/.local/bin$NONE for ${GREEN}pipx$NONE. You may need to allow\
  packages to use the global python context installed via ${GREEN}apt$NONE.\
  $RED~/.local/pipx/venvs/*/pyvenv.cfg$NONE"
-ls ~/.local/bin
-echo
-# vscode seems to have tmux restart issue
-echo "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down>, c <new win>, & <kill win>, number <select win>, <space> <menu>$NONE"
-echo "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050"
-single pgadmin4
-
-echo "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050"
-echo "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)"
-echo "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)"
-echo "# ${GREEN}//$NONE process launcher (rofi tool)"
-echo "# ${GREEN}/$NONE cd to commonly used (rofi tool)"
-echo "# ${GREEN}v$NONE neovim in st session"
-echo "# ${GREEN}p$NONE, ${GREEN}pn$NONE pet search and pet new (command snippets)"
-echo "# ${GREEN}freeze$NONE freeze tmux seesion for /"
-echo "# ${GREEN}carla$NONE, ${GREEN}ardour$NONE and ${GREEN}graph$NONE for audio makers"
-echo
-if [ -d "$HOME/.cargo/bin" ]; then
-	echo "# $RED~/.cargo/bin$NONE for rust binaries."
-	ls ~/.cargo/bin
+	ls ~/.local/bin
 	echo
+	echo "Maybe:"
+	# vscode seems to have tmux restart issue
+	echo "# can use ${GREEN}tmux ${CYAN}^B s <left/right/up/down>, c <new win>, & <kill win>, number <select win>, <space> <menu>$NONE"
+	echo "# ${GREEN}pgadmin4$NONE in venv on http://127.0.0.1:5050"
+	if witch pgadmin4; then
+		single pgadmin4
+	fi
+	echo "# ${GREEN}tor$NONE on? socks4://127.0.0.1:9050"
+	echo "# ${GREEN}fluid$NONE FLTK GUI designer (C++ template tool)"
+	echo "# ${GREEN}glade$NONE Gtk GUI designer (XML template tool)"
+	echo "# ${GREEN}//$NONE process launcher (rofi tool)"
+	echo "# ${GREEN}/$NONE cd to commonly used (rofi tool)"
+	echo "# ${GREEN}v$NONE neovim in st session"
+	echo "# ${GREEN}p$NONE, ${GREEN}pn$NONE pet search and pet new (command snippets)"
+	echo "# ${GREEN}freeze$NONE freeze tmux seesion for /"
+	echo "# ${GREEN}carla$NONE, ${GREEN}ardour/ard(pw)$NONE and ${GREEN}graph$NONE for audio makers"
+	echo "# ${GREEN}tldr$NONE for command help"
+	echo "# ${GREEN}fuck$NONE command corrector"
+	echo
+	if [ -d "$HOME/.cargo/bin" ]; then
+		echo "# $RED~/.cargo/bin$NONE for rust binaries."
+		ls ~/.cargo/bin
+		echo
+	fi
+
+	export GOBIN="$HOME/bin"
+	# Install Ruby Gems to ~/gems (for jekyll.sh github.com docs)
+	export GEM_HOME="$HOME/gems"
+	export PATH="$HOME/gems/bin:$PATH"
+
+	# starship (arm build on google drive)
+	eval "$(starship init bash)"
+
+	# activate virtual env after all path stuff
+	# autojump
+	PREFIX=${PREFIX:-/usr}
+	. ${PREFIX}/share/autojump/autojump.bash
+	# it's the j and jc aliases todoo
+	# autojump >/dev/null
+	# venv do
+	cd .
+	# last, may include venv $PATH mash of added afterj
+
+	# Set up fzf key bindings and fuzzy completion
+	eval "$(fzf --bash)"
+	#get X display
+	if [ "$PREFIX" == "/usr" ]; then
+		export DISPLAY=:0
+	else
+		#vnc default display
+		export DISPLAY=:1
+	fi
+	espeak-ng "What are you doing Dave? They're all dead Dave." &
 fi
-# continue by doing the reset of the .profile file
-echo "# .profile for perhaps .NET"
-
-# Install Ruby Gems to ~/gems (for jekyll.sh github.com docs)
-export GEM_HOME="$HOME/gems"
-export PATH="$HOME/gems/bin:$PATH"
-
-# starship (arm build on google drive)
-eval "$(starship init bash)"
-
-# activate virtual env after all path stuff
-# autojump
-. /usr/share/autojump/autojump.sh
-# last, may include venv $PATH mash of added afterj
-
-# Set up fzf key bindings and fuzzy completion
-eval "$(fzf --bash)"
-
-coproc espeak-ng "What are you doing Dave? They're all dead Dave."
