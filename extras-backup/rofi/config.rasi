@@ -1,6 +1,6 @@
 configuration {
 	modes: "combi";
-	font: "mono 12";
+	font: "mono 24";
 	show-icons: true;
 /*	terminal: "rofi-sensible-terminal";*/
 /*	ssh-client: "ssh";*/
