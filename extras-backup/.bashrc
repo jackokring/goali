@@ -91,6 +91,7 @@ else
 	alias eza='exa'
 fi
 
+# a spelling to just true/false a command exists
 witch() {
 	which "$@" >/dev/null 2>/dev/null
 }
@@ -131,6 +132,8 @@ alias less='less -R'
 alias cls='clear'
 alias tmux='tmux attach || tmux'
 alias dmenu='rofi -dmenu -normal-window'
+# what a package botch
+alias fd='fdfind'
 
 v() {
 	# nvim via the st terminal (nerd font)
@@ -138,7 +141,6 @@ v() {
 	st nvim "$@" 2>/dev/null &
 }
 
-export LV2_PATH=/usr/local/lib/$ARCH/lv2/
 ard() {
 	# use pipwire-jack alsa midi
 	pw-jack ardour9 2>/dev/null &
@@ -177,9 +179,10 @@ alias n='nano'
 alias did='history|grep'
 alias ok='test $? == 0'
 alias freeze='tmuxp freeze'
+
+# enter arch container and list containers (rooted because)
 alias arch='distrobox enter --root arch'
-alias sudoarch='arch -- sudo '
-alias dbl='distrobox list'
+alias dbl='distrobox --root list'
 
 # docker via podman
 lazypod() {
@@ -188,6 +191,7 @@ lazypod() {
 }
 alias docker=podman
 export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
+
 # useful functions
 s() { # do sudo, or sudo the last command if no argument given
 	if [[ $# == 0 ]]; then
@@ -255,7 +259,7 @@ export TAIL="0 0 3>&2 2>&1 1>&3"
 # launch a process singleton
 single() {
 	# self and process?
-	if test "$(ps | grep $1 | wc -l)" != 2; then
+	if test "$(ps | grep "$1" | wc -l)" != 2; then
 		"$@" >/dev/null 2>&1 &
 	fi
 }
@@ -347,11 +351,12 @@ alias echo='echo -e'
 # N.B. DETECT ARCH
 if ls /etc/arch-release 2>/dev/null; then
 	# in arch so do the .archrc and exit
-	. ~/.archrc
+	. "$HOME/.archrc"
 #	exit 0
 else
 	# MINT OR TERMUX
 	export ARCH=$(gcc -dumpmachine)
+	export LV2_PATH=/usr/local/lib/$ARCH/lv2/
 
 	# Arm kit
 	#PATH="/usr/local/gcc-arm-none-eabi-8-2018-q4-major/bin:$PATH"
@@ -360,7 +365,7 @@ else
 	if [ -d ${HOME}/z88dk ]; then
 		export PATH=${PATH}:${HOME}/z88dk/bin
 		export ZCCCFG=${HOME}/z88dk/lib/config
-		eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+		eval "$(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)"
 	fi
 
 	# color vars
@@ -435,7 +440,7 @@ ${GREEN}gacp$NONE for git add/commit/push with optional message.\
 	# activate virtual env after all path stuff
 	# autojump
 	PREFIX=${PREFIX:-/usr}
-	. ${PREFIX}/share/autojump/autojump.bash
+	. "$PREFIX/share/autojump/autojump.bash"
 	# it's the j and jc aliases todoo
 	# autojump >/dev/null
 	# venv do
