@@ -335,6 +335,24 @@ gacp() {
 	git push
 }
 
+gacr() {
+	date=$(date +"%A %Y-%m-%d %H:%M:%S")
+  # avoid stash
+	git add .
+	git commit -m "[rebase] $date"
+  # apply anything remote
+	git pull --rebase
+  BRANCH="$(git branch|sed -nr "s/^\* (.*)\\\$/\\1/p")"
+  # get the import you want a rebase off
+  git checkout "$1"
+  # as your hopefully not editing it
+  git pull
+  # now got updates so back to edit branch
+  git checkout "$BRANCH"
+  # apply a rebase merge from the requested branch
+  git rebase "$1"
+}
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ]; then
 	PATH="$HOME/bin:$PATH"
